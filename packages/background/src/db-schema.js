@@ -148,6 +148,8 @@ const schema = {
 
   // ## tx
   tx: {
+    bundleId: {doc: 'EIP-5792 call bundle id'},
+    bundleCalls: {doc: 'EIP-5792 ordered calls'},
     txPayload: {
       doc: 'tx payload as an object',
       ref: true,
@@ -219,6 +221,7 @@ const schema = {
 
   // ## user operation
   userOperation: {
+    bundleId: {doc: 'EIP-5792 call bundle id'},
     hash: {
       doc: 'user operation hash',
       identity: true,

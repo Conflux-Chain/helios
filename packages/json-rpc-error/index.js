@@ -30,8 +30,15 @@ export const ERROR = {
   // disconnected from requested chain
   CHAIN_DISCONNECTED: {code: 4901, name: 'Chain Disconnected'},
   UNRECOGNIZED_CHAIN_ID: {code: 4902, name: 'Unrecognized chain ID'},
+  // EIP-5792 wallet call errors
+  UNSUPPORTED_CAPABILITY: {code: 5700, name: 'UnsupportedCapability'},
+  UNSUPPORTED_CHAIN_ID: {code: 5710, name: 'UnsupportedChainId'},
+  DUPLICATE_ID: {code: 5720, name: 'DuplicateId'},
+  UNKNOWN_BUNDLE_ID: {code: 5730, name: 'UnknownBundleId'},
+  BUNDLE_TOO_LARGE: {code: 5740, name: 'BundleTooLarge'},
+  USER_REJECTED_UPGRADE: {code: 5750, name: 'UserRejectedUpgrade'},
+  ATOMICITY_NOT_SUPPORTED: {code: 5760, name: 'AtomicityNotSupported'},
 }
-
 export const Parse = defRpcError(
   () => ``,
   msg => `${msg} [${ERROR.PARSE.name} ${ERROR.PARSE.code}]\n`,
@@ -97,6 +104,32 @@ export const UnrecognizedChainId = defRpcError(
     `${msg} [${ERROR.UNRECOGNIZED_CHAIN_ID.name} ${ERROR.UNRECOGNIZED_CHAIN_ID.code}]\n`,
 )
 
+const defWalletCallError = ({name, code}) =>
+  defRpcError(
+    () => ``,
+    msg => `${msg} [${name} ${code}]\n`,
+  )
+
+export const UnsupportedCapability = defWalletCallError(
+  ERROR.UNSUPPORTED_CAPABILITY,
+)
+
+export const UnsupportedChainId = defWalletCallError(ERROR.UNSUPPORTED_CHAIN_ID)
+
+export const DuplicateId = defWalletCallError(ERROR.DUPLICATE_ID)
+
+export const UnknownBundleId = defWalletCallError(ERROR.UNKNOWN_BUNDLE_ID)
+
+export const BundleTooLarge = defWalletCallError(ERROR.BUNDLE_TOO_LARGE)
+
+export const UserRejectedUpgrade = defWalletCallError(
+  ERROR.USER_REJECTED_UPGRADE,
+)
+
+export const AtomicityNotSupported = defWalletCallError(
+  ERROR.ATOMICITY_NOT_SUPPORTED,
+)
+
 export const errorInstanceToErrorCode = instance => {
   if (instance instanceof Parse) return ERROR.PARSE.code
   if (instance instanceof InvalidRequest) return ERROR.INVALID_REQUEST.code
@@ -113,6 +146,17 @@ export const errorInstanceToErrorCode = instance => {
     return ERROR.CHAIN_DISCONNECTED.code
   if (instance instanceof UnrecognizedChainId)
     return ERROR.UNRECOGNIZED_CHAIN_ID.code
+  if (instance instanceof UnsupportedCapability)
+    return ERROR.UNSUPPORTED_CAPABILITY.code
+  if (instance instanceof UnsupportedChainId)
+    return ERROR.UNSUPPORTED_CHAIN_ID.code
+  if (instance instanceof DuplicateId) return ERROR.DUPLICATE_ID.code
+  if (instance instanceof UnknownBundleId) return ERROR.UNKNOWN_BUNDLE_ID.code
+  if (instance instanceof BundleTooLarge) return ERROR.BUNDLE_TOO_LARGE.code
+  if (instance instanceof UserRejectedUpgrade)
+    return ERROR.USER_REJECTED_UPGRADE.code
+  if (instance instanceof AtomicityNotSupported)
+    return ERROR.ATOMICITY_NOT_SUPPORTED.code
   if (!instance?.code) return -32000
   if (instance.code >= -32099 && instance.code <= -32000) return instance.code
   return -32000
@@ -137,6 +181,16 @@ export const guessErrorType = err => {
     if (err.code === ERROR.UNSUPPORTED_METHOD.code) return UnsupportedMethod
     if (err.code === ERROR.DISCONNECTED.code) return Disconnected
     if (err.code === ERROR.CHAIN_DISCONNECTED.code) return ChainDisconnected
+    if (err.code === ERROR.UNSUPPORTED_CAPABILITY.code)
+      return UnsupportedCapability
+    if (err.code === ERROR.UNSUPPORTED_CHAIN_ID.code) return UnsupportedChainId
+    if (err.code === ERROR.DUPLICATE_ID.code) return DuplicateId
+    if (err.code === ERROR.UNKNOWN_BUNDLE_ID.code) return UnknownBundleId
+    if (err.code === ERROR.BUNDLE_TOO_LARGE.code) return BundleTooLarge
+    if (err.code === ERROR.USER_REJECTED_UPGRADE.code)
+      return UserRejectedUpgrade
+    if (err.code === ERROR.ATOMICITY_NOT_SUPPORTED.code)
+      return AtomicityNotSupported
   }
 
   return Internal

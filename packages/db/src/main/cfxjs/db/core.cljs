@@ -45,8 +45,8 @@
        :where [243 :tx/status ?s]]))
 
 (defn- parse-js-transact-arg
-  ([arg] (parse-js-transact-arg arg (random-tmp-id)))
-  ([arg tmp-id]
+  ([schema arg] (parse-js-transact-arg schema arg (random-tmp-id)))
+  ([schema arg tmp-id]
    (let [eid-arg  (:eid arg)
          arg      (cond
                     (or (int? eid-arg) (string? eid-arg))
@@ -83,8 +83,10 @@
                              (cond
                                (and (map? v) (-> v keys count (= 1)) (-> v first second map?)) ;; lookup-ref
                                (->lookup-ref v)
-                               (vector? v) ;; db/isComponents
-                               (map #(parse-js-transact-arg % (random-tmp-id)) v)
+                               ;; Only reference arrays contain nested entities.
+                               (and (vector? v)
+                                    (= :db.type/ref (get-in schema [qualified-k :db/valueType])))
+                               (map #(parse-js-transact-arg schema %) v)
                                :else v)]
                          (assoc m qualified-k processed-v)))
                      {} v)
@@ -316,7 +318,7 @@
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
              arg (filter map? arg)
-             arg (map #(parse-js-transact-arg % (random-tmp-id)) arg)]
+             arg (map #(parse-js-transact-arg schema-rst %) arg)]
          (clj->js (t arg))))
 
      ;; (defn custom-pr-impl [obj writer opts]

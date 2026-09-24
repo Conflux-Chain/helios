@@ -4511,6 +4511,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eip-5792@workspace:packages/eip-5792":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eip-5792@workspace:packages/eip-5792"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/errors@workspace:packages/errors":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/errors@workspace:packages/errors"
@@ -5467,6 +5475,25 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl"
   dependencies:
+    "@fluent-wallet/spec": "npm:1.0.22"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-calls-status@workspace:packages/rpcs/wallet_getCallsStatus":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-calls-status@workspace:packages/rpcs/wallet_getCallsStatus"
+  dependencies:
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792"
+    "@fluent-wallet/spec": "npm:1.0.22"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-capabilities@workspace:packages/rpcs/wallet_getCapabilities":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-capabilities@workspace:packages/rpcs/wallet_getCapabilities"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792"
     "@fluent-wallet/spec": "npm:1.0.22"
   languageName: unknown
   linkType: soft
@@ -18620,6 +18647,8 @@ __metadata:
     "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*"
     "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
+    "@fluent-wallet/wallet_get-calls-status": "workspace:packages/rpcs/wallet_getCallsStatus"
+    "@fluent-wallet/wallet_get-capabilities": "workspace:packages/rpcs/wallet_getCapabilities"
     "@fluent-wallet/wallet_get-conflux-nonce-state": "workspace:packages/rpcs/wallet_getConfluxNonceState"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
