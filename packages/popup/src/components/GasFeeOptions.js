@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Popover from '@fluent-wallet/component-popover'
 import {ExclamationCircleFilled} from '@fluent-wallet/component-icons'
@@ -9,13 +8,9 @@ import {
   toThousands,
   convertDecimal,
 } from '@fluent-wallet/data-format'
-import {useCurrentTxStore} from '../../../hooks'
-import {addUnitForValue} from '../../../utils'
-import {ROUTES} from '../../../constants'
+import {addUnitForValue} from '../utils'
 
-const {ADVANCED_GAS} = ROUTES
-
-const GasStationItem = ({
+const GasFeeOption = ({
   selected,
   level,
   onClick,
@@ -94,7 +89,7 @@ const GasStationItem = ({
   )
 }
 
-GasStationItem.propTypes = {
+GasFeeOption.propTypes = {
   selected: PropTypes.bool,
   level: PropTypes.string,
   onClick: PropTypes.func,
@@ -102,24 +97,20 @@ GasStationItem.propTypes = {
   isCfxChain: PropTypes.bool,
   data: PropTypes.object,
 }
-
-function GasStation({
+function GasFeeOptions({
   uses1559Fees,
-  isHistoryTx,
+  showFeeLevels = uses1559Fees,
   gasInfoEip1559,
-  selectedGasLevel,
-  setSelectedGasLevel,
-  onClickGasStationItem,
+  gasLimit,
   suggestedGasPrice,
+  selectedGasLevel,
+  advancedGasSetting,
   isCfxChain,
-  estimateGasLimit,
-  resendType,
+  onSelectGasLevel,
+  onEditAdvancedFees,
 }) {
   const {t} = useTranslation()
-  const history = useHistory()
-  const {advancedGasSetting, clearAdvancedGasSetting} = useCurrentTxStore()
-
-  const gasArray = ['high', 'medium', 'low']
+  const gasLevels = showFeeLevels ? ['high', 'medium', 'low'] : ['medium']
 
   return (
     <div className="bg-gray-4 px-2 pt-2 flex flex-col border border-[#f7f8fA] rounded w-full">
@@ -127,113 +118,76 @@ function GasStation({
         <span>{t('gasOption')}</span>
         <span>{uses1559Fees ? t('maxFeePerGas') : t('gasPrice')}</span>
       </div>
-      {uses1559Fees &&
-        !resendType &&
-        gasArray.map((level, index) => (
-          <GasStationItem
-            key={index}
-            level={level}
-            data={{
-              maxFeePerGas: gasInfoEip1559?.[level]?.suggestedMaxFeePerGas,
-              maxPriorityFeePerGas:
-                gasInfoEip1559?.[level]?.suggestedMaxPriorityFeePerGas,
-              gasLimit: convertDataToValue(estimateGasLimit),
-              baseFee: gasInfoEip1559?.['estimatedBaseFee'],
-            }}
-            isCfxChain={isCfxChain}
-            uses1559Fees={true}
-            selected={selectedGasLevel === level}
-            onClick={level => {
-              setSelectedGasLevel(level)
-              clearAdvancedGasSetting()
-              onClickGasStationItem?.()
-            }}
-          />
-        ))}
-      {(!uses1559Fees || !!resendType) && (
-        <GasStationItem
-          level="suggested"
-          data={{
-            gasPrice: convertDataToValue(suggestedGasPrice, GWEI_DECIMALS),
-          }}
-          uses1559Fees={false}
+
+      {gasLevels.map(level => (
+        <GasFeeOption
+          key={level}
+          level={showFeeLevels ? level : 'suggested'}
+          data={
+            showFeeLevels
+              ? {
+                  maxFeePerGas: gasInfoEip1559?.[level]?.suggestedMaxFeePerGas,
+                  maxPriorityFeePerGas:
+                    gasInfoEip1559?.[level]?.suggestedMaxPriorityFeePerGas,
+                  gasLimit: convertDataToValue(gasLimit),
+                  baseFee: gasInfoEip1559?.estimatedBaseFee,
+                }
+              : {
+                  gasPrice: convertDataToValue(
+                    suggestedGasPrice,
+                    GWEI_DECIMALS,
+                  ),
+                }
+          }
+          uses1559Fees={showFeeLevels}
           isCfxChain={isCfxChain}
-          selected={selectedGasLevel === 'medium'}
-          onClick={() => {
-            setSelectedGasLevel('medium')
-            clearAdvancedGasSetting()
-            onClickGasStationItem?.()
-          }}
+          selected={selectedGasLevel === level}
+          onClick={() => onSelectGasLevel(level)}
         />
-      )}
-      <GasStationItem
+      ))}
+
+      <GasFeeOption
         level="advanced"
         data={{
           maxFeePerGas: convertDecimal(
-            advancedGasSetting?.['maxFeePerGas'],
+            advancedGasSetting?.maxFeePerGas,
             'divide',
             GWEI_DECIMALS,
           ),
           maxPriorityFeePerGas: convertDecimal(
-            advancedGasSetting?.['maxPriorityFeePerGas'],
+            advancedGasSetting?.maxPriorityFeePerGas,
             'divide',
             GWEI_DECIMALS,
           ),
-          gasLimit: advancedGasSetting?.['gasLimit'],
+          gasLimit: advancedGasSetting?.gasLimit,
           gasPrice: convertDecimal(
-            advancedGasSetting?.['gasPrice'],
+            advancedGasSetting?.gasPrice,
             'divide',
             GWEI_DECIMALS,
           ),
-          baseFee: gasInfoEip1559?.['estimatedBaseFee'],
-          gasLevel: advancedGasSetting?.['gasLevel'],
+          baseFee: gasInfoEip1559?.estimatedBaseFee,
+          gasLevel: advancedGasSetting?.gasLevel,
         }}
-        isCfxChain={isCfxChain}
         uses1559Fees={uses1559Fees}
+        isCfxChain={isCfxChain}
         selected={selectedGasLevel === 'advanced'}
-        onClick={() => {
-          if (
-            (uses1559Fees &&
-              selectedGasLevel !== 'advanced' &&
-              !gasInfoEip1559?.[selectedGasLevel]) ||
-            (!uses1559Fees && !suggestedGasPrice)
-          )
-            return
-          const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
-            gasInfoEip1559?.[selectedGasLevel] || {}
-          history.push({
-            pathname: ADVANCED_GAS,
-            search: `?isHistoryTx=${isHistoryTx}&${
-              uses1559Fees
-                ? `suggestedMaxFeePerGas=${
-                    !resendType
-                      ? suggestedMaxFeePerGas
-                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
-                  }&suggestedMaxPriorityFeePerGas=${
-                    !resendType
-                      ? suggestedMaxPriorityFeePerGas
-                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
-                  }&selectedGasLevel=${selectedGasLevel}`
-                : ''
-            }${!uses1559Fees ? 'suggestedGasPrice=' + suggestedGasPrice : ''}`,
-          })
-        }}
+        onClick={onEditAdvancedFees}
       />
     </div>
   )
 }
 
-GasStation.propTypes = {
+GasFeeOptions.propTypes = {
   uses1559Fees: PropTypes.bool,
-  isHistoryTx: PropTypes.bool,
+  showFeeLevels: PropTypes.bool,
   gasInfoEip1559: PropTypes.object,
-  selectedGasLevel: PropTypes.string,
-  setSelectedGasLevel: PropTypes.func,
-  onClickGasStationItem: PropTypes.func,
+  gasLimit: PropTypes.string,
   suggestedGasPrice: PropTypes.string,
+  selectedGasLevel: PropTypes.string,
+  advancedGasSetting: PropTypes.object,
   isCfxChain: PropTypes.bool,
-  estimateGasLimit: PropTypes.string,
-  resendType: PropTypes.string,
+  onSelectGasLevel: PropTypes.func.isRequired,
+  onEditAdvancedFees: PropTypes.func.isRequired,
 }
 
-export default GasStation
+export default GasFeeOptions
