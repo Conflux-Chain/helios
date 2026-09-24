@@ -4383,7 +4383,6 @@ __metadata:
   resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
   dependencies:
     "@ethersproject/abi": "npm:5.6.3"
-    "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/confluxscan-api": "workspace:*"
     "@fluent-wallet/consts": "workspace:packages/consts"
@@ -18726,6 +18725,7 @@ __metadata:
     "@fluent-wallet/conflux-tx-error": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/contract-method-name": "workspace:packages/contract-method-name"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
     "@fluent-wallet/did": "workspace:*"
     "@fluent-wallet/ethereum-tx-error": "workspace:*"

@@ -16,10 +16,7 @@ import {
   convertDecimal,
   convertDataToValue,
 } from '@fluent-wallet/data-format'
-import {
-  getCFXContractMethodSignature,
-  getEthContractMethodSignature,
-} from '@fluent-wallet/contract-method-name'
+import {useDecodedCall} from './useDecodedCall'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {consts} from '@fluent-wallet/ledger'
@@ -405,8 +402,6 @@ export const useDappParams = customPendingAuthReq => {
 
 export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
-  const [decodeData, setDecodeData] = useState({})
-  const [isDecoding, setIsDecoding] = useState(false)
   const {type, eip7702Delegated} = useAddressTypeInfo(to)
   const {
     data: {
@@ -420,45 +415,21 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   const shouldValidateToken =
     type === 'contract' && isContract && !eip7702Delegated
   const isEOAAddress = !isContract && !!type
-  const crc20Token = useValid20Token(shouldValidateToken ? to : '')
+  const token = useValid20Token(shouldValidateToken ? to : '')
 
-  useEffect(() => {
-    if (!!data && data !== '0x') {
-      if (!currentNetworkType) {
-        setDecodeData({})
-        setIsDecoding(false)
-        return
-      }
-      const getSignature =
-        currentNetworkType === NETWORK_TYPE.CFX
-          ? getCFXContractMethodSignature
-          : getEthContractMethodSignature
-      const params = [to, data, netId]
-      const offlineParams = [...params, true]
-      if (isContract) {
-        setIsDecoding(true)
-      }
-
-      getSignature(...(isContract ? params : offlineParams))
-        .then(result => {
-          setDecodeData({...result})
-          setIsDecoding(false)
-        })
-        .catch(e => {
-          console.error('getSignature error:', e)
-          setIsDecoding(false)
-        })
-      return
-    }
-    setDecodeData({})
-    setIsDecoding(false)
-  }, [data, isContract, to, netId, currentNetworkType])
+  const {decodedCall, isDecoding} = useDecodedCall({
+    // Keep remote ABI lookup limited to contract targets.
+    to: isContract ? to : undefined,
+    data,
+    networkType: currentNetworkType,
+    networkId: netId,
+  })
 
   return {
     isContract,
     isEOAAddress,
-    token: crc20Token,
-    decodeData,
+    token,
+    decodeData: decodedCall,
     data,
     isDecoding,
   }
