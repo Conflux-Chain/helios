@@ -29,6 +29,7 @@ import {
   getPageType,
   checkBalance,
   bn16,
+  isEditableTokenApproval,
   isGasSponsorshipConfigured,
   transformToTitleCase,
 } from '../../utils'
@@ -204,6 +205,8 @@ function ConfirmTransaction() {
     token,
   })
   const isSign = !isSendToken && !isApproveToken
+  const canEditAllowance =
+    isApproveToken && isEditableTokenApproval({decodedCall: decodeData, token})
 
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
@@ -721,6 +724,7 @@ function ConfirmTransaction() {
           <InfoList
             token={displayToken}
             isApproveToken={isApproveToken}
+            canEditAllowance={canEditAllowance}
             isDapp={isDapp}
             isSign={isSign}
             method={
