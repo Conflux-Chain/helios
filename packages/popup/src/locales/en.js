@@ -175,6 +175,19 @@ const en = {
     sponsored: 'Sponsored',
     partSponsored: 'Partially Sponsored',
 
+    // - Call bundle confirmation
+    signBatchTransaction: 'Sign Batch Transaction',
+    signatureRequest: 'Signature Request',
+    callBundleCallTitle: 'Transaction {{number}}',
+    callBundleInteractingWith: 'Interacting with',
+    callBundleData: 'Data',
+    callBundleHex: 'Hex',
+    callBundleTransactionCount_one: 'Includes {{count}} transaction',
+    callBundleTransactionCount_other: 'Includes {{count}} transactions',
+    callBundleAtomicExecution: 'Atomic execution',
+    callBundleAtomicExecutionDescription:
+      'All operations in this batch execute together. If any operation fails, all operations are reverted.',
+
     // - Send Transaction / Error or Warning
     error: 'Error',
     warning: 'Warning',
@@ -217,6 +230,8 @@ const en = {
     // - Send Transaction / Sign Transaction / 3. token approve - confirm transaction
     approveToken: 'Token Approval',
     approveTo: 'Approve To',
+    spendingCap: 'Spending cap',
+    spender: 'Spender',
     contract: 'Contract',
     allowLimit: 'Allow Limit',
     action: 'Action',

@@ -176,6 +176,21 @@ const ru = {
     sponsored: 'Спонсируется',
     partSponsored: 'Частично спонсируется',
 
+    // - Call bundle confirmation
+    signBatchTransaction: 'Подписать пакет транзакций',
+    signatureRequest: 'Запрос подписи',
+    callBundleCallTitle: 'Транзакция {{number}}',
+    callBundleInteractingWith: 'Взаимодействие с',
+    callBundleData: 'Данные',
+    callBundleHex: 'Hex',
+    callBundleTransactionCount_one: 'Включает {{count}} транзакцию',
+    callBundleTransactionCount_few: 'Включает {{count}} транзакции',
+    callBundleTransactionCount_many: 'Включает {{count}} транзакций',
+    callBundleTransactionCount_other: 'Включает {{count}} транзакции',
+    callBundleAtomicExecution: 'Атомарное выполнение',
+    callBundleAtomicExecutionDescription:
+      'Все операции в этом пакете выполняются вместе. Если одна из операций завершается ошибкой, изменения всех операций отменяются.',
+
     // - Send Transaction / Error or Warning
     error: 'Error',
     warning: 'Warning',
@@ -218,6 +233,8 @@ const ru = {
     // - Send Transaction / Sign Transaction / 3. token approve - confirm transaction
     approveToken: 'Подтверждение токена',
     approveTo: 'Подтвердить по',
+    spendingCap: 'Лимит расходов',
+    spender: 'Спендер',
     contract: 'Контракт',
     allowLimit: 'Разрешить ограничение',
     action: 'Действие',
