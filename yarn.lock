@@ -18712,6 +18712,7 @@ __metadata:
     "@fluent-wallet/wallet_request-accounts": "workspace:*"
     "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions"
     "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI"
+    "@fluent-wallet/wallet_send-calls": "workspace:packages/rpcs/wallet_sendCalls"
     "@fluent-wallet/wallet_send-transaction": "workspace:*"
     "@fluent-wallet/wallet_send-transaction-with-action": "workspace:*"
     "@fluent-wallet/wallet_send-user-operation": "workspace:*"
@@ -18722,6 +18723,7 @@ __metadata:
     "@fluent-wallet/wallet_set-preferences": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*"
+    "@fluent-wallet/wallet_submit-call-bundle": "workspace:packages/rpcs/wallet_submitCallBundle"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
@@ -18763,6 +18765,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/checks": "workspace:packages/checks"
@@ -18782,6 +18785,7 @@ __metadata:
     "@fluent-wallet/contract-method-name": "workspace:packages/contract-method-name"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
     "@fluent-wallet/did": "workspace:*"
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792"
     "@fluent-wallet/ethereum-tx-error": "workspace:*"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/inner-utils": "workspace:*"

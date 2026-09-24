@@ -41,6 +41,7 @@ import EditGasFee from './pages/EditGasFee'
 import AdvancedGas from './pages/AdvancedGas'
 import EditAllowance from './pages/EditAllowance'
 import ConfirmTransaction from './pages/ConfirmTransaction'
+import ConfirmCallBundle from './pages/ConfirmCallBundle'
 import History from './pages/History'
 import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
@@ -84,6 +85,7 @@ const {
   ADVANCED_GAS,
   EDIT_ALLOWANCE,
   CONFIRM_TRANSACTION,
+  CONFIRM_CALL_BUNDLE,
   VIEW_DATA,
   VIEW_PERMIT_DATA,
   HISTORY,
@@ -144,6 +146,10 @@ const routes = [
   {
     path: CONFIRM_TRANSACTION,
     component: ConfirmTransaction,
+  },
+  {
+    path: CONFIRM_CALL_BUNDLE,
+    component: ConfirmCallBundle,
   },
   {
     path: EDIT_GAS_FEE,

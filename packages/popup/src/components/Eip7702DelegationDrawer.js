@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
-import {SlideCard} from '../../../components'
+import SlideCard from './SlideCard'
 
 const BENEFIT_ITEMS = [
   {
@@ -27,6 +27,7 @@ function Eip7702DelegationDrawer({
   onConfirm,
   onClose,
   showClose = false,
+  confirmDisabled = false,
 }) {
   const {t} = useTranslation()
 
@@ -73,7 +74,7 @@ function Eip7702DelegationDrawer({
       }
       cardFooter={
         <div className="px-3">
-          <Button fullWidth onClick={onConfirm}>
+          <Button fullWidth disabled={confirmDisabled} onClick={onConfirm}>
             {confirmText}
           </Button>
         </div>
@@ -91,6 +92,7 @@ Eip7702DelegationDrawer.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   showClose: PropTypes.bool,
+  confirmDisabled: PropTypes.bool,
 }
 
 export default Eip7702DelegationDrawer
