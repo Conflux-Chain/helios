@@ -7,6 +7,7 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/checks": "workspace:packages/checks",
@@ -26,6 +27,7 @@
     "@fluent-wallet/contract-method-name": "workspace:packages/contract-method-name",
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format",
     "@fluent-wallet/did": "workspace:*",
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792",
     "@fluent-wallet/ethereum-tx-error": "workspace:*",
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/inner-utils": "workspace:*",
