@@ -87,6 +87,14 @@ export const validateByEip55 = address => {
 
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
 
+export function isEditableTokenApproval({decodedCall, token}) {
+  if (!token?.valid || decodedCall?.signature !== 'approve(address,uint256)') {
+    return false
+  }
+
+  return decodedCall.args[1].gt(0)
+}
+
 export function isGasSponsorshipConfigured({chainId, networkType}) {
   return Boolean(
     networkType === NETWORK_TYPE.ETH &&

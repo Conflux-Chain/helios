@@ -181,6 +181,20 @@ const fr = {
     sponsored: 'Sponsorisé',
     partSponsored: 'Partiellement sponsorisé',
 
+    // - Call bundle confirmation
+    signBatchTransaction: 'Signer les transactions groupées',
+    signatureRequest: 'Demande de signature',
+    callBundleCallTitle: 'Transaction {{number}}',
+    callBundleInteractingWith: 'Interaction avec',
+    callBundleData: 'Données',
+    callBundleHex: 'Hex',
+    callBundleTransactionCount_one: 'Comprend {{count}} transaction',
+    callBundleTransactionCount_many: 'Comprend {{count}} transactions',
+    callBundleTransactionCount_other: 'Comprend {{count}} transactions',
+    callBundleAtomicExecution: 'Exécution atomique',
+    callBundleAtomicExecutionDescription:
+      'Toutes les opérations de ce lot sont exécutées ensemble. Si une opération échoue, les modifications de toutes les opérations sont annulées.',
+
     // - Send Transaction / Error or Warning
     error: 'Erreur',
     warning: 'Avertissement',
@@ -224,6 +238,8 @@ const fr = {
     // - Send Transaction / Sign Transaction / 3. token approve - confirm transaction
     approveToken: 'Approbation du jeton',
     approveTo: 'Approuver à',
+    spendingCap: 'Plafond de dépense',
+    spender: 'Dépenseur',
     contract: 'Contrat',
     allowLimit: 'Autoriser la limite',
     action: 'Action',
