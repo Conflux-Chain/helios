@@ -4,6 +4,7 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {
   convertDecimal,
+  convertDataToValue,
   convertValueToData,
   formatDecimalToHex,
   formatHexToDecimal,
@@ -12,17 +13,17 @@ import {
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
-import {GasStation} from './components'
+import GasFeeOptions from '../../components/GasFeeOptions'
 import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
 import {ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
 import {
-  useNetworkTypeIsCfx,
+  useCurrentAddress,
   useIsCfxChain,
   usePendingAuthReq,
 } from '../../hooks/useApi'
 
-const {EDIT_GAS_FEE} = ROUTES
+const {EDIT_GAS_FEE, ADVANCED_GAS} = ROUTES
 
 // resendGasPrice is hex wei/drip
 function EditGasFee({
@@ -90,8 +91,10 @@ function EditGasFee({
 
   // hex wei/drip
   const suggestedGasPrice = resendGasPrice || estimateGasPrice
+  const {
+    data: {network},
+  } = useCurrentAddress()
 
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isCfxChain = useIsCfxChain()
   const uses1559Fees = useUses1559Fees(originParams?.type)
 
@@ -171,6 +174,55 @@ function EditGasFee({
   if (!sendParams.storageLimit) delete sendParams.storageLimit
   if (!sendParams.nonce) delete sendParams.nonce
 
+  const feeEstimate = useEstimateTx(sendParams) || {}
+
+  const handleSelectGasLevel = level => {
+    setSelectedGasLevel(level)
+    clearAdvancedGasSetting()
+    onClickGasStationItem?.()
+  }
+
+  const handleEditAdvancedFees = () => {
+    if (
+      (uses1559Fees &&
+        selectedGasLevel !== 'advanced' &&
+        !gasInfoEip1559[selectedGasLevel]) ||
+      (!uses1559Fees && !suggestedGasPrice)
+    ) {
+      return
+    }
+
+    const searchParams = new URLSearchParams({
+      isHistoryTx: String(!isSendTx),
+    })
+
+    if (uses1559Fees) {
+      const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
+        gasInfoEip1559[selectedGasLevel] || {}
+
+      const replacementFee = resendType
+        ? convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+        : undefined
+
+      searchParams.set(
+        'suggestedMaxFeePerGas',
+        resendType ? replacementFee : suggestedMaxFeePerGas,
+      )
+      searchParams.set(
+        'suggestedMaxPriorityFeePerGas',
+        resendType ? replacementFee : suggestedMaxPriorityFeePerGas,
+      )
+      searchParams.set('selectedGasLevel', selectedGasLevel)
+    } else {
+      searchParams.set('suggestedGasPrice', suggestedGasPrice)
+    }
+
+    history.push({
+      pathname: ADVANCED_GAS,
+      search: `?${searchParams.toString()}`,
+    })
+  }
+
   const saveGasData = () => {
     const {
       gasPrice,
@@ -245,21 +297,18 @@ function EditGasFee({
           }
         />
         <main className="mt-3 px-4 flex flex-col flex-1">
-          <GasCost
-            sendParams={sendParams}
-            networkTypeIsCfx={networkTypeIsCfx}
-          />
-          <GasStation
+          <GasCost estimate={feeEstimate} network={network} />
+          <GasFeeOptions
             uses1559Fees={uses1559Fees}
-            isHistoryTx={!isSendTx}
+            showFeeLevels={uses1559Fees && !resendType}
             gasInfoEip1559={gasInfoEip1559}
-            resendType={resendType}
+            gasLimit={estimateGasLimit}
             suggestedGasPrice={suggestedGasPrice}
             selectedGasLevel={selectedGasLevel}
-            setSelectedGasLevel={setSelectedGasLevel}
-            onClickGasStationItem={onClickGasStationItem}
+            advancedGasSetting={advancedGasSetting}
             isCfxChain={isCfxChain}
-            estimateGasLimit={estimateGasLimit}
+            onSelectGasLevel={handleSelectGasLevel}
+            onEditAdvancedFees={handleEditAdvancedFees}
           />
         </main>
       </div>

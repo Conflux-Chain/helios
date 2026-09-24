@@ -1,15 +1,12 @@
 import PropTypes from 'prop-types'
-import {GasFee} from '../../../components'
-import SponsoredGasFee from './SponsoredGasFee'
-
-function GasFeePlaceholder() {
-  return (
-    <div className="gas-fee-container flex flex-col">
-      <div className="mb-2 h-4 w-16 rounded bg-gray-4" />
-      <div className="h-[88px] rounded border border-gray-10 bg-gray-4" />
-    </div>
-  )
-}
+import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
+import GasFee from '../../../components/GasFee'
+import GasFeePlaceholder from '../../../components/GasFeePlaceholder'
+import SponsoredGasFee from '../../../components/SponsoredGasFee'
+import {useCurrentTxStore} from '../../../hooks'
+import {useCurrentAddress} from '../../../hooks/useApi'
+import {ROUTES} from '../../../constants'
 
 function ConfirmGasFee({
   sponsoredUserOperation,
@@ -17,18 +14,33 @@ function ConfirmGasFee({
   estimateRst,
   uses1559Fees,
 }) {
+  const {t} = useTranslation()
+  const history = useHistory()
+  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
+  const {
+    data: {network},
+  } = useCurrentAddress()
+
   if (sponsoredUserOperation.loading) {
     return <GasFeePlaceholder />
   }
 
-  if (!sponsoredUserOperation.isActive) {
-    return <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
+  if (sponsoredUserOperation.isActive) {
+    return (
+      <SponsoredGasFee
+        maxGasCost={sponsoredUserOperation.maxGasCost}
+        nativeToken={nativeToken}
+      />
+    )
   }
 
   return (
-    <SponsoredGasFee
-      maxGasCost={sponsoredUserOperation.maxGasCost}
-      nativeToken={nativeToken}
+    <GasFee
+      estimate={estimateRst}
+      network={network}
+      feePerGas={uses1559Fees ? maxFeePerGas : gasPrice}
+      editLabel={uses1559Fees ? t(gasLevel) : t('edit')}
+      onEdit={() => history.push(ROUTES.EDIT_GAS_FEE)}
     />
   )
 }
