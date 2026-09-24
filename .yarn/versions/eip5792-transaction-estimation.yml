@@ -1,6 +1,22 @@
 releases:
-  "@fluent-wallet/estimate-tx": patch
-  "@fluent-wallet/eth_estimate-gas": patch
+  '@fluent-wallet/bundler-client': patch
+  '@fluent-wallet/confluxscan-api': patch
+  '@fluent-wallet/contract-abis': patch
+  '@fluent-wallet/contract-method-name': patch
+  '@fluent-wallet/estimate-tx': patch
+  '@fluent-wallet/eth_estimate-gas': patch
+  '@fluent-wallet/user-operation': patch
+  '@fluent-wallet/wallet_enrich-conflux-tx': patch
+  '@fluent-wallet/wallet_enrich-ethereum-tx': patch
+  '@fluent-wallet/wallet_get-balance': patch
+  '@fluent-wallet/wallet_get-user-operation-nonce-state': patch
+  '@fluent-wallet/wallet_handle-user-operation': patch
+  '@fluent-wallet/wallet_prepare-sponsorship': patch
+  '@fluent-wallet/wallet_prepare-user-operation': patch
+  '@fluent-wallet/wallet_refetch-tx-list': patch
+  '@fluent-wallet/wallet_send-user-operation': patch
+  '@fluent-wallet/wallet_validate20token': patch
   browser-extension: patch
+  helios: minor
   helios-background: patch
   helios-popup: patch
