@@ -36,10 +36,10 @@ import {
 import {
   AddressCard,
   ConfirmGasFee,
-  Eip7702DelegationDrawer,
   Eip7702SwitchInfoDrawer,
   InfoList,
 } from './components'
+import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 import {
   TitleNav,
   DappFooter,
