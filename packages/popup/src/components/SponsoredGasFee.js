@@ -1,32 +1,21 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
-import Link from '@fluent-wallet/component-link'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import DisplayBalance from '../../../components/DisplayBalance'
-import GasFeeCard from '../../../components/GasFeeCard'
-import {useCheckImage} from '../../../hooks'
-import {ROUTES} from '../../../constants'
-
-const {EDIT_GAS_FEE} = ROUTES
+import DisplayBalance from './DisplayBalance'
+import GasFeeCard from './GasFeeCard'
+import {useCheckImage} from '../hooks'
 
 function SponsoredGasFee({maxGasCost, nativeToken}) {
   const {t} = useTranslation()
-  const history = useHistory()
 
   const nativeTokenIcon =
     nativeToken?.logoURI || nativeToken?.icon || nativeToken?.iconUrls?.[0]
   const isImgUrl = useCheckImage(nativeTokenIcon)
 
-  // The sponsored UserOperation has no gas cost for the user.
-  const userGasCost = '0x0'
-
   const action = (
-    <span className="flex items-center">
-      <Link onClick={() => history.push(EDIT_GAS_FEE)} disabled>
-        {t('medium')}
-        <RightOutlined className="ml-1 h-3 w-3 text-gray-40" />
-      </Link>
+    <span className="flex items-center gap-1 text-primary">
+      {t('medium')}
+      <RightOutlined className="h-3 w-3" />
     </span>
   )
 
@@ -35,13 +24,11 @@ function SponsoredGasFee({maxGasCost, nativeToken}) {
   )
 
   const tokenIcon = (
-    <div className="mr-2 flex items-center justify-center rounded-full bg-gray-0">
-      <img
-        src={isImgUrl ? nativeTokenIcon : '/images/default-token-icon.svg'}
-        alt=""
-        className="h-8 w-8 rounded-full"
-      />
-    </div>
+    <img
+      src={isImgUrl ? nativeTokenIcon : '/images/default-token-icon.svg'}
+      alt=""
+      className="h-8 w-8 rounded-full"
+    />
   )
 
   return (
@@ -50,11 +37,14 @@ function SponsoredGasFee({maxGasCost, nativeToken}) {
       action={action}
       prefix={tokenIcon}
       statusTag={statusTag}
+      titleClassName="mx-1 mb-4"
+      contentClassName="min-h-[84px] items-start gap-2 border p-3"
+      statusTagClassName="-right-px -top-px"
     >
       <DisplayBalance
         id="realPayedFee"
-        balance={userGasCost}
-        className="e-space-gas-fee-user-cost !font-body text-base !font-medium !text-gray-80"
+        balance="0x0"
+        className="e-space-gas-fee-user-cost mb-0.5 !font-body text-base !font-medium !text-gray-80"
         symbol={nativeToken?.symbol}
         decimals={nativeToken?.decimals}
         initialFontSize={16}

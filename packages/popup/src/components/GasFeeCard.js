@@ -8,20 +8,21 @@ function GasFeeCard({
   suffix,
   statusTag,
   titleClassName = 'mb-2',
-  contentClassName = '',
+  contentClassName = 'items-center px-2 py-3',
+  statusTagClassName = 'right-0 top-0 !h-6',
   children,
 }) {
   return (
     <div className="gas-fee-container flex flex-col">
       <header
-        className={`gas-fee-header flex items-center justify-between w-full text-gray-40 ${titleClassName}`}
+        className={`gas-fee-header flex items-center justify-between text-gray-40 ${titleClassName}`}
       >
         {title}
         {action}
       </header>
 
       <div
-        className={`gas-fee-body flex items-center bg-gray-4 border-gray-10 rounded px-2 py-3 relative ${contentClassName}`}
+        className={`gas-fee-body relative flex rounded border-gray-10 bg-gray-4 ${contentClassName}`}
         id="gasFeeContainer"
       >
         {prefix && <div className="shrink-0">{prefix}</div>}
@@ -35,7 +36,7 @@ function GasFeeCard({
             width="w-auto"
             textColor="text-white"
             backgroundColor="bg-[#44d7b6]"
-            className="absolute right-0 top-0 !h-6 px-2"
+            className={`absolute px-2 ${statusTagClassName}`}
           >
             {statusTag}
           </CustomTag>
@@ -53,6 +54,7 @@ GasFeeCard.propTypes = {
   statusTag: PropTypes.node,
   titleClassName: PropTypes.string,
   contentClassName: PropTypes.string,
+  statusTagClassName: PropTypes.string,
   children: PropTypes.node,
 }
 
