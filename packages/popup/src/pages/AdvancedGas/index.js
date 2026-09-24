@@ -82,9 +82,7 @@ function AdvancedGas() {
     gas: formatDecimalToHex(
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
-    nonce: isHistoryTx
-      ? originParams.nonce
-      : formatDecimalToHex(inputNonce || suggestedNonce),
+    nonce: isHistoryTx ? originParams.nonce : formatDecimalToHex(inputNonce),
     storageLimit: formatDecimalToHex(
       advancedGasSetting.storageLimit || storageLimit,
     ),

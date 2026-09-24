@@ -150,7 +150,7 @@ function ConfirmTransaction() {
     txContext,
     setSponsorshipDeclined,
   } = useCurrentTxParams()
-  const effectiveNonce = customNonce || suggestedNonce
+
   const {setLoading} = useLoading()
 
   const {
@@ -218,6 +218,8 @@ function ConfirmTransaction() {
     ...currentTx,
     ...(isInternalEip7702Tx ? {type: ETH_TX_TYPES.EIP7702} : {}),
   }
+  delete originParams.nonce
+
   const addressCardFromAddress = isInternalEip7702Tx
     ? originParams?.from
     : displayFromAddress
@@ -243,7 +245,7 @@ function ConfirmTransaction() {
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
     maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(effectiveNonce),
+    nonce: formatDecimalToHex(customNonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
@@ -360,10 +362,6 @@ function ConfirmTransaction() {
   const sendTransactionParams = {
     ...inputParams,
     ...(shouldSubtractGasFromMax ? {value: sendValue} : {}),
-  }
-
-  if (!customNonce) {
-    delete sendTransactionParams.nonce
   }
 
   const sendTransactionRpcParams = [sendTransactionParams]

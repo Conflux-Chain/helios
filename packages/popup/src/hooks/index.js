@@ -4,9 +4,8 @@ import useSWR from 'swr'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
-import {useAsync, useDebounce} from 'react-use'
-import {useRPCProvider} from '@fluent-wallet/use-rpc'
-import {estimate} from '@fluent-wallet/estimate-tx'
+import {useDebounce} from 'react-use'
+
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {Conflux, Ethereum} from '@fluent-wallet/ledger'
@@ -27,7 +26,6 @@ import {
   useDataForPopup,
   useCurrentAddress,
   useAddress,
-  useBalance,
   useNetworkTypeIsCfx,
   useAddressTypeInfo,
   useValid20Token,
@@ -42,6 +40,7 @@ import {
   getSingleServiceNameWithAddress,
   getServiceNamesWithAddresses,
 } from '../utils'
+import {useTransactionEstimate} from './useTransactionEstimate'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -122,84 +121,25 @@ export const useFontSize = (
 }
 
 export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
-  const {provider} = useRPCProvider()
   const {
     data: {network},
   } = useCurrentAddress()
-  const currentNetwork = network || {type: NETWORK_TYPE.CFX}
-  const {type} = currentNetwork
-  const {
-    from,
-    to,
-    type: txType,
-    value,
-    data,
-    nonce,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gas,
-    storageLimit,
-    authorizationList,
-  } = tx
-  const authorizationListKey = isArray(authorizationList)
-    ? authorizationList
-        .map(item => [item?.address, item?.chainId, item?.nonce].join(':'))
-        .join('|')
-    : ''
-  const nativeBalance =
-    useBalance(from, network?.eid, '0x0')?.[from]?.['0x0'] || '0x0'
-  const {
-    value: rst,
-    loading,
-    error,
-  } = useAsync(async () => {
-    if (
-      !provider ||
-      !currentNetwork?.netId ||
-      (!to && !data) ||
-      !network.chainId
-    )
-      return
-    return await estimate(tx, {
-      type,
-      request: provider.request.bind(provider),
-      tokensAmount,
-      isFluentRequest: true,
-      chainIdToGasBuffer: {[network.chainId]: network.gasBuffer},
-      // networkId: currentNetwork.netId,
-    })
-  }, [
-    from,
-    to,
-    txType,
-    value,
-    data,
-    nonce,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gas,
-    storageLimit,
-    authorizationListKey,
-    network.chainId,
-    network.gasBuffer,
-    // currentNetwork.netId,
-    Boolean(provider),
-    Object.keys(tokensAmount)?.[0],
-    nativeBalance,
-    type,
-  ])
+
+  const {data, loading, error} = useTransactionEstimate({
+    transaction: tx,
+    network,
+    tokensAmount,
+  })
 
   if (loading) {
     return {loading}
   }
 
   if (error) {
-    console.log('error', error)
     return {error}
   }
-  return rst
+
+  return data
 }
 
 const initAdvancedGasSetting = {

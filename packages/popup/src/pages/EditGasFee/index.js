@@ -67,11 +67,19 @@ function EditGasFee({
       ? formatHexToDecimal(historyTx.nonce)
       : customNonce || suggestedNonce
 
+  const transactionNonce = isSendTx
+    ? formatDecimalToHex(customNonce)
+    : historyTx?.nonce
+
   const isDapp = getPageType() === 'notification'
   const pendingAuthReq = usePendingAuthReq()
   const dappAuthReq = isDapp ? pendingAuthReq?.[0] : null
   const dappTx = dappAuthReq?.req?.params?.[0] || {}
   const originParams = !isDapp ? {...txParams} : {...dappTx}
+
+  if (isSendTx) {
+    delete originParams.nonce
+  }
 
   const estimateRst = useEstimateTx(originParams) || {}
   const {
@@ -122,7 +130,7 @@ function EditGasFee({
     sendParams = {
       ...originParams,
       gas: formatDecimalToHex(advancedGasSetting.gasLimit),
-      nonce: formatDecimalToHex(advancedGasSetting.nonce),
+      nonce: transactionNonce,
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
       maxFeePerGas: formatDecimalToHex(maxFeePerGas),
       maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
@@ -134,7 +142,7 @@ function EditGasFee({
     sendParams = {
       ...originParams,
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
-      nonce: formatDecimalToHex(nonce),
+      nonce: transactionNonce,
       storageLimit: formatDecimalToHex(storageLimit),
       maxFeePerGas: !resendType
         ? suggestedMaxFeePerGas

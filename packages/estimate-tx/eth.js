@@ -31,6 +31,15 @@ async function requestGasEstimate(request, tx, stateOverride) {
   }
 }
 
+function getBufferedGasLimit(gasUsed, gasBuffer) {
+  // Round up to a whole gas unit after applying the buffer.
+  const gasLimit = new Big(bn16(gasUsed).toString(10))
+    .times(gasBuffer)
+    .round(0, 3)
+
+  return pre0x(new BN(gasLimit.toFixed(0), 10).toString(16))
+}
+
 async function estimateGasWithNonceRetry(tx, estimate) {
   try {
     return {
@@ -167,7 +176,8 @@ export const ethEstimate = async (
     isEip7702Tx ||
     (network1559Compatible && (!type || type === ETH_TX_TYPES.EIP1559))
 
-  let gasPrice, nonce, maxPriorityFeePerGas, maxFeePerGas, gasInfoEip1559
+  let gasPrice, maxPriorityFeePerGas, maxFeePerGas, gasInfoEip1559
+  let nonce = customNonce
 
   if (!from) throw new Error(`Invalid from ${from}`)
   if (!to && !data)
@@ -281,7 +291,7 @@ export const ethEstimate = async (
         ...ethFeeData,
         gasPrice,
         gasUsed: '0x5208',
-        gasLimit: '0x5208',
+        gasLimit: calcGasLimit,
         nonce,
         customGasPrice,
         customGasLimit,
@@ -309,88 +319,80 @@ export const ethEstimate = async (
     newTx.chainId = newTx.chainId || chainId
   }
 
-  const {result: estimatedGas, nonce: estimatedNonce} =
-    await estimateGasWithNonceRetry(newTx, async transaction => {
-      const transactionForEstimate = isEip7702Tx
-        ? {
-            ...transaction,
-            authorizationList: prepareEip7702AuthorizationRequestsForEstimate(
-              authorizationRequests,
-              transaction.chainId,
-              transaction.nonce,
-            ),
-          }
-        : transaction
+  const estimateTransactionGas = async transaction => {
+    const transactionForEstimate = isEip7702Tx
+      ? {
+          ...transaction,
+          authorizationList: prepareEip7702AuthorizationRequestsForEstimate(
+            authorizationRequests,
+            transaction.chainId,
+            transaction.nonce,
+          ),
+        }
+      : transaction
 
-      if (needsSplitEip7702Estimate) {
-        return estimateEip7702SelfCall(
-          request,
-          transactionForEstimate,
-          finalDelegateAddress,
-        )
+    if (needsSplitEip7702Estimate) {
+      return estimateEip7702SelfCall(
+        request,
+        transactionForEstimate,
+        finalDelegateAddress,
+      )
+    }
+
+    return requestGasEstimate(request, transactionForEstimate)
+  }
+
+  const {result: estimatedGas, nonce: estimatedNonce} = customNonce
+    ? {
+        result: await estimateTransactionGas(newTx),
+        nonce: customNonce,
       }
+    : await estimateGasWithNonceRetry(newTx, estimateTransactionGas)
 
-      return requestGasEstimate(request, transactionForEstimate)
-    })
-
-  newTx.nonce = estimatedNonce
-
-  // run estimate
-  let rst = estimatedGas
-  const {gasLimit} = rst
-  const calcGasPrice = customGasPrice || gasPrice
-  const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
-  const calcGasLimit =
+  const gasLimit =
     customGasLimit ||
-    pre0x(
-      bn16(gasLimit)
-        .muln(chainIdToGasBuffer[chainId] || defaultGasBuffer)
-        .toString(16),
+    getBufferedGasLimit(
+      estimatedGas.gasUsed,
+      chainIdToGasBuffer[chainId] || defaultGasBuffer,
     )
-  rst = {
-    ...rst,
-  }
 
-  if (toAddressType === 'contract') {
-    const ethFeeData = ethGetFeeData(
-      {
-        gasPrice: uses1559Fees ? calcMaxFeePerGas : calcGasPrice,
-        gas: calcGasLimit,
-        value,
-        tokensAmount,
-      },
-      {balance: balances['0x0'], tokensBalance: balances},
-    )
-    rst = {
-      ...rst,
-      ...ethFeeData,
-    }
-  } else {
-    const ethFeeData = ethGetFeeData(
-      {
-        gasPrice: uses1559Fees ? calcMaxFeePerGas : calcGasPrice,
-        gas: calcGasLimit,
-        value,
-      },
-      {balance: balances['0x0']},
-    )
-    rst = {
-      ...rst,
-      ...ethFeeData,
-      willPayCollateral: true,
-      willPayTxFee: true,
-    }
-  }
+  const feePerGas = uses1559Fees
+    ? customMaxFeePerGas || maxFeePerGas
+    : customGasPrice || gasPrice
 
-  rst.gasPrice = gasPrice
-  rst.nonce = newTx.nonce
-  rst.customGasPrice = customGasPrice
-  rst.customGasLimit = customGasLimit
-  rst.customNonce = customNonce
-  rst.maxPriorityFeePerGas = maxPriorityFeePerGas
-  rst.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas
-  rst.maxFeePerGas = maxFeePerGas
-  rst.customMaxFeePerGas = customMaxFeePerGas
-  rst.gasInfoEip1559 = gasInfoEip1559
-  return rst
+  const isContract = toAddressType === 'contract'
+  const feeData = ethGetFeeData(
+    {
+      gas: gasLimit,
+      gasPrice: feePerGas,
+      value,
+      tokensAmount: isContract ? tokensAmount : {},
+    },
+    {
+      balance: balances['0x0'],
+      tokensBalance: balances,
+    },
+  )
+
+  return {
+    ...estimatedGas,
+    ...feeData,
+    gasLimit,
+    gasPrice,
+    nonce: estimatedNonce,
+    customGasPrice,
+    customGasLimit,
+    customNonce,
+    maxPriorityFeePerGas,
+    customMaxPriorityFeePerGas,
+    maxFeePerGas,
+    customMaxFeePerGas,
+    gasInfoEip1559,
+    ...(isContract
+      ? {}
+      : {
+          willPayCollateral: true,
+          willPayTxFee: true,
+        }),
+  }
 }
