@@ -7,7 +7,8 @@ import {
 // UserOperation. Transport errors and unknown RPC errors do not prove that
 // the request was not accepted.
 const DEFINITIVE_REJECTION_CODES = new Set([
-  -32602, -32500, -32501, -32502, -32503, -32504, -32505, -32507, -32508,
+  -32602, -32500, -32501, -32502, -32503, -32504, -32505, -32506, -32507,
+  -32508,
 ])
 
 function isDefinitiveBundlerRejection(error) {
