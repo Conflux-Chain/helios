@@ -64,7 +64,7 @@ async function estimateGasWithNonceRetry(tx, estimate) {
 async function estimateEip7702SelfCall(request, tx, finalDelegateAddress) {
   const authorizationEstimate = await requestGasEstimate(request, {
     ...tx,
-    to: tx.from,
+    to: NULL_HEX_ADDRESS,
     data: '0x',
   })
 
