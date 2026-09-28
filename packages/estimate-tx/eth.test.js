@@ -101,7 +101,7 @@ describe('ethEstimate EIP-7702 data-to-self estimation', () => {
     expect(authorizationRequest.params).toHaveLength(2)
     expect(authorizationRequest.params[0]).toMatchObject({
       from: FROM,
-      to: FROM,
+      to: NULL_HEX_ADDRESS,
       value: '0x0',
       data: '0x',
       nonce: '0x5',
