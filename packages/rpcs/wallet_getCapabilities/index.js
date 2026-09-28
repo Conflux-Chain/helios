@@ -27,7 +27,7 @@ export const permissions = {
   external: ['inpage'],
   locked: true,
   methods: ['wallet_getEip7702AccountStates'],
-  db: ['findAddress', 'getOneNetwork'],
+  db: ['findAddress', 'findAccount', 'getOneNetwork', 'accountAddrByNetwork'],
 }
 
 function getESpaceChainIds(requestedChainIds) {
@@ -42,8 +42,10 @@ function getESpaceChainIds(requestedChainIds) {
 
 async function getAtomicStatus({
   accountId,
+  address,
   chainId,
   getOneNetwork,
+  accountAddrByNetwork,
   wallet_getEip7702AccountStates,
 }) {
   const networkConfig = EIP7702_NETWORK_CONFIGS[chainId]
@@ -53,6 +55,15 @@ async function getAtomicStatus({
   })
 
   if (!networkConfig || !network) {
+    return null
+  }
+
+  const accountAddress = accountAddrByNetwork({
+    account: accountId,
+    network: network.eid,
+  })?.value
+
+  if (accountAddress?.toLowerCase() !== address.toLowerCase()) {
     return null
   }
 
@@ -94,19 +105,28 @@ async function getAtomicStatus({
 
 export const main = async ({
   Err: {Unauthorized},
-  db: {findAddress, getOneNetwork},
+  db: {findAddress, findAccount, getOneNetwork, accountAddrByNetwork},
   rpcs: {wallet_getEip7702AccountStates},
   params: [address, requestedChainIds],
   app,
 }) => {
-  if (!app) {
+  const authorizedAccount = app?.account?.find(({eid}) => {
+    const addresses = findAddress({
+      accountId: eid,
+      networkType: 'eth',
+      value: address,
+    })
+
+    return addresses.length > 0
+  })
+
+  if (!authorizedAccount) {
     throw Unauthorized()
   }
 
-  const addressRecord = findAddress({
-    appId: app.eid,
-    value: address,
-    accountG: {
+  const account = findAccount({
+    accountId: authorizedAccount.eid,
+    g: {
       eid: 1,
       _accountGroup: {
         vault: {
@@ -116,11 +136,6 @@ export const main = async ({
     },
   })
 
-  if (!addressRecord?.account) {
-    throw Unauthorized()
-  }
-
-  const account = addressRecord.account
   const vaultType = account.accountGroup.vault.type
   const isSoftwareAccount = vaultType === 'hd' || vaultType === 'pk'
 
@@ -135,8 +150,10 @@ export const main = async ({
       chainId,
       status: await getAtomicStatus({
         accountId: account.eid,
+        address,
         chainId,
         getOneNetwork,
+        accountAddrByNetwork,
         wallet_getEip7702AccountStates,
       }),
     })),
