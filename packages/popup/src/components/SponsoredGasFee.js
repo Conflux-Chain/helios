@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import Link from '@fluent-wallet/component-link'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import DisplayBalance from './DisplayBalance'
 import GasFeeCard from './GasFeeCard'
@@ -13,10 +14,10 @@ function SponsoredGasFee({maxGasCost, nativeToken}) {
   const isImgUrl = useCheckImage(nativeTokenIcon)
 
   const action = (
-    <span className="flex items-center gap-1 text-primary">
+    <Link disabled className="gap-1">
       {t('medium')}
       <RightOutlined className="h-3 w-3" />
-    </span>
+    </Link>
   )
 
   const statusTag = (
