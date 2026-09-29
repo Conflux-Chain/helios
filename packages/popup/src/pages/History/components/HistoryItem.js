@@ -20,7 +20,8 @@ import {
   useCurrentTicker,
   useCurrentAddress,
 } from '../../../hooks/useApi'
-import {useDecodeData, useDappIcon, useServiceName} from '../../../hooks'
+import {padHexData, useDappIcon, useServiceName} from '../../../hooks'
+import {useDecodedCall} from '../../../hooks/useDecodedCall'
 import {ROUTES} from '../../../constants'
 
 const {RESEND_TRANSACTION} = ROUTES
@@ -125,9 +126,11 @@ function HistoryItem({
         })
     : {}
 
-  const {decodeData} = useDecodeData({
-    to: payload?.to,
-    data: payload?.data,
+  const {decodedCall: decodeData} = useDecodedCall({
+    to: contractInteraction ? payload?.to : undefined,
+    data: padHexData(payload?.data),
+    networkType: network?.type,
+    networkId: network?.netId,
   })
 
   const isTokenAction =
