@@ -29,16 +29,17 @@ import {
   getPageType,
   checkBalance,
   bn16,
+  isEditableTokenApproval,
   isGasSponsorshipConfigured,
   transformToTitleCase,
 } from '../../utils'
 import {
   AddressCard,
   ConfirmGasFee,
-  Eip7702DelegationDrawer,
   Eip7702SwitchInfoDrawer,
   InfoList,
 } from './components'
+import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 import {
   TitleNav,
   DappFooter,
@@ -149,7 +150,7 @@ function ConfirmTransaction() {
     txContext,
     setSponsorshipDeclined,
   } = useCurrentTxParams()
-  const effectiveNonce = customNonce || suggestedNonce
+
   const {setLoading} = useLoading()
 
   const {
@@ -204,6 +205,8 @@ function ConfirmTransaction() {
     token,
   })
   const isSign = !isSendToken && !isApproveToken
+  const canEditAllowance =
+    isApproveToken && isEditableTokenApproval({decodedCall: decodeData, token})
 
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
@@ -215,6 +218,8 @@ function ConfirmTransaction() {
     ...currentTx,
     ...(isInternalEip7702Tx ? {type: ETH_TX_TYPES.EIP7702} : {}),
   }
+  delete originParams.nonce
+
   const addressCardFromAddress = isInternalEip7702Tx
     ? originParams?.from
     : displayFromAddress
@@ -240,7 +245,7 @@ function ConfirmTransaction() {
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
     maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(effectiveNonce),
+    nonce: formatDecimalToHex(customNonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
@@ -357,10 +362,6 @@ function ConfirmTransaction() {
   const sendTransactionParams = {
     ...inputParams,
     ...(shouldSubtractGasFromMax ? {value: sendValue} : {}),
-  }
-
-  if (!customNonce) {
-    delete sendTransactionParams.nonce
   }
 
   const sendTransactionRpcParams = [sendTransactionParams]
@@ -721,6 +722,7 @@ function ConfirmTransaction() {
           <InfoList
             token={displayToken}
             isApproveToken={isApproveToken}
+            canEditAllowance={canEditAllowance}
             isDapp={isDapp}
             isSign={isSign}
             method={

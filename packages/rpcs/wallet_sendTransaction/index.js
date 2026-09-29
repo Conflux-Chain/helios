@@ -1,7 +1,6 @@
 import {or} from '@fluent-wallet/spec'
 import {schemas as cfxSchema} from '@fluent-wallet/cfx_send-transaction'
 import {schemas as ethSchema} from '@fluent-wallet/eth_send-transaction'
-import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import {
   resolveTransactionNonces,
   withConfluxNonceLock,
@@ -11,41 +10,9 @@ import {ERROR} from '@fluent-wallet/json-rpc-error'
 import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {createPendingTransaction} from './create-pending-transaction.js'
 
 export const NAME = 'wallet_sendTransaction'
-
-const EIP7702_AUTHORIZATION_DB_FIELDS = [
-  'chainId',
-  'address',
-  'nonce',
-  'yParity',
-  'r',
-  's',
-]
-
-function formatEip7702AuthorizationForDb(authorization) {
-  return {
-    eip7702Authorization: EIP7702_AUTHORIZATION_DB_FIELDS.reduce(
-      (formattedAuthorization, key) => {
-        if (authorization[key] !== undefined)
-          formattedAuthorization[key] = authorization[key]
-        return formattedAuthorization
-      },
-      {},
-    ),
-  }
-}
-
-function formatTxPayloadForDb(txMeta) {
-  if (!txMeta.authorizationList) return txMeta
-
-  return {
-    ...txMeta,
-    authorizationList: txMeta.authorizationList.map(
-      formatEip7702AuthorizationForDb,
-    ),
-  }
-}
 
 export const schemas = {
   input: [or, cfxSchema.input, ethSchema.input],
@@ -72,7 +39,7 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err: {InvalidParams, Server},
+  Err: {InvalidParams},
   db: {findAddress, getAuthReqById, getAddrTxByHash, t},
   rpcs: {
     wallet_userRejectedAuthRequest,
@@ -212,66 +179,25 @@ export const main = async ({
     throw InvalidParams(`Invalid from address ${txParams.from}`)
   }
 
-  const createPendingTransaction = async ({transaction}) => {
-    const signed = await signTxFn(
+  const pendingTransactionServices = {
+    signTransaction: signTxFn,
+    getEthereumBlockNumber: eth_blockNumber,
+    getAddrTxByHash,
+    transact: t,
+    InvalidParams,
+  }
+
+  const createPendingTransactionForRequest = transaction =>
+    createPendingTransaction(
       {
+        transaction,
+        addressId: addr,
         app: authReqId ? authReq.app : undefined,
         network: transactionNetwork,
-        errorFallThrough: true,
+        sendAction: _popup ? _sendAction : undefined,
       },
-      [
-        transaction,
-        {
-          returnTxMeta: true,
-        },
-      ],
+      pendingTransactionServices,
     )
-
-    if (!signed) {
-      throw Server(`Server error while signning tx`)
-    }
-
-    const {raw: rawtx, txMeta} = signed
-
-    const txPayload = formatTxPayloadForDb(txMeta)
-    const txhash = getTxHashFromRawTx(rawtx)
-    const duptx = getAddrTxByHash({addressId: addr, txhash})
-
-    if (duptx) {
-      throw InvalidParams('duplicate tx')
-    }
-
-    const blockNumber =
-      transactionNetwork.type === 'eth' &&
-      (await eth_blockNumber({errorFallThrough: true}, []))
-
-    const txExtra = {ok: false}
-    if (_popup && _sendAction) txExtra.sendAction = _sendAction
-    const dbtxs = [
-      {eid: 'newTxPayload', txPayload},
-      {eid: 'newTxExtra', txExtra},
-      {
-        eid: 'newTxId',
-        tx: {
-          fromFluent: true,
-          txPayload: 'newTxPayload',
-          hash: txhash,
-          raw: rawtx,
-          status: 0,
-          created: new Date().getTime(),
-          txExtra: 'newTxExtra',
-        },
-      },
-      blockNumber && {eid: 'newTxId', tx: {blockNumber}},
-      {eid: addr, address: {tx: 'newTxId'}},
-      authReqId && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
-    ]
-    const {
-      tempids: {newTxId},
-    } = t(dbtxs)
-
-    return {newTxId, txhash}
-  }
 
   let pendingTransaction
 
@@ -284,9 +210,7 @@ export const main = async ({
         },
         async () => {
           if (_sendAction) {
-            return createPendingTransaction({
-              transaction: txParams,
-            })
+            return createPendingTransactionForRequest(txParams)
           }
 
           const {networkPendingNonce, occupiedNonces} =
@@ -319,9 +243,7 @@ export const main = async ({
             )
           }
 
-          return createPendingTransaction({
-            transaction,
-          })
+          return createPendingTransactionForRequest(transaction)
         },
       )
     } else {
@@ -329,9 +251,7 @@ export const main = async ({
         {address: txParams.from},
         async () => {
           if (_sendAction) {
-            return createPendingTransaction({
-              transaction: txParams,
-            })
+            return createPendingTransactionForRequest(txParams)
           }
 
           const {networkPendingNonce, occupiedNonces} =
@@ -349,11 +269,9 @@ export const main = async ({
             customNonce: txParams.nonce,
           })
 
-          return createPendingTransaction({
-            transaction: {
-              ...txParams,
-              nonce: expectedNonces[0],
-            },
+          return createPendingTransactionForRequest({
+            ...txParams,
+            nonce: expectedNonces[0],
           })
         },
       )
@@ -365,7 +283,7 @@ export const main = async ({
     throw err
   }
 
-  const {newTxId, txhash} = pendingTransaction
+  const {transactionId, transactionHash} = pendingTransaction
 
   try {
     enrichTxFn(
@@ -373,7 +291,7 @@ export const main = async ({
         errorFallThrough: true,
         network: transactionNetwork,
       },
-      {txhash},
+      {txhash: transactionHash},
     )
 
     // eslint-disable-next-line no-empty
@@ -382,7 +300,7 @@ export const main = async ({
     handleUnfinishedTxFn(
       {network: transactionNetwork},
       {
-        tx: newTxId,
+        tx: transactionId,
         address: addr,
         okCb: rst => {
           if (params.authReqId) {
