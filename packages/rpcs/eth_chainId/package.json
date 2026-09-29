@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/eth_chain-id",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.22"
+    "@fluent-wallet/spec": "1.0.23"
   }
 }
