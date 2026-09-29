@@ -176,6 +176,21 @@ const uk = {
     sponsored: 'Спонсорується',
     partSponsored: 'Частково спонсорується',
 
+    // - Call bundle confirmation
+    signBatchTransaction: 'Підписати пакет транзакцій',
+    signatureRequest: 'Запит підпису',
+    callBundleCallTitle: 'Транзакція {{number}}',
+    callBundleInteractingWith: 'Взаємодія з',
+    callBundleData: 'Дані',
+    callBundleHex: 'Hex',
+    callBundleTransactionCount_one: 'Містить {{count}} транзакцію',
+    callBundleTransactionCount_few: 'Містить {{count}} транзакції',
+    callBundleTransactionCount_many: 'Містить {{count}} транзакцій',
+    callBundleTransactionCount_other: 'Містить {{count}} транзакції',
+    callBundleAtomicExecution: 'Атомарне виконання',
+    callBundleAtomicExecutionDescription:
+      'Усі операції в цьому пакеті виконуються разом. Якщо будь-яка операція завершується помилкою, зміни всіх операцій скасовуються.',
+
     // - Send Transaction / Error or Warning
     error: 'Error',
     warning: 'Warning',
@@ -218,6 +233,8 @@ const uk = {
     // - Send Transaction / Sign Transaction / 3. token approve - confirm transaction
     approveToken: 'Підтвердження токена',
     approveTo: 'Підтвердити по',
+    spendingCap: 'Ліміт витрат',
+    spender: 'Спендер',
     contract: 'Контракт',
     allowLimit: 'Дозволити обмеження',
     action: 'Дія',

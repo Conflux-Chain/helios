@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {toThousands} from '@fluent-wallet/data-format'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {WrapIcon, NumberInput} from '../../../components'
+import WrapIcon from './WrapIcon'
+import NumberInput from './NumberInput'
 
-function CustomOptional({
-  networkTypeIsCfx,
-  isHistoryTx,
+function GasAndNonceFields({
+  showStorageLimit,
+  canEditNonce,
   inputGasLimit,
   gasLimitErr,
   onChangeGasLimit,
@@ -22,15 +23,21 @@ function CustomOptional({
   const [showGasLimitInput, setShowGasLimitInput] = useState(false)
   const [showNonceInput, setShowNonceInput] = useState(false)
 
+  const isGasLimitInputVisible = showGasLimitInput || Boolean(gasLimitErr)
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col mb-3">
         <div
-          className={`flex justify-between ${showGasLimitInput ? 'mb-2' : ''}`}
+          className={`flex justify-between ${
+            isGasLimitInputVisible ? 'mb-2' : ''
+          }`}
         >
           <span>{t('gasLimit')}</span>
           <span
-            className={`flex items-center ${showGasLimitInput ? 'hidden' : ''}`}
+            className={`flex items-center ${
+              isGasLimitInputVisible ? 'hidden' : ''
+            }`}
           >
             <span id="gasLimit">{toThousands(gasLimit || '21000')}</span>
             <WrapIcon
@@ -44,7 +51,7 @@ function CustomOptional({
           </span>{' '}
         </div>
         <NumberInput
-          containerClassName={`${showGasLimitInput ? '' : 'hidden'}`}
+          containerClassName={isGasLimitInputVisible ? '' : 'hidden'}
           width="w-full"
           id="gasLimitInput"
           value={inputGasLimit}
@@ -53,13 +60,13 @@ function CustomOptional({
           onChange={value => onChangeGasLimit(value)}
         />
       </div>
-      {networkTypeIsCfx && (
+      {showStorageLimit && (
         <div className={`flex justify-between mb-3`}>
           <span>{t('storageLimit')}</span>
           <span id="storageLimit">{toThousands(storageLimit || '0')}</span>
         </div>
       )}
-      {!isHistoryTx && (
+      {canEditNonce && (
         <div className="flex flex-col mb-3">
           <div
             className={`flex justify-between ${showNonceInput ? 'mb-2' : ''}`}
@@ -94,9 +101,9 @@ function CustomOptional({
   )
 }
 
-CustomOptional.propTypes = {
-  networkTypeIsCfx: PropTypes.bool,
-  isHistoryTx: PropTypes.bool,
+GasAndNonceFields.propTypes = {
+  showStorageLimit: PropTypes.bool,
+  canEditNonce: PropTypes.bool,
   inputGasLimit: PropTypes.string,
   gasLimitErr: PropTypes.string,
   onChangeGasLimit: PropTypes.func,
@@ -108,4 +115,4 @@ CustomOptional.propTypes = {
   gasLimit: PropTypes.string,
 }
 
-export default CustomOptional
+export default GasAndNonceFields
