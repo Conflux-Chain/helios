@@ -1,8 +1,0 @@
-releases:
-  '@fluent-wallet/wallet_send-transaction': patch
-  '@fluent-wallet/wallet_send-user-operation': patch
-  browser-extension: patch
-  helios-background: patch
-
-declined:
-  - helios

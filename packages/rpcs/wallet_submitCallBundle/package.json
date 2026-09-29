@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/wallet_submit-call-bundle",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "index.js",
   "private": true,
@@ -8,7 +8,7 @@
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/eth_sign-transaction": "workspace:*",
     "@fluent-wallet/nonce-manager": "workspace:*",
-    "@fluent-wallet/spec": "1.0.22",
+    "@fluent-wallet/spec": "1.0.23",
     "@fluent-wallet/wallet_send-calls": "workspace:packages/rpcs/wallet_sendCalls",
     "@fluent-wallet/wallet_send-transaction": "workspace:packages/rpcs/wallet_sendTransaction",
     "@fluent-wallet/wallet_send-user-operation": "workspace:packages/rpcs/wallet_sendUserOperation"
