@@ -4,3 +4,4 @@ export {
   MAX_BUNDLE_ID_BYTES,
   isBundleIdWithinByteLimit,
 } from './call-bundle.js'
+export {buildCallBundleTransaction} from './build-call-bundle-transaction.js'

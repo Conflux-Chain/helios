@@ -1,11 +1,12 @@
 {
-  "name": "@fluent-wallet/eip-5792",
+  "name": "@fluent-wallet/wallet_send-calls",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",
   "private": true,
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792",
+    "@fluent-wallet/spec": "1.0.22"
   }
 }
