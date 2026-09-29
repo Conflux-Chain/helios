@@ -7,6 +7,7 @@ import {
   isObject,
 } from '@fluent-wallet/checks'
 import {useRPC} from '@fluent-wallet/use-rpc'
+import {useTokenMetadata} from './useTokenMetadata'
 
 import {NETWORK_TYPE, RPC_METHODS, PAGE_LIMIT} from '../constants'
 import {validateAddress, flatArray} from '../utils'
@@ -535,23 +536,15 @@ export const useGroupAccountAuthorizedDapps = () => {
 
 export const useValid20Token = address => {
   const {
-    data: {
-      network: {eid: networkId},
-    },
+    data: {network},
   } = useCurrentAddress()
 
-  const {data: token} = useRPC(
-    address && isNumber(networkId)
-      ? [WALLET_VALIDATE_20TOKEN, networkId, address]
-      : null,
-    {tokenAddress: address},
-    {
-      fallbackData: {},
-      refreshInterval: 0,
-      postprocessSuccessData: d => (address ? {...(d || {}), address} : d),
-    },
-  )
-  return token
+  const token = useTokenMetadata({
+    address,
+    network,
+  })
+
+  return token ?? {}
 }
 
 export const useTxList = ({params, includeExternalTx = false}) => {
