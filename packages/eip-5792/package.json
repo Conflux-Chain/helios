@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/eip-5792",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "index.js",
   "private": true,
