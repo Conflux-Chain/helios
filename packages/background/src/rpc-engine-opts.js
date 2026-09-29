@@ -16,6 +16,8 @@ import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledge
 import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
 import * as walletChainId from '@fluent-wallet/wallet_chain-id'
+import * as walletGetCapabilities from '@fluent-wallet/wallet_get-capabilities'
+import * as walletGetCallsStatus from '@fluent-wallet/wallet_get-calls-status'
 import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable-nonce'
 import * as walletGetConfluxNonceState from '@fluent-wallet/wallet_get-conflux-nonce-state'
 import * as walletGetEthereumNonceState from '@fluent-wallet/wallet_get-ethereum-nonce-state'
@@ -262,6 +264,8 @@ export const rpcEngineOpts = {
     walletGetBalance,
     walletRefreshBalance,
     walletChainId,
+    walletGetCapabilities,
+    walletGetCallsStatus,
 
     cfxRequestAccounts,
     ethRequestAccounts,
