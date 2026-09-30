@@ -1,48 +1,43 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import {formatBalance, GWEI_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {useIsCfxChain, useCurrentTicker} from '../hooks/useApi'
-import {useCurrentTxStore} from '../hooks'
 import useDebouncedValue from '../hooks/useDebouncedValue'
-import {ROUTES} from '../constants'
+import {NETWORK_TYPE} from '../constants'
 import DisplayBalance from './DisplayBalance'
 import GasFeeCard from './GasFeeCard'
-const {EDIT_GAS_FEE} = ROUTES
 
 function GasFee({
-  estimateRst,
-  uses1559Fees = false,
+  estimate,
+  network,
+  feePerGas,
+  onEdit,
   titleDes,
-  goEdit = true,
   showDrip = true,
   titleClassName = 'mb-2',
-  contentClassName = '',
+  contentClassName,
   prefix,
   suffix,
   displayFee,
   sponsored = false,
-  editDisabled = false,
+  editDisabled,
   editLabel,
 }) {
-  const {gasLevel} = useCurrentTxStore()
   const {t} = useTranslation()
-  const history = useHistory()
-  const isCfxChain = useIsCfxChain()
-  const {symbol, decimals} = useCurrentTicker()
+  const {symbol, decimals} = network.ticker
+  const isCfxChain =
+    network.type === NETWORK_TYPE.CFX ||
+    symbol?.toLowerCase() === NETWORK_TYPE.CFX
+
   const {
+    error,
     willPayCollateral,
     willPayTxFee,
     storageFeeDrip,
     gasFeeDrip,
     txFeeDrip,
-    gasPrice: estimateGasPrice,
-    customGasPrice,
-    maxFeePerGas: estimateMaxFeePerGas,
-    customMaxFeePerGas,
-  } = estimateRst
+  } = estimate
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
   const partPayedFeeDrip =
@@ -58,34 +53,20 @@ function GasFee({
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
 
-  const displayGasPrice = useDebouncedValue(
-    uses1559Fees
-      ? customMaxFeePerGas || estimateMaxFeePerGas
-      : customGasPrice || estimateGasPrice,
-    [
-      customGasPrice,
-      estimateGasPrice,
-      customMaxFeePerGas,
-      estimateMaxFeePerGas,
-      uses1559Fees,
-    ],
-  )
+  const displayGasPrice = useDebouncedValue(feePerGas, [feePerGas])
   const feeBalance = displayFee?.balance ?? realPayedFeeDrip
   const feeSymbol = displayFee?.symbol ?? symbol
   const feeDecimals = displayFee?.decimals ?? decimals
   const hasExistingSponsorship = isBePayed && sponsoredFeeDrip !== '0x0'
-  const isEditDisabled = editDisabled || !feeBalance || !displayGasPrice
+  const isEditDisabled = editDisabled ?? (!feeBalance || !displayGasPrice)
 
-  const action = goEdit ? (
+  const action = onEdit ? (
     <span className="flex items-center">
-      <Link
-        onClick={() => history.push(EDIT_GAS_FEE)}
-        disabled={isEditDisabled}
-      >
-        {editLabel || (uses1559Fees ? t(gasLevel) : t('edit'))}
+      <Link onClick={onEdit} disabled={isEditDisabled}>
+        {editLabel || t('edit')}
         <RightOutlined
           className={`ml-1 h-3 w-3 ${
-            editDisabled ? 'text-gray-40' : 'text-primary'
+            isEditDisabled ? 'text-gray-40' : 'text-primary'
           }`}
         />
       </Link>
@@ -109,18 +90,22 @@ function GasFee({
       titleClassName={titleClassName}
       contentClassName={contentClassName}
     >
-      <DisplayBalance
-        id="realPayedFee"
-        balance={feeBalance}
-        maxWidth={202}
-        maxWidthStyle="max-w-[202px]"
-        className={`text-lg mb-0.5 font-medium ${
-          sponsored ? '!text-gray-40 line-through' : ''
-        }`}
-        symbol={feeSymbol}
-        decimals={feeDecimals}
-        initialFontSize={20}
-      />
+      {error ? (
+        <span className="mb-0.5 text-lg text-gray-40">—</span>
+      ) : (
+        <DisplayBalance
+          id="realPayedFee"
+          balance={feeBalance}
+          maxWidth={202}
+          maxWidthStyle="max-w-[202px]"
+          className={`text-lg mb-0.5 font-medium ${
+            sponsored ? '!text-gray-40 line-through' : ''
+          }`}
+          symbol={feeSymbol}
+          decimals={feeDecimals}
+          initialFontSize={20}
+        />
+      )}
 
       {!sponsored && hasExistingSponsorship && (
         <div className="flex text-gray-40">
@@ -137,7 +122,7 @@ function GasFee({
         </div>
       )}
 
-      {showDrip && (
+      {showDrip && !error && (
         <span className="text-xs text-gray-60">
           {`${formatBalance(displayGasPrice, GWEI_DECIMALS)} ${
             isCfxChain ? 'GDrip' : 'GWei'
@@ -149,13 +134,20 @@ function GasFee({
 }
 
 GasFee.propTypes = {
-  estimateRst: PropTypes.object,
+  estimate: PropTypes.object.isRequired,
+  network: PropTypes.shape({
+    type: PropTypes.string,
+    ticker: PropTypes.shape({
+      symbol: PropTypes.string,
+      decimals: PropTypes.number,
+    }).isRequired,
+  }).isRequired,
+  feePerGas: PropTypes.string,
+  onEdit: PropTypes.func,
   titleDes: PropTypes.node,
   titleClassName: PropTypes.string,
   contentClassName: PropTypes.string,
-  goEdit: PropTypes.bool,
   showDrip: PropTypes.bool,
-  uses1559Fees: PropTypes.bool,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
   displayFee: PropTypes.shape({

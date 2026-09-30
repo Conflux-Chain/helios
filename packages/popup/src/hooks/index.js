@@ -4,9 +4,8 @@ import useSWR from 'swr'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
-import {useAsync, useDebounce} from 'react-use'
-import {useRPCProvider} from '@fluent-wallet/use-rpc'
-import {estimate} from '@fluent-wallet/estimate-tx'
+import {useDebounce} from 'react-use'
+
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {Conflux, Ethereum} from '@fluent-wallet/ledger'
@@ -16,10 +15,7 @@ import {
   convertDecimal,
   convertDataToValue,
 } from '@fluent-wallet/data-format'
-import {
-  getCFXContractMethodSignature,
-  getEthContractMethodSignature,
-} from '@fluent-wallet/contract-method-name'
+import {useDecodedCall} from './useDecodedCall'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {consts} from '@fluent-wallet/ledger'
@@ -30,7 +26,6 @@ import {
   useDataForPopup,
   useCurrentAddress,
   useAddress,
-  useBalance,
   useNetworkTypeIsCfx,
   useAddressTypeInfo,
   useValid20Token,
@@ -45,6 +40,7 @@ import {
   getSingleServiceNameWithAddress,
   getServiceNamesWithAddresses,
 } from '../utils'
+import {useTransactionEstimate} from './useTransactionEstimate'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -125,84 +121,25 @@ export const useFontSize = (
 }
 
 export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
-  const {provider} = useRPCProvider()
   const {
     data: {network},
   } = useCurrentAddress()
-  const currentNetwork = network || {type: NETWORK_TYPE.CFX}
-  const {type} = currentNetwork
-  const {
-    from,
-    to,
-    type: txType,
-    value,
-    data,
-    nonce,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gas,
-    storageLimit,
-    authorizationList,
-  } = tx
-  const authorizationListKey = isArray(authorizationList)
-    ? authorizationList
-        .map(item => [item?.address, item?.chainId, item?.nonce].join(':'))
-        .join('|')
-    : ''
-  const nativeBalance =
-    useBalance(from, network?.eid, '0x0')?.[from]?.['0x0'] || '0x0'
-  const {
-    value: rst,
-    loading,
-    error,
-  } = useAsync(async () => {
-    if (
-      !provider ||
-      !currentNetwork?.netId ||
-      (!to && !data) ||
-      !network.chainId
-    )
-      return
-    return await estimate(tx, {
-      type,
-      request: provider.request.bind(provider),
-      tokensAmount,
-      isFluentRequest: true,
-      chainIdToGasBuffer: {[network.chainId]: network.gasBuffer},
-      // networkId: currentNetwork.netId,
-    })
-  }, [
-    from,
-    to,
-    txType,
-    value,
-    data,
-    nonce,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gas,
-    storageLimit,
-    authorizationListKey,
-    network.chainId,
-    network.gasBuffer,
-    // currentNetwork.netId,
-    Boolean(provider),
-    Object.keys(tokensAmount)?.[0],
-    nativeBalance,
-    type,
-  ])
+
+  const {data, loading, error} = useTransactionEstimate({
+    transaction: tx,
+    network,
+    tokensAmount,
+  })
 
   if (loading) {
     return {loading}
   }
 
   if (error) {
-    console.log('error', error)
     return {error}
   }
-  return rst
+
+  return data
 }
 
 const initAdvancedGasSetting = {
@@ -407,8 +344,6 @@ export const useDappParams = customPendingAuthReq => {
 
 export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
-  const [decodeData, setDecodeData] = useState({})
-  const [isDecoding, setIsDecoding] = useState(false)
   const {type, eip7702Delegated} = useAddressTypeInfo(to)
   const {
     data: {
@@ -422,45 +357,21 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   const shouldValidateToken =
     type === 'contract' && isContract && !eip7702Delegated
   const isEOAAddress = !isContract && !!type
-  const crc20Token = useValid20Token(shouldValidateToken ? to : '')
+  const token = useValid20Token(shouldValidateToken ? to : '')
 
-  useEffect(() => {
-    if (!!data && data !== '0x') {
-      if (!currentNetworkType) {
-        setDecodeData({})
-        setIsDecoding(false)
-        return
-      }
-      const getSignature =
-        currentNetworkType === NETWORK_TYPE.CFX
-          ? getCFXContractMethodSignature
-          : getEthContractMethodSignature
-      const params = [to, data, netId]
-      const offlineParams = [...params, true]
-      if (isContract) {
-        setIsDecoding(true)
-      }
-
-      getSignature(...(isContract ? params : offlineParams))
-        .then(result => {
-          setDecodeData({...result})
-          setIsDecoding(false)
-        })
-        .catch(e => {
-          console.error('getSignature error:', e)
-          setIsDecoding(false)
-        })
-      return
-    }
-    setDecodeData({})
-    setIsDecoding(false)
-  }, [data, isContract, to, netId, currentNetworkType])
+  const {decodedCall, isDecoding} = useDecodedCall({
+    // Keep remote ABI lookup limited to contract targets.
+    to: isContract ? to : undefined,
+    data,
+    networkType: currentNetworkType,
+    networkId: netId,
+  })
 
   return {
     isContract,
     isEOAAddress,
-    token: crc20Token,
-    decodeData,
+    token,
+    decodeData: decodedCall,
     data,
     isDecoding,
   }

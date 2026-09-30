@@ -99,7 +99,6 @@ module.exports = {
     '/packages/test-helpers',
     '.*.test.jsx?', // eslint-disable-line no-useless-escape
     '.*.integration.test.jsx?', // eslint-disable-line no-useless-escape
-    '/packages/contract-method-name/constance.js',
     '/packages/ui/components/*/assets/*',
     '/packages/ui/components/Tooltip/Placements.js',
     '/packages/ui/icons/*',

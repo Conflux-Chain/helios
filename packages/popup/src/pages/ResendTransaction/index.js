@@ -17,12 +17,13 @@ import {
 import useLoading from '../../hooks/useLoading'
 import {
   useEstimateTx,
-  useDecodeData,
+  padHexData,
   useCurrentTxStore,
   useLedgerBindingApi,
   useUses1559Fees,
   useQuery,
 } from '../../hooks'
+import {decodeCallData} from '@fluent-wallet/contract-method-name'
 import {formatStatus, request, checkBalance} from '../../utils'
 import {TransactionResult, AlertMessage} from '../../components'
 import {ExecutedTransaction} from './components'
@@ -72,7 +73,7 @@ function ResendTransaction() {
 
   const {simple, token20} = txExtra
 
-  const {data, to, gasPrice, maxFeePerGas} = txPayload
+  const {data, gasPrice, maxFeePerGas} = txPayload
   const reSendTxStatus = formatStatus(status)
   const {txParams: resendTxParams} = buildResendTxParams({
     resendType,
@@ -86,25 +87,21 @@ function ResendTransaction() {
   const lastGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
 
   // decode erc20 data
-  const {decodeData} = useDecodeData(
-    resendType === 'speedup'
-      ? {
-          to,
-          data,
-        }
-      : {},
+  const decodedCall = useMemo(
+    () => (resendType === 'speedup' ? decodeCallData(padHexData(data)) : null),
+    [resendType, data],
   )
 
   const isSendingToken =
     resendType === 'speedup' &&
     token20 &&
     token &&
-    (decodeData?.name === 'transfer' || decodeData?.name === 'transferFrom')
+    (decodedCall?.name === 'transfer' || decodedCall?.name === 'transferFrom')
 
   const sendTokenValue = isSendingToken
-    ? decodeData.name === 'transfer'
-      ? decodeData.args[1]._hex
-      : decodeData.args[2]._hex
+    ? decodedCall.name === 'transfer'
+      ? decodedCall.args[1]._hex
+      : decodedCall.args[2]._hex
     : '0x0'
 
   const token20Params = isSendingToken

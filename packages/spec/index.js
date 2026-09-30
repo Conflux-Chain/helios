@@ -1,5 +1,9 @@
-import {stringp} from './src/spec.js'
+import {re, stringp} from './src/spec.js'
 export * from './src/spec.js' // eslint-disable-line import/export
+
+export const Quantity = [re, /^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/]
+export const HexData = [re, /^0x(?:[0-9a-fA-F]{2})*$/]
+
 import {
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   NULL_HEX_ADDRESS,
