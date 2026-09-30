@@ -195,7 +195,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),
   setGasPrice: gasPrice => set({gasPrice}),
-  setUserGasPrice: gasPrice => set({gasPrice, userGasPrice: gasPrice}),
+  setUserGasPrice: userGasPrice => set({userGasPrice}),
   setMaxFeePerGas: maxFeePerGas => set({maxFeePerGas}),
   setMaxPriorityFeePerGas: maxPriorityFeePerGas => set({maxPriorityFeePerGas}),
   setGasLimit: gasLimit => set({gasLimit}),
