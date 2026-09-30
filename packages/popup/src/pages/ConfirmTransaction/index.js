@@ -458,9 +458,7 @@ function ConfirmTransaction() {
         setStorageLimit(
           formatHexToDecimal(initStorageLimit || estimateStorageLimit || ''),
         )
-      !userGasPrice &&
-        !originParams.gasPrice &&
-        setGasPrice(formatHexToDecimal(estimateGasPrice || ''))
+      estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
       !maxFeePerGas &&
         setMaxFeePerGas(
           formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
