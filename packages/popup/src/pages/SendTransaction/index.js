@@ -91,7 +91,6 @@ function SendTransaction() {
     setToAddress,
     setSendAmount,
     setSendTokenId,
-    setGasPrice,
     setMaxPriorityFeePerGas,
     setMaxFeePerGas,
     setGasLimit,
@@ -164,7 +163,6 @@ function SendTransaction() {
   const estimateRst =
     useEstimateTx(tx, !isNativeToken ? {[tokenAddress]: sendValue} : {}) || {}
   const {
-    gasPrice: estimateGasPrice,
     maxFeePerGas: estimateMaxFeePerGas,
     maxPriorityFeePerGas: estimateMaxPriorityPerGas,
     gasLimit: estimateGasLimit,
@@ -175,7 +173,6 @@ function SendTransaction() {
   } = estimateRst
 
   useEffect(() => {
-    estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
     estimateMaxPriorityPerGas &&
       setMaxPriorityFeePerGas(formatHexToDecimal(estimateMaxPriorityPerGas))
     estimateMaxFeePerGas &&
@@ -185,13 +182,11 @@ function SendTransaction() {
     estimateStorageLimit &&
       setStorageLimit(formatHexToDecimal(estimateStorageLimit))
   }, [
-    estimateGasPrice,
     estimateMaxPriorityPerGas,
     estimateMaxFeePerGas,
     estimateGasLimit,
     nonce,
     estimateStorageLimit,
-    setGasPrice,
     setMaxPriorityFeePerGas,
     setMaxFeePerGas,
     setGasLimit,

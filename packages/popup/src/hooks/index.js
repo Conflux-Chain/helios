@@ -156,7 +156,6 @@ const initAdvancedGasSetting = {
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
-  gasPrice: '',
   maxFeePerGas: '',
   maxPriorityFeePerGas: '',
   gasLimit: '',
@@ -194,7 +193,6 @@ export const useCurrentTxStore = create((set, get) => ({
   setData: data => set({data}),
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),
-  setGasPrice: gasPrice => set({gasPrice}),
   setUserGasPrice: userGasPrice => set({userGasPrice}),
   setMaxFeePerGas: maxFeePerGas => set({maxFeePerGas}),
   setMaxPriorityFeePerGas: maxPriorityFeePerGas => set({maxPriorityFeePerGas}),

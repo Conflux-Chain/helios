@@ -41,7 +41,7 @@ function EditGasFee({
   const {
     gasLevel,
     gasLimit,
-    gasPrice,
+    userGasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
     nonce: suggestedNonce,
@@ -116,7 +116,7 @@ function EditGasFee({
     if (gasLevel === 'advanced') {
       setAdvancedGasSetting({
         gasLimit: advancedGasSetting.gasLimit || gasLimit,
-        gasPrice: advancedGasSetting.gasPrice || gasPrice,
+        gasPrice: advancedGasSetting.gasPrice || userGasPrice,
         maxFeePerGas: advancedGasSetting.maxFeePerGas || maxFeePerGas,
         maxPriorityFeePerGas:
           advancedGasSetting.maxPriorityFeePerGas || maxPriorityFeePerGas,

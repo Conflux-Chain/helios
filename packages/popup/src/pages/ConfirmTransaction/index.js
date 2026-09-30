@@ -125,7 +125,6 @@ function ConfirmTransaction() {
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
   const {
-    gasPrice,
     userGasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
@@ -137,7 +136,6 @@ function ConfirmTransaction() {
     customAllowance,
     isMaxSelected,
     toAddress,
-    setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
@@ -238,21 +236,35 @@ function ConfirmTransaction() {
     nonce: initNonce,
     storageLimit: initStorageLimit,
   } = dappTx
+  const estimateParams = {
+    ...originParams,
+    ...(userGasPrice ? {gasPrice: formatDecimalToHex(userGasPrice)} : {}),
+  }
+  const {address: displayTokenAddress} = displayToken || {}
+  const isNativeToken = !displayTokenAddress
+  const estimateRst =
+    useEstimateTx(
+      estimateParams,
+      !isNativeToken && isSendToken
+        ? {
+            [displayTokenAddress]: convertValueToData(
+              displayValue,
+              displayToken?.decimals,
+            ),
+          }
+        : {},
+    ) || {}
   // user can edit nonce, gasPrice and gas
   const inputParams = {
     ...originParams,
     gasPrice: userGasPrice
       ? formatDecimalToHex(userGasPrice)
-      : originParams.gasPrice || formatDecimalToHex(gasPrice),
+      : originParams.gasPrice || estimateRst.gasPrice,
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
     maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(customNonce),
     storageLimit: formatDecimalToHex(storageLimit),
-  }
-  const estimateParams = {
-    ...originParams,
-    ...(userGasPrice ? {gasPrice: formatDecimalToHex(userGasPrice)} : {}),
   }
   // user can edit the approve limit
   const viewData = useViewData(inputParams, isApproveToken, decodeData, token)
@@ -268,21 +280,6 @@ function ConfirmTransaction() {
   if (!inputParams.storageLimit) delete inputParams.storageLimit
   if (!inputParams.data) delete inputParams.data
 
-  const {address: displayTokenAddress} = displayToken || {}
-
-  const isNativeToken = !displayTokenAddress
-  const estimateRst =
-    useEstimateTx(
-      estimateParams,
-      !isNativeToken && isSendToken
-        ? {
-            [displayTokenAddress]: convertValueToData(
-              displayValue,
-              displayToken?.decimals,
-            ),
-          }
-        : {},
-    ) || {}
   const inputAmountHex = isNativeToken
     ? inputParams.value || '0x0'
     : isSendToken
@@ -413,7 +410,6 @@ function ConfirmTransaction() {
   // if params include gasPrice/gasLimit/nonce will cause loop
   const originEstimateRst = useEstimateTx(originParams) || {}
   const {
-    gasPrice: estimateGasPrice,
     maxFeePerGas: estimateMaxFeePerGas,
     maxPriorityFeePerGas: estimateMaxPriorityPerGas,
     gasLimit: estimateGasLimit,
@@ -458,7 +454,6 @@ function ConfirmTransaction() {
         setStorageLimit(
           formatHexToDecimal(initStorageLimit || estimateStorageLimit || ''),
         )
-      estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
       !maxFeePerGas &&
         setMaxFeePerGas(
           formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
@@ -481,11 +476,9 @@ function ConfirmTransaction() {
     initMaxFeePerGas,
     initMaxPriorityFeePerGas,
     initStorageLimit,
-    setGasPrice,
     setSuggestedNonce,
     setGasLimit,
     setStorageLimit,
-    estimateGasPrice,
     estimateMaxFeePerGas,
     estimateMaxPriorityPerGas,
     estimateGasLimit,
@@ -493,8 +486,6 @@ function ConfirmTransaction() {
     rpcNonce,
     gasLimit,
     storageLimit,
-    gasPrice,
-    userGasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
     suggestedNonce,
