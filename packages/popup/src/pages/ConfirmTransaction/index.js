@@ -125,6 +125,7 @@ function ConfirmTransaction() {
     : ETH_SEND_TRANSACTION
   const {
     gasPrice,
+    userGasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
     gasLimit,
@@ -226,7 +227,6 @@ function ConfirmTransaction() {
 
   // dapp send params
   const {
-    gasPrice: initGasPrice,
     maxFeePerGas: initMaxFeePerGas,
     maxPriorityFeePerGas: initMaxPriorityFeePerGas,
     gas: initGasLimit,
@@ -236,12 +236,18 @@ function ConfirmTransaction() {
   // user can edit nonce, gasPrice and gas
   const inputParams = {
     ...originParams,
-    gasPrice: formatDecimalToHex(gasPrice),
+    gasPrice: userGasPrice
+      ? formatDecimalToHex(userGasPrice)
+      : originParams.gasPrice || formatDecimalToHex(gasPrice),
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
     maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(effectiveNonce),
     storageLimit: formatDecimalToHex(storageLimit),
+  }
+  const estimateParams = {
+    ...originParams,
+    ...(userGasPrice ? {gasPrice: formatDecimalToHex(userGasPrice)} : {}),
   }
   // user can edit the approve limit
   const viewData = useViewData(inputParams, isApproveToken, decodeData, token)
@@ -262,7 +268,7 @@ function ConfirmTransaction() {
   const isNativeToken = !displayTokenAddress
   const estimateRst =
     useEstimateTx(
-      inputParams,
+      estimateParams,
       !isNativeToken && isSendToken
         ? {
             [displayTokenAddress]: convertValueToData(
@@ -451,8 +457,9 @@ function ConfirmTransaction() {
         setStorageLimit(
           formatHexToDecimal(initStorageLimit || estimateStorageLimit || ''),
         )
-      !gasPrice &&
-        setGasPrice(formatHexToDecimal(initGasPrice || estimateGasPrice || ''))
+      !userGasPrice &&
+        !originParams.gasPrice &&
+        setGasPrice(formatHexToDecimal(estimateGasPrice || ''))
       !maxFeePerGas &&
         setMaxFeePerGas(
           formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
@@ -472,7 +479,6 @@ function ConfirmTransaction() {
     isInternalEip7702Tx,
     initGasLimit,
     initNonce,
-    initGasPrice,
     initMaxFeePerGas,
     initMaxPriorityFeePerGas,
     initStorageLimit,
@@ -489,6 +495,7 @@ function ConfirmTransaction() {
     gasLimit,
     storageLimit,
     gasPrice,
+    userGasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
     suggestedNonce,

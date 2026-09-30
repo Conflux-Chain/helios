@@ -49,7 +49,7 @@ function EditGasFee({
     advancedGasSetting,
     tx: txParams,
     setGasLevel,
-    setGasPrice,
+    setUserGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
@@ -179,7 +179,7 @@ function EditGasFee({
         setMaxFeePerGas(maxFeePerGas)
         setMaxPriorityFeePerGas(maxPriorityFeePerGas)
       } else {
-        setGasPrice(gasPrice)
+        setUserGasPrice(gasPrice)
       }
       setGasLimit(gasLimit)
       setStorageLimit(storageLimit)
@@ -202,7 +202,7 @@ function EditGasFee({
           ),
         )
       } else {
-        setGasPrice(formatHexToDecimal(suggestedGasPrice))
+        setUserGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
     if (onSubmit) {

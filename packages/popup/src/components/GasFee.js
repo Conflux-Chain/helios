@@ -27,8 +27,7 @@ function GasFee({
   editDisabled = false,
   editLabel,
 }) {
-  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
-  const txGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
+  const {gasLevel} = useCurrentTxStore()
   const {t} = useTranslation()
   const history = useHistory()
   const isCfxChain = useIsCfxChain()
@@ -39,6 +38,10 @@ function GasFee({
     storageFeeDrip,
     gasFeeDrip,
     txFeeDrip,
+    gasPrice: estimateGasPrice,
+    customGasPrice,
+    maxFeePerGas: estimateMaxFeePerGas,
+    customMaxFeePerGas,
   } = estimateRst
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
@@ -55,7 +58,18 @@ function GasFee({
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
 
-  const displayGasPrice = useDebouncedValue(txGasPrice, [txGasPrice])
+  const displayGasPrice = useDebouncedValue(
+    uses1559Fees
+      ? customMaxFeePerGas || estimateMaxFeePerGas
+      : customGasPrice || estimateGasPrice,
+    [
+      customGasPrice,
+      estimateGasPrice,
+      customMaxFeePerGas,
+      estimateMaxFeePerGas,
+      uses1559Fees,
+    ],
+  )
   const feeBalance = displayFee?.balance ?? realPayedFeeDrip
   const feeSymbol = displayFee?.symbol ?? symbol
   const feeDecimals = displayFee?.decimals ?? decimals
