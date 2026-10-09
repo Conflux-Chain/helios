@@ -1,20 +1,17 @@
+import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import DecodedCallArguments from '../../components/DecodedCallArguments'
-import {TitleNav} from '../../components'
 import {padHexData} from '../../hooks'
-import {usePendingAuthReq} from '../../hooks/useApi'
 import {useDecodedCall} from '../../hooks/useDecodedCall'
 import {transformToTitleCase} from '../../utils'
+import {TitleNav} from '../../components'
 
-function ViewData() {
+function ViewData({transaction, network, onBack}) {
   const {t} = useTranslation()
-  const authReq = usePendingAuthReq()?.[0]
-  const tx = authReq?.req.params[0]
-  const network = authReq?.app?.currentNetwork
-  const contractData = padHexData(tx?.data)
+  const contractData = padHexData(transaction.data)
 
   const {decodedCall} = useDecodedCall({
-    to: tx?.to,
+    to: transaction.to,
     data: contractData,
     networkType: network?.type,
     networkId: network?.netId,
@@ -30,7 +27,11 @@ function ViewData() {
       id="editPermissionContainer"
       className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat"
     >
-      <TitleNav title={t('transactionDetails')} />
+      <TitleNav
+        title={t('transactionDetails')}
+        autoGoBack={false}
+        onGoBack={onBack}
+      />
       <div
         className="mx-2 mt-3 px-2 py-4 bg-gray-4 flex flex-col flex-1 overflow-y-auto"
         id="content"
@@ -55,4 +56,9 @@ function ViewData() {
   ) : null
 }
 
+ViewData.propTypes = {
+  transaction: PropTypes.object.isRequired,
+  network: PropTypes.object.isRequired,
+  onBack: PropTypes.func.isRequired,
+}
 export default ViewData

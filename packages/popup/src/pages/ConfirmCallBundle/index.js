@@ -6,6 +6,7 @@ import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
 import {useSWRConfig} from 'swr'
 import {LeftOutlined, RightOutlined} from '@fluent-wallet/component-icons'
+import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {
   AccountDisplay,
   AlertMessage,
@@ -17,14 +18,14 @@ import ImageWithFallback from '../../components/ImageWithFallback'
 import {ROUTES, RPC_METHODS, TX_STATUS} from '../../constants'
 import {useBalance, usePendingAuthReq} from '../../hooks/useApi'
 import {useEstimateError} from '../../hooks'
+import {getGasLimitError} from '../../hooks/useGasFeeValidation'
 import useLoading from '../../hooks/useLoading'
 import PageLoading from '../../hooks/useLoading/PageLoading'
 import {bn16, request} from '../../utils'
 import CallBundleCallCard from './components/CallBundleCallCard'
 import CallBundleRequestSummary from './components/CallBundleRequestSummary'
 
-import {Interface} from '@ethersproject/abi'
-import {FUNGIBLE_TOKEN_ABI} from '@fluent-wallet/contract-abis/token-abi.js'
+import {updateApprovalAmount} from '../../utils/approval'
 import {decodeCallData} from '@fluent-wallet/contract-method-name'
 import {buildCallBundleTransaction} from '@fluent-wallet/eip-5792'
 import TokenSpendingCapEditor from '../../components/TokenSpendingCapEditor'
@@ -36,6 +37,7 @@ import {useCallBundleEstimate} from './useCallBundleEstimate'
 import CallBundleGasEditor from './components/CallBundleGasEditor'
 import CallBundleGasFee from './components/CallBundleGasFee'
 
+import {getSelectedGasLevel} from '../../utils/gas'
 import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 
 const {
@@ -44,8 +46,6 @@ const {
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_REJECT_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
-
-const tokenInterface = new Interface(FUNGIBLE_TOKEN_ABI)
 
 function ConfirmCallBundle() {
   const {t} = useTranslation()
@@ -188,15 +188,19 @@ function CallBundleConfirmation({
   const [confirmationCalls, setConfirmationCalls] = useState(calls)
   const [confirmationTransaction, setConfirmationTransaction] =
     useState(transaction)
-  const [editingAllowanceCallIndex, setEditingAllowanceCallIndex] =
-    useState(null)
-  const [isViewingData, setIsViewingData] = useState(false)
+  const [view, setView] = useState({type: 'confirm'})
 
-  const [gasSettings, setGasSettings] = useState(null)
-  const [isEditingGas, setIsEditingGas] = useState(false)
+  const [txOptions, setTxOptions] = useState(
+    /** @type {import('../../utils/gas').TxOptions|null} */ (null),
+  )
 
   const [pendingDelegationAction, setPendingDelegationAction] = useState(null)
   const [sponsorshipDeclined, setSponsorshipDeclined] = useState(false)
+
+  const isConfirmationVisible = view.type === 'confirm'
+  const isEditingGas = view.type === 'gas'
+  const isViewingData = view.type === 'data'
+  const isEditingAllowance = view.type === 'allowance'
 
   const sponsorship = useSponsorshipPreparation({
     accountId: currentAccount.eid,
@@ -229,10 +233,19 @@ function CallBundleConfirmation({
         : confirmationTransaction,
     calls: confirmationCalls,
     network: currentNetwork,
-    gasSettings,
+    txOptions,
   })
 
-  const estimateError = useEstimateError(
+  const estimatedGasUsed = formatHexToDecimal(transactionEstimate.data?.gasUsed)
+  const gasLimitError = getGasLimitError(
+    {
+      gasLimit: formatHexToDecimal(transactionEstimate.transaction?.gas),
+      minGasLimit: estimatedGasUsed,
+    },
+    t,
+  )
+
+  const transactionError = useEstimateError(
     sponsorship.available
       ? sponsoredBalanceCheck
       : {...transactionEstimate.data, error: transactionEstimate.error},
@@ -240,32 +253,44 @@ function CallBundleConfirmation({
     true,
   )
 
-  const requiredDelegationAction = sponsorship.available
-    ? sponsorship.requiredDelegationAction
-    : transactionDelegationAction
+  const estimateError = sponsorship.available
+    ? transactionError
+    : gasLimitError || transactionError
+
+  const isTransactionReady =
+    Boolean(transactionEstimate.transaction?.gas) &&
+    estimatedGasUsed !== undefined &&
+    !gasLimitError &&
+    transactionEstimate.data?.isBalanceEnough === true
 
   const canConfirm =
+    isConfirmationVisible &&
     !disabled &&
     !sponsorship.loading &&
     (sponsorship.available
       ? sponsoredBalanceCheck.isBalanceEnough === true
-      : transactionEstimate.data?.isBalanceEnough === true)
+      : isTransactionReady)
 
-  const isEditingAllowance = editingAllowanceCallIndex !== null
+  const gasLevel = getSelectedGasLevel({
+    tx: confirmationTransaction,
+    txOptions,
+    uses1559Fees: true,
+  })
+
+  const requiredDelegationAction = sponsorship.available
+    ? sponsorship.requiredDelegationAction
+    : transactionDelegationAction
+
   const editingCall = isEditingAllowance
-    ? confirmationCalls[editingAllowanceCallIndex]
+    ? confirmationCalls[view.callIndex]
     : null
-
-  const isConfirmationVisible =
-    !isEditingAllowance && !isViewingData && !isEditingGas
-
   const editingToken = useTokenMetadata({
     address: editingCall?.to,
     network: currentNetwork,
   })
   const editingApproval = editingCall ? decodeCallData(editingCall.data) : null
   const requestedApproval = editingCall
-    ? decodeCallData(calls[editingAllowanceCallIndex].data)
+    ? decodeCallData(calls[view.callIndex].data)
     : null
 
   const toggleCallExpansion = callIndex => {
@@ -276,23 +301,20 @@ function CallBundleConfirmation({
     )
   }
 
-  const handleSaveAllowance = amount => {
+  const handleSaveAllowance = amountInBaseUnits => {
     try {
-      const data =
-        amount === requestedApproval.args[1].toString()
-          ? calls[editingAllowanceCallIndex].data
-          : tokenInterface.encodeFunctionData('approve', [
-              editingApproval.args[0],
-              amount,
-            ])
+      const data = updateApprovalAmount(
+        calls[view.callIndex].data,
+        amountInBaseUnits,
+      )
 
       if (data === editingCall.data) {
-        setEditingAllowanceCallIndex(null)
+        setView({type: 'confirm'})
         return
       }
 
       const updatedCalls = confirmationCalls.map((call, callIndex) =>
-        callIndex === editingAllowanceCallIndex ? {...call, data} : call,
+        callIndex === view.callIndex ? {...call, data} : call,
       )
 
       const updatedTransaction = buildCallBundleTransaction({
@@ -305,8 +327,18 @@ function CallBundleConfirmation({
 
       setConfirmationCalls(updatedCalls)
       setConfirmationTransaction(updatedTransaction)
-      setGasSettings(null)
-      setEditingAllowanceCallIndex(null)
+
+      setTxOptions(current =>
+        current
+          ? {
+              ...current,
+              gasLimit: '',
+              storageLimit: '',
+            }
+          : current,
+      )
+
+      setView({type: 'confirm'})
     } catch (error) {
       Message.error({
         content: error?.message ?? t('unCaughtErrMsg'),
@@ -316,12 +348,13 @@ function CallBundleConfirmation({
     }
   }
 
-  const handleSaveGasSettings = settings => {
-    setGasSettings(settings)
-    setIsEditingGas(false)
+  const handleSaveTxOptions = nextTxOptions => {
+    setTxOptions(nextTxOptions)
+    setView({type: 'confirm'})
   }
 
   const submitCallBundle = approvedDelegationAction => {
+    if (!canConfirm) return
     if (sponsorship.available) {
       onSubmit({
         calls: confirmationCalls,
@@ -340,6 +373,7 @@ function CallBundleConfirmation({
   }
 
   const handleConfirm = () => {
+    if (!canConfirm) return
     if (requiredDelegationAction) {
       setPendingDelegationAction(requiredDelegationAction)
       return
@@ -349,12 +383,10 @@ function CallBundleConfirmation({
   }
 
   const handleBack = () => {
-    if (isEditingAllowance) {
-      setEditingAllowanceCallIndex(null)
-    } else if (isViewingData) {
-      setIsViewingData(false)
-    } else {
+    if (isConfirmationVisible) {
       onReject()
+    } else {
+      setView({type: 'confirm'})
     }
   }
 
@@ -363,11 +395,19 @@ function CallBundleConfirmation({
 
     if (sponsorship.available && confirmationCalls.length === 1) {
       setSponsorshipDeclined(true)
-      setGasSettings(null)
+      setTxOptions(null)
       return
     }
 
     onReject()
+  }
+
+  let titleKey = 'signBatchTransaction'
+
+  if (isEditingAllowance) {
+    titleKey = 'editPermission'
+  } else if (isViewingData) {
+    titleKey = 'transactionDetails'
   }
 
   return (
@@ -391,15 +431,7 @@ function CallBundleConfirmation({
         >
           <LeftOutlined className="h-5 w-5" />
         </button>
-        <h1 className="text-center text-sm text-gray-100">
-          {t(
-            isEditingAllowance
-              ? 'editPermission'
-              : isViewingData
-              ? 'transactionDetails'
-              : 'signBatchTransaction',
-          )}
-        </h1>
+        <h1 className="text-center text-sm text-gray-100">{t(titleKey)}</h1>
       </header>
 
       {isEditingGas && (
@@ -407,16 +439,16 @@ function CallBundleConfirmation({
           transaction={confirmationTransaction}
           calls={confirmationCalls}
           network={currentNetwork}
-          initialGasSettings={gasSettings}
-          onSave={handleSaveGasSettings}
-          onClose={() => setIsEditingGas(false)}
+          initialTxOptions={txOptions}
+          onSave={handleSaveTxOptions}
+          onClose={handleBack}
         />
       )}
 
       {isEditingAllowance && editingToken && (
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-blue-circles bg-no-repeat bg-bg">
           <TokenSpendingCapEditor
-            key={editingAllowanceCallIndex}
+            key={view.callIndex}
             requestedAmount={requestedApproval.args[1].toString()}
             currentAmount={editingApproval.args[1].toString()}
             decimals={editingToken.decimals}
@@ -458,7 +490,7 @@ function CallBundleConfirmation({
                 network={currentNetwork}
                 expanded={expandedCallIndexes.includes(callIndex)}
                 onToggle={() => toggleCallExpansion(callIndex)}
-                onEditAllowance={() => setEditingAllowanceCallIndex(callIndex)}
+                onEditAllowance={() => setView({type: 'allowance', callIndex})}
               />
             </li>
           ))}
@@ -511,8 +543,8 @@ function CallBundleConfirmation({
             sponsoredBalanceCheck={sponsoredBalanceCheck}
             transactionEstimate={transactionEstimate}
             network={currentNetwork}
-            gasLevel={gasSettings?.gasLevel || 'medium'}
-            onEdit={() => setIsEditingGas(true)}
+            gasLevel={gasLevel}
+            onEdit={() => setView({type: 'gas'})}
           />
         </div>
       </main>
@@ -531,7 +563,7 @@ function CallBundleConfirmation({
         <button
           type="button"
           disabled={disabled}
-          onClick={() => setIsViewingData(true)}
+          onClick={() => setView({type: 'data'})}
           className="flex items-center text-sm text-primary hover:text-primary-dark disabled:cursor-not-allowed"
         >
           {t('viewData')}

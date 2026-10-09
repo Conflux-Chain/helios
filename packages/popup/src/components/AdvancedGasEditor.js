@@ -17,6 +17,7 @@ import GasPriceFields from './GasPriceFields'
 import GasAndNonceFields from './GasAndNonceFields'
 
 // initialValues and onSave use base-unit decimal strings.
+// Initial gas/storage limits are explicit values; automatic limits come from the estimate.
 function AdvancedGasEditor({
   transaction,
   network,
@@ -33,7 +34,9 @@ function AdvancedGasEditor({
     networkTypeIsCfx ||
     network.ticker.symbol?.toLowerCase() === NETWORK_TYPE.CFX
 
-  const [values, setValues] = useState(() => ({
+  const [changes, setChanges] = useState({})
+
+  const values = {
     gasPrice: convertDecimal(
       initialValues.gasPrice || '',
       'divide',
@@ -49,11 +52,12 @@ function AdvancedGasEditor({
       'divide',
       GWEI_DECIMALS,
     ),
-    gasLimit: '',
+    gasLimit: initialValues.gasLimit || '',
     nonce: canEditNonce ? initialValues.nonce || '' : '',
-  }))
+    ...changes,
+  }
 
-  const gasLimit = values.gasLimit || initialValues.gasLimit
+  const gasLimit = values.gasLimit
 
   const transactionForEstimate = {
     ...transaction,
@@ -96,6 +100,8 @@ function AdvancedGasEditor({
     initialValues.storageLimit ||
     formatHexToDecimal(estimate?.storageCollateralized)
 
+  const minGasLimit = formatHexToDecimal(estimate?.gasUsed) || '21000'
+
   const errors = useGasFeeValidation({
     values: {
       ...values,
@@ -103,32 +109,35 @@ function AdvancedGasEditor({
     },
     uses1559Fees,
     isCfxChain,
-    minGasLimit: formatHexToDecimal(estimate?.gasUsed || '21000'),
+    minGasLimit,
     maxGasLimit,
     canEditNonce,
   })
 
+  const saveDisabled =
+    !resolvedGasLimit ||
+    (networkTypeIsCfx && !storageLimit) ||
+    Object.values(errors).some(Boolean)
+
   const updateField = (field, value) => {
-    setValues(current => ({...current, [field]: value}))
+    setChanges(current => ({...current, [field]: value}))
   }
 
   const handleSave = () => {
-    onSave({
-      gasPrice: uses1559Fees
-        ? ''
-        : convertDecimal(values.gasPrice, 'multiply', GWEI_DECIMALS),
-      maxFeePerGas: uses1559Fees
-        ? convertDecimal(values.maxFeePerGas, 'multiply', GWEI_DECIMALS)
-        : '',
-      maxPriorityFeePerGas: uses1559Fees
-        ? convertDecimal(values.maxPriorityFeePerGas, 'multiply', GWEI_DECIMALS)
-        : '',
-      gasLimit: resolvedGasLimit,
-      storageLimit,
-      nonce: canEditNonce
-        ? values.nonce
-        : formatHexToDecimal(transaction.nonce),
-    })
+    if (saveDisabled) return
+    const options = {...changes}
+
+    for (const field of ['gasPrice', 'maxFeePerGas', 'maxPriorityFeePerGas']) {
+      if (options[field] !== undefined) {
+        options[field] = convertDecimal(
+          options[field],
+          'multiply',
+          GWEI_DECIMALS,
+        )
+      }
+    }
+
+    onSave(options)
   }
 
   return (
@@ -175,11 +184,7 @@ function AdvancedGasEditor({
           className="w-full"
           id="saveAdvancedGasFeeBtn"
           onClick={handleSave}
-          disabled={
-            !resolvedGasLimit ||
-            (networkTypeIsCfx && !storageLimit) ||
-            Object.values(errors).some(Boolean)
-          }
+          disabled={saveDisabled}
         >
           {t('save')}
         </Button>
