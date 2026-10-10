@@ -126,15 +126,13 @@ function AdvancedGasEditor({
   const handleSave = () => {
     if (saveDisabled) return
     const options = {...changes}
+    const priceFields = uses1559Fees
+      ? ['maxFeePerGas', 'maxPriorityFeePerGas']
+      : ['gasPrice']
 
-    for (const field of ['gasPrice', 'maxFeePerGas', 'maxPriorityFeePerGas']) {
-      if (options[field] !== undefined) {
-        options[field] = convertDecimal(
-          options[field],
-          'multiply',
-          GWEI_DECIMALS,
-        )
-      }
+    // Save the displayed fee prices as custom values.
+    for (const field of priceFields) {
+      options[field] = convertDecimal(values[field], 'multiply', GWEI_DECIMALS)
     }
 
     onSave(options)
