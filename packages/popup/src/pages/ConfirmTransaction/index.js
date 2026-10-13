@@ -3,15 +3,17 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
+import Message from '@fluent-wallet/component-message'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
-  formatDecimalToHex,
+  Big,
   formatHexToDecimal,
   convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import {ETH_TX_TYPES, USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {
+  padHexData,
   useCurrentTxParams,
   useEstimateTx,
   useEstimateError,
@@ -22,7 +24,12 @@ import {
   useLedgerBindingApi,
   useUses1559Fees,
 } from '../../hooks'
-import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
+import {
+  useCurrentAddress,
+  useNetworkTypeIsCfx,
+  useCfxMaxGasLimit,
+} from '../../hooks/useApi'
+import {getGasLimitError} from '../../hooks/useGasFeeValidation'
 import {useConnect} from '../../hooks/useLedger'
 import {
   request,
@@ -55,8 +62,14 @@ import {
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
+import {updateApprovalAmount} from '../../utils/approval'
+import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
+import ViewData from '../ViewData'
+import EditAllowance from '../EditAllowance'
+import EditGasFee from '../EditGasFee'
 
-const {VIEW_DATA, HOME} = ROUTES
+const {HOME} = ROUTES
+
 const {
   CFX_SEND_TRANSACTION,
   ETH_SEND_TRANSACTION,
@@ -97,6 +110,8 @@ function ConfirmTransaction() {
 
   const {t} = useTranslation()
   const history = useHistory()
+  const [view, setView] = useState('confirm')
+
   const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
     useConnect()
   const [authStatus, setAuthStatus] = useState(true)
@@ -111,7 +126,7 @@ function ConfirmTransaction() {
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [sendError, setSendError] = useState({})
-  const [estimateError, setEstimateError] = useState('')
+  const [balanceCheckError, setBalanceCheckError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
@@ -125,27 +140,13 @@ function ConfirmTransaction() {
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
   const {
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gasLimit,
-    storageLimit,
-    nonce: suggestedNonce,
-    customNonce,
-    gasLevel,
+    txOptions,
+    setTxOptions,
     customAllowance,
+    setCustomAllowance,
     isMaxSelected,
     toAddress,
-    setGasPrice,
-    setMaxFeePerGas,
-    setMaxPriorityFeePerGas,
-    setGasLimit,
-    setStorageLimit,
-    setNonce: setSuggestedNonce,
-    setCustomNonce,
-    setGasLevel,
     clearSendTransactionParams,
-    clearAdvancedGasSetting,
     tx: txParams,
     txContext,
     setSponsorshipDeclined,
@@ -155,10 +156,12 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      network: {eid: networkDbId, ticker, chainId, type: currentNetworkType},
+      network,
       account: {eid: accountId},
     },
   } = useCurrentAddress()
+  const {eid: networkDbId, ticker, chainId, type: currentNetworkType} = network
+  const maxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
 
   const nativeToken = ticker || {}
   const dappTx = useDappParams(pendingAuthReq)
@@ -170,8 +173,7 @@ function ConfirmTransaction() {
     action: eip7702Action,
   })
   const {isInternalEip7702Tx} = eip7702Display
-  // The switch flow enters this page with PUSH. Gas pages return with POP, so
-  // the drawer is only initialized as open on the first entry from switch.
+  // Open the switch drawer only on the initial entry from the switch flow.
   const shouldOpenSwitchInfoDrawerOnMount =
     isInternalEip7702Tx &&
     eip7702Action === 'switch' &&
@@ -208,6 +210,20 @@ function ConfirmTransaction() {
   const canEditAllowance =
     isApproveToken && isEditableTokenApproval({decodedCall: decodeData, token})
 
+  const requestedAmountInBaseUnits = canEditAllowance
+    ? decodeData.args[1].toString()
+    : null
+
+  const currentAmountInBaseUnits =
+    canEditAllowance && customAllowance !== undefined
+      ? customAllowance
+      : requestedAmountInBaseUnits
+
+  const displayAllowance =
+    isApproveToken && customAllowance !== undefined
+      ? new Big(customAllowance).times(`1e-${token.decimals}`).toFixed()
+      : displayValue
+
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
   const isHwUnAuth = !authStatus && isHwAccount
@@ -229,45 +245,45 @@ function ConfirmTransaction() {
 
   const uses1559Fees = useUses1559Fees(originParams?.type)
 
-  // dapp send params
-  const {
-    gasPrice: initGasPrice,
-    maxFeePerGas: initMaxFeePerGas,
-    maxPriorityFeePerGas: initMaxPriorityFeePerGas,
-    gas: initGasLimit,
-    nonce: initNonce,
-    storageLimit: initStorageLimit,
-  } = dappTx
-  // user can edit nonce, gasPrice and gas
-  const inputParams = {
-    ...originParams,
-    gasPrice: formatDecimalToHex(gasPrice),
-    maxFeePerGas: formatDecimalToHex(maxFeePerGas),
-    maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
-    gas: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(customNonce),
-    storageLimit: formatDecimalToHex(storageLimit),
-  }
-  // user can edit the approve limit
-  const viewData = useViewData(inputParams, isApproveToken, decodeData, token)
-  inputParams.data = viewData
+  // Both estimates use the current approval data.
+  const transactionData = useViewData(originParams, isApproveToken, decodeData)
+  const transaction = {...originParams, data: transactionData}
 
-  // send params, need to delete '' or undefined params,
-  // otherwise cfx_sendTransaction will return params error
-  if (!inputParams.gasPrice) delete inputParams.gasPrice
-  if (!inputParams.maxFeePerGas) delete inputParams.maxFeePerGas
-  if (!inputParams.maxPriorityFeePerGas) delete inputParams.maxPriorityFeePerGas
-  if (!inputParams.nonce) delete inputParams.nonce
-  if (!inputParams.gas) delete inputParams.gas
-  if (!inputParams.storageLimit) delete inputParams.storageLimit
-  if (!inputParams.data) delete inputParams.data
+  if (!transaction.data) delete transaction.data
+
+  const estimateParams = {...transaction}
+  delete estimateParams.gas
+  delete estimateParams.storageLimit
+
+  const baseEstimate = useEstimateTx(estimateParams) || {}
+
+  const txWithOptions = applyTxOptions({
+    tx: transaction,
+    txOptions,
+    estimate: baseEstimate,
+    uses1559Fees,
+  })
+
+  const hasGasPrices =
+    uses1559Fees !== undefined &&
+    Boolean(
+      uses1559Fees
+        ? txWithOptions.maxFeePerGas && txWithOptions.maxPriorityFeePerGas
+        : txWithOptions.gasPrice,
+    )
+
+  const gasLevel = getSelectedGasLevel({
+    tx: transaction,
+    txOptions,
+    uses1559Fees,
+  })
 
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
-  const estimateRst =
+  const transactionEstimate =
     useEstimateTx(
-      inputParams,
+      hasGasPrices ? txWithOptions : null,
       !isNativeToken && isSendToken
         ? {
             [displayTokenAddress]: convertValueToData(
@@ -277,8 +293,15 @@ function ConfirmTransaction() {
           }
         : {},
     ) || {}
+  const estimateRst = hasGasPrices
+    ? transactionEstimate
+    : {
+        loading: !baseEstimate.error,
+        error: baseEstimate.error,
+      }
+
   const inputAmountHex = isNativeToken
-    ? inputParams.value || '0x0'
+    ? txWithOptions.value || '0x0'
     : isSendToken
     ? convertValueToData(displayValue, displayToken?.decimals)
     : '0x0'
@@ -303,19 +326,19 @@ function ConfirmTransaction() {
       shouldPrepareSponsorship &&
       !isInternalEip7702Tx &&
       toAddress &&
-      inputParams.to
+      txWithOptions.to
         ? [
             {
-              to: inputParams.to,
-              ...(inputParams.value ? {value: inputParams.value} : {}),
-              ...(inputParams.data ? {data: inputParams.data} : {}),
+              to: txWithOptions.to,
+              ...(txWithOptions.value ? {value: txWithOptions.value} : {}),
+              ...(txWithOptions.data ? {data: txWithOptions.data} : {}),
             },
           ]
         : null,
     [
-      inputParams.data,
-      inputParams.to,
-      inputParams.value,
+      txWithOptions.data,
+      txWithOptions.to,
+      txWithOptions.value,
       shouldPrepareSponsorship,
       isInternalEip7702Tx,
       toAddress,
@@ -343,7 +366,7 @@ function ConfirmTransaction() {
 
   const sendValue = shouldSubtractGasFromMax
     ? maxValueAfterGas
-    : inputParams.value
+    : txWithOptions.value
 
   // Recheck the balance flag against the value that will actually be sent.
   const estimateForSend = shouldSubtractGasFromMax
@@ -360,9 +383,28 @@ function ConfirmTransaction() {
     USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
   const sendTransactionParams = {
-    ...inputParams,
+    ...txWithOptions,
+    gas: txWithOptions.gas || estimateRst.gasLimit,
+    ...(networkTypeIsCfx
+      ? {
+          storageLimit:
+            txWithOptions.storageLimit || estimateRst.storageCollateralized,
+        }
+      : {}),
     ...(shouldSubtractGasFromMax ? {value: sendValue} : {}),
   }
+
+  const estimatedGasUsed = formatHexToDecimal(estimateRst.gasUsed)
+  const gasLimitError = hasGasPrices
+    ? getGasLimitError(
+        {
+          gasLimit: formatHexToDecimal(sendTransactionParams.gas),
+          minGasLimit: estimatedGasUsed,
+          maxGasLimit: formatHexToDecimal(maxGasLimit),
+        },
+        t,
+      )
+    : ''
 
   const sendTransactionRpcParams = [sendTransactionParams]
 
@@ -384,116 +426,67 @@ function ConfirmTransaction() {
     ? convertDataToValue(sendValue, nativeToken?.decimals)
     : displayValue
 
+  const feePerGas = formatHexToDecimal(
+    uses1559Fees
+      ? sendTransactionParams.maxFeePerGas || estimateForSend.maxFeePerGas
+      : sendTransactionParams.gasPrice || estimateForSend.gasPrice,
+  )
+
   useEffect(() => {
     if (!isSponsoredSubmission) return
 
-    if (customNonce) setCustomNonce('')
-
-    if (gasLevel === 'advanced') {
-      clearAdvancedGasSetting()
-      setGasLevel('medium')
+    if (
+      !txOptions.nonce &&
+      !txOptions.gasPrice &&
+      !txOptions.maxFeePerGas &&
+      !txOptions.maxPriorityFeePerGas
+    ) {
+      return
     }
-  }, [
-    isSponsoredSubmission,
-    customNonce,
-    gasLevel,
-    clearAdvancedGasSetting,
-    setCustomNonce,
-    setGasLevel,
-  ])
 
-  // only need to estimate gas not need to get whether balance is enough
-  // so do not pass the gas info params
-  // if params include gasPrice/gasLimit/nonce will cause loop
-  const originEstimateRst = useEstimateTx(originParams) || {}
-  const {
-    gasPrice: estimateGasPrice,
-    maxFeePerGas: estimateMaxFeePerGas,
-    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
-    gasLimit: estimateGasLimit,
-    nonce: rpcNonce,
-    storageCollateralized: estimateStorageLimit,
-  } = originEstimateRst || {}
+    setTxOptions({
+      ...txOptions,
+      gasLevel: 'medium',
+      gasPrice: '',
+      maxFeePerGas: '',
+      maxPriorityFeePerGas: '',
+      nonce: '',
+    })
+  }, [isSponsoredSubmission, txOptions, setTxOptions])
 
-  const errorMessage = useEstimateError(
+  const transactionError = useEstimateError(
     estimateForSend,
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
   )
+  const errorMessage = gasLimitError || transactionError
 
   const maxAmountError =
     shouldSubtractGasFromMax && !bn16(sendValue).gt(bn16('0x0'))
       ? t('gasFeeIsNotEnough')
       : ''
 
-  useEffect(() => {
-    const shouldHideEstimateError =
-      sponsoredUserOperation.loading || isSponsoredSubmission
+  const estimateError =
+    sponsoredUserOperation.loading || isSponsoredSubmission
+      ? ''
+      : maxAmountError || errorMessage || balanceCheckError
 
-    setEstimateError(
-      shouldHideEstimateError ? '' : maxAmountError || errorMessage,
-    )
-  }, [
-    errorMessage,
-    isSponsoredSubmission,
-    maxAmountError,
-    sponsoredUserOperation.loading,
-  ])
+  const isTransactionReady =
+    hasGasPrices &&
+    Boolean(sendTransactionParams.gas) &&
+    estimatedGasUsed !== undefined &&
+    estimateForSend.isBalanceEnough === true &&
+    !maxAmountError &&
+    !errorMessage &&
+    !estimateForSend.error &&
+    !estimateForSend.loading
 
-  // when dapp send, init the gas edit global store
-  // internal 7702 tx also enters confirm page directly, so it uses the same init path.
-  useEffect(() => {
-    if (isDapp || isInternalEip7702Tx) {
-      // store decimal number for dapp tx params
-      !gasLimit &&
-        setGasLimit(formatHexToDecimal(initGasLimit || estimateGasLimit || ''))
-      !storageLimit &&
-        setStorageLimit(
-          formatHexToDecimal(initStorageLimit || estimateStorageLimit || ''),
-        )
-      !gasPrice &&
-        setGasPrice(formatHexToDecimal(initGasPrice || estimateGasPrice || ''))
-      !maxFeePerGas &&
-        setMaxFeePerGas(
-          formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
-        )
-      !maxPriorityFeePerGas &&
-        setMaxPriorityFeePerGas(
-          formatHexToDecimal(
-            initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
-          ),
-        )
-      !suggestedNonce &&
-        setSuggestedNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isDapp,
-    isInternalEip7702Tx,
-    initGasLimit,
-    initNonce,
-    initGasPrice,
-    initMaxFeePerGas,
-    initMaxPriorityFeePerGas,
-    initStorageLimit,
-    setGasPrice,
-    setSuggestedNonce,
-    setGasLimit,
-    setStorageLimit,
-    estimateGasPrice,
-    estimateMaxFeePerGas,
-    estimateMaxPriorityPerGas,
-    estimateGasLimit,
-    estimateStorageLimit,
-    rpcNonce,
-    gasLimit,
-    storageLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    suggestedNonce,
-  ])
+  const confirmDisabled =
+    view !== 'confirm' ||
+    sponsoredUserOperation.loading ||
+    (!isSponsoredSubmission && !isTransactionReady) ||
+    (customAllowance !== undefined && isDecoding)
 
   const beginSubmission = () => {
     if (!isHwAccount) setLoading(true)
@@ -522,6 +515,9 @@ function ConfirmTransaction() {
   }
 
   const submitTransaction = async () => {
+    if (confirmDisabled) return
+
+    setBalanceCheckError('')
     beginSubmission()
 
     const balanceError = await checkBalance(
@@ -536,7 +532,7 @@ function ConfirmTransaction() {
 
     if (balanceError) {
       resetSubmissionStatus()
-      setEstimateError(t(balanceError))
+      setBalanceCheckError(t(balanceError))
       return
     }
 
@@ -551,6 +547,8 @@ function ConfirmTransaction() {
   const submitSponsoredUserOperation = async ({
     approvedDelegationAction,
   } = {}) => {
+    if (confirmDisabled) return
+
     beginSubmission()
 
     try {
@@ -582,6 +580,8 @@ function ConfirmTransaction() {
   }
 
   const onSend = async () => {
+    if (confirmDisabled) return
+
     if (isHwAccount) {
       if (!ledgerBindingApi) {
         return
@@ -656,16 +656,6 @@ function ConfirmTransaction() {
     history.push(HOME)
   }
 
-  const confirmDisabled =
-    sponsoredUserOperation.loading ||
-    (!isSponsoredSubmission &&
-      (!!estimateError ||
-        !!maxAmountError ||
-        !!errorMessage ||
-        estimateForSend.loading ||
-        Object.keys(estimateForSend).length === 0)) ||
-    (customAllowance && isDecoding)
-
   const dappConfirmParams = {
     tx: sendTransactionRpcParams,
   }
@@ -684,6 +674,73 @@ function ConfirmTransaction() {
           confirmText: t('eip7702SponsoredSwitchConfirm'),
         }
       : null
+
+  const handleSaveAllowance = amountInBaseUnits => {
+    try {
+      const nextAllowance =
+        amountInBaseUnits === requestedAmountInBaseUnits
+          ? undefined
+          : amountInBaseUnits
+
+      if (nextAllowance !== customAllowance) {
+        // Ensure the approval can be encoded before changing saved state.
+        updateApprovalAmount(padHexData(currentTx.data), amountInBaseUnits)
+
+        setCustomAllowance(nextAllowance)
+        setBalanceCheckError('')
+      }
+
+      setView('confirm')
+    } catch (error) {
+      Message.error({
+        content: error?.message ?? t('unCaughtErrMsg'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+  }
+
+  const handleSaveTxOptions = nextTxOptions => {
+    setTxOptions(nextTxOptions)
+    setBalanceCheckError('')
+    setView('confirm')
+  }
+
+  if (view === 'gas') {
+    return (
+      <EditGasFee
+        tx={transaction}
+        initialTxOptions={txOptions}
+        onSave={handleSaveTxOptions}
+        onBack={() => setView('confirm')}
+      />
+    )
+  }
+
+  if (view === 'allowance' && canEditAllowance) {
+    return (
+      <EditAllowance
+        key={pendingAuthReq?.[0]?.eid}
+        requestedAmount={requestedAmountInBaseUnits}
+        currentAmount={currentAmountInBaseUnits}
+        decimals={token.decimals}
+        symbol={token.symbol}
+        dappOrigin={dappApp?.site?.origin}
+        onSave={handleSaveAllowance}
+        onBack={() => setView('confirm')}
+      />
+    )
+  }
+
+  if (view === 'data' && dappApp) {
+    return (
+      <ViewData
+        transaction={sendTransactionParams}
+        network={dappApp.currentNetwork}
+        onBack={() => setView('confirm')}
+      />
+    )
+  }
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -695,8 +752,7 @@ function ConfirmTransaction() {
               clearSendTransactionParams()
               return
             }
-            clearAdvancedGasSetting()
-            setGasLevel('medium')
+            setTxOptions({nonce: txOptions.nonce})
           }}
         />
       </header>
@@ -723,12 +779,13 @@ function ConfirmTransaction() {
             token={displayToken}
             isApproveToken={isApproveToken}
             canEditAllowance={canEditAllowance}
+            onEditAllowance={() => setView('allowance')}
             isDapp={isDapp}
             isSign={isSign}
             method={
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
-            allowance={sendDisplayValue}
+            allowance={displayAllowance}
             value={sendTransactionParams.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
@@ -738,16 +795,21 @@ function ConfirmTransaction() {
             sponsoredUserOperation={sponsoredUserOperation}
             nativeToken={nativeToken}
             estimateRst={estimateForSend}
-            uses1559Fees={uses1559Fees}
+            feePerGas={feePerGas}
+            editLabel={uses1559Fees ? t(gasLevel) : t('edit')}
+            onEdit={() => setView('gas')}
           />
         </div>
         <div className="flex flex-col items-center">
-          {isDapp && !!inputParams.data && inputParams.data !== '0x' && (
-            <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
-              {t('viewData')}
-              <RightOutlined className="w-3 h-3 text-primary ml-1" />
-            </Link>
-          )}
+          {isDapp &&
+            dappApp &&
+            !!txWithOptions.data &&
+            txWithOptions.data !== '0x' && (
+              <Link onClick={() => setView('data')} className="mb-6">
+                {t('viewData')}
+                <RightOutlined className="w-3 h-3 text-primary ml-1" />
+              </Link>
+            )}
 
           {!isDapp && !isSwitchInfoDrawerOpen && !pendingDelegationAction && (
             <div className="w-full flex px-3 z-50">

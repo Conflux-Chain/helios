@@ -1,352 +1,294 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {useHistory, useLocation} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {
-  convertDecimal,
   convertDataToValue,
-  convertValueToData,
-  formatDecimalToHex,
   formatHexToDecimal,
   GWEI_DECIMALS,
-  Big,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
-import {TitleNav, GasCost} from '../../components'
+import {TitleNav, GasCost, AlertMessage} from '../../components'
+import AdvancedGasEditor from '../../components/AdvancedGasEditor'
 import GasFeeOptions from '../../components/GasFeeOptions'
-import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
-import {ROUTES} from '../../constants'
-import {getPageType} from '../../utils'
+import {useUses1559Fees} from '../../hooks'
+import {getGasLimitError} from '../../hooks/useGasFeeValidation'
+import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
+import {NETWORK_TYPE} from '../../constants'
+import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
 import {
   useCurrentAddress,
+  useCfxMaxGasLimit,
   useIsCfxChain,
-  usePendingAuthReq,
 } from '../../hooks/useApi'
-
-const {EDIT_GAS_FEE, ADVANCED_GAS} = ROUTES
 
 // resendGasPrice is hex wei/drip
 function EditGasFee({
-  tx: historyTx,
+  tx,
+  initialTxOptions = {},
+  onSave,
+  onBack,
   resendType = '',
   resendGasPrice,
   onSubmit,
-  onClickGasStationItem,
+  onTxOptionsChange,
   resendDisabled,
 }) {
   const {t} = useTranslation()
-  const history = useHistory()
-  const location = useLocation()
-
-  const {
-    gasLevel,
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    nonce: suggestedNonce,
-    customNonce,
-    storageLimit,
-    advancedGasSetting,
-    tx: txParams,
-    setGasLevel,
-    setGasPrice,
-    setMaxFeePerGas,
-    setMaxPriorityFeePerGas,
-    setGasLimit,
-    setStorageLimit,
-    setTx,
-    setAdvancedGasSetting,
-    clearAdvancedGasSetting,
-    clearSendTransactionParams,
-  } = useCurrentTxStore()
-
-  const isSendTx = location.pathname === EDIT_GAS_FEE
-
-  const nonce =
-    !isSendTx && historyTx?.nonce
-      ? formatHexToDecimal(historyTx.nonce)
-      : customNonce || suggestedNonce
-
-  const transactionNonce = isSendTx
-    ? formatDecimalToHex(customNonce)
-    : historyTx?.nonce
-
-  const isDapp = getPageType() === 'notification'
-  const pendingAuthReq = usePendingAuthReq()
-  const dappAuthReq = isDapp ? pendingAuthReq?.[0] : null
-  const dappTx = dappAuthReq?.req?.params?.[0] || {}
-  const originParams = !isDapp ? {...txParams} : {...dappTx}
-
-  if (isSendTx) {
-    delete originParams.nonce
-  }
-
-  const estimateRst = useEstimateTx(originParams) || {}
-  const {
-    gasInfoEip1559 = {},
-    gasPrice: estimateGasPrice,
-    gasLimit: estimateGasLimit,
-  } = estimateRst
-
-  // hex wei/drip
-  const suggestedGasPrice = resendGasPrice || estimateGasPrice
   const {
     data: {network},
   } = useCurrentAddress()
 
+  const networkTypeIsCfx = network.type === NETWORK_TYPE.CFX
   const isCfxChain = useIsCfxChain()
-  const uses1559Fees = useUses1559Fees(originParams?.type)
+  const uses1559Fees = useUses1559Fees(tx?.type)
+  const maxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
+  const isResend = Boolean(resendType)
 
-  const [selectedGasLevel, setSelectedGasLevel] = useState('')
+  const [txOptions, setTxOptions] = useState(initialTxOptions)
+  const [advancedInitialValues, setAdvancedInitialValues] = useState(null)
+  const isEditingAdvanced = advancedInitialValues !== null
 
-  useEffect(() => {
-    if (!isSendTx) {
-      setTx(historyTx)
-    }
-  }, [isSendTx, JSON.stringify(historyTx), setTx])
+  const estimateParams = {...tx}
+  delete estimateParams.gas
+  delete estimateParams.storageLimit
 
-  useEffect(() => {
-    if (advancedGasSetting.gasLevel === 'advanced')
-      setSelectedGasLevel('advanced')
-    else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
-  }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
+  const baseEstimate = useTransactionEstimate({
+    transaction: estimateParams,
+    network,
+  })
 
-  useEffect(() => {
-    if (gasLevel === 'advanced') {
-      setAdvancedGasSetting({
-        gasLimit: advancedGasSetting.gasLimit || gasLimit,
-        gasPrice: advancedGasSetting.gasPrice || gasPrice,
-        maxFeePerGas: advancedGasSetting.maxFeePerGas || maxFeePerGas,
-        maxPriorityFeePerGas:
-          advancedGasSetting.maxPriorityFeePerGas || maxPriorityFeePerGas,
-        nonce: advancedGasSetting.nonce || nonce,
-        storageLimit: advancedGasSetting.storageLimit || storageLimit,
-        gasLevel: 'advanced',
-      })
-    }
-  }, [])
+  // Replacement transactions use the quote provided by the resend flow.
+  const replacementPrice = convertDataToValue(resendGasPrice, GWEI_DECIMALS)
+  const feeSuggestions = isResend
+    ? {
+        gasPrice: resendGasPrice,
+        gasInfoEip1559: {
+          medium: {
+            suggestedMaxFeePerGas: replacementPrice,
+            suggestedMaxPriorityFeePerGas: replacementPrice,
+          },
+        },
+      }
+    : baseEstimate.data
 
-  let sendParams = {}
-  if (selectedGasLevel === 'advanced') {
-    const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
-    sendParams = {
-      ...originParams,
-      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
-      nonce: transactionNonce,
-      storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
-      maxFeePerGas: formatDecimalToHex(maxFeePerGas),
-      maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
-      gasPrice: formatDecimalToHex(gasPrice),
-    }
-  } else {
-    const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
-    const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
-    sendParams = {
-      ...originParams,
-      gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
-      nonce: transactionNonce,
-      storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: !resendType
-        ? suggestedMaxFeePerGas
-          ? convertValueToData(
-              new Big(suggestedMaxFeePerGas).round(9).toString(10),
-              GWEI_DECIMALS,
-            )
-          : ''
-        : // 1559 tx resend maxFeePerGas use suggest gas price
-          suggestedGasPrice,
-      maxPriorityFeePerGas: !resendType
-        ? suggestedMaxPriorityFeePerGas
-          ? convertValueToData(
-              new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
-              GWEI_DECIMALS,
-            )
-          : ''
-        : // 1559 tx resend maxPriorityFeePerGas use suggest gas price
-          suggestedGasPrice,
-      gasPrice: !uses1559Fees ? suggestedGasPrice : '',
-    }
+  const {gasInfoEip1559, gasPrice: suggestedGasPrice} = feeSuggestions || {}
+
+  const effectiveTxOptions = isResend
+    ? {gasLevel: 'medium', ...txOptions}
+    : txOptions
+
+  const txWithOptions = applyTxOptions({
+    tx,
+    txOptions: effectiveTxOptions,
+    estimate: feeSuggestions,
+    uses1559Fees,
+  })
+
+  const selectedGasLevel = getSelectedGasLevel({
+    tx,
+    txOptions: effectiveTxOptions,
+    uses1559Fees,
+  })
+
+  const hasGasPrices =
+    uses1559Fees !== undefined &&
+    Boolean(
+      uses1559Fees
+        ? txWithOptions.maxFeePerGas && txWithOptions.maxPriorityFeePerGas
+        : txWithOptions.gasPrice,
+    )
+
+  const transactionEstimate = useTransactionEstimate({
+    transaction: hasGasPrices ? txWithOptions : null,
+    network,
+  })
+  const {data: feeEstimate} = transactionEstimate
+  const estimateError = hasGasPrices
+    ? transactionEstimate.error
+    : baseEstimate.error
+  const estimateLoading =
+    !estimateError && (!hasGasPrices || transactionEstimate.loading)
+
+  const sendParams = {
+    ...txWithOptions,
+    gas: txWithOptions.gas || feeEstimate?.gasLimit,
+    ...(networkTypeIsCfx
+      ? {
+          storageLimit:
+            txWithOptions.storageLimit || feeEstimate?.storageCollateralized,
+        }
+      : {}),
   }
-  if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
-  if (!sendParams.maxPriorityFeePerGas) delete sendParams.maxPriorityFeePerGas
-  if (!sendParams.gasPrice) delete sendParams.gasPrice
-  if (!sendParams.storageLimit) delete sendParams.storageLimit
-  if (!sendParams.nonce) delete sendParams.nonce
 
-  const feeEstimate = useEstimateTx(sendParams) || {}
+  const estimatedGasUsed = formatHexToDecimal(feeEstimate?.gasUsed)
+  const gasLimitError = hasGasPrices
+    ? getGasLimitError(
+        {
+          gasLimit: formatHexToDecimal(sendParams.gas),
+          minGasLimit: estimatedGasUsed,
+          maxGasLimit: formatHexToDecimal(maxGasLimit),
+        },
+        t,
+      )
+    : ''
 
-  const handleSelectGasLevel = level => {
-    setSelectedGasLevel(level)
-    clearAdvancedGasSetting()
-    onClickGasStationItem?.()
+  const handleSelectGasLevel = gasLevel => {
+    setTxOptions(current => ({
+      ...current,
+      gasLevel,
+      gasPrice: '',
+      maxFeePerGas: '',
+      maxPriorityFeePerGas: '',
+    }))
+    onTxOptionsChange?.()
   }
 
   const handleEditAdvancedFees = () => {
-    if (
-      (uses1559Fees &&
-        selectedGasLevel !== 'advanced' &&
-        !gasInfoEip1559[selectedGasLevel]) ||
-      (!uses1559Fees && !suggestedGasPrice)
-    ) {
-      return
-    }
+    if (!hasGasPrices) return
 
-    const searchParams = new URLSearchParams({
-      isHistoryTx: String(!isSendTx),
-    })
-
-    if (uses1559Fees) {
-      const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
-        gasInfoEip1559[selectedGasLevel] || {}
-
-      const replacementFee = resendType
-        ? convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
-        : undefined
-
-      searchParams.set(
-        'suggestedMaxFeePerGas',
-        resendType ? replacementFee : suggestedMaxFeePerGas,
-      )
-      searchParams.set(
-        'suggestedMaxPriorityFeePerGas',
-        resendType ? replacementFee : suggestedMaxPriorityFeePerGas,
-      )
-      searchParams.set('selectedGasLevel', selectedGasLevel)
-    } else {
-      searchParams.set('suggestedGasPrice', suggestedGasPrice)
-    }
-
-    history.push({
-      pathname: ADVANCED_GAS,
-      search: `?${searchParams.toString()}`,
+    setAdvancedInitialValues({
+      gasPrice: formatHexToDecimal(txWithOptions.gasPrice),
+      maxFeePerGas: formatHexToDecimal(txWithOptions.maxFeePerGas),
+      maxPriorityFeePerGas: formatHexToDecimal(
+        txWithOptions.maxPriorityFeePerGas,
+      ),
+      gasLimit: formatHexToDecimal(txWithOptions.gas),
+      storageLimit: formatHexToDecimal(txWithOptions.storageLimit),
+      nonce: txOptions.nonce || '',
     })
   }
 
-  const saveGasData = () => {
-    const {
-      gasPrice,
-      maxPriorityFeePerGas,
-      maxFeePerGas,
-      gasLimit,
-      storageLimit,
-    } = advancedGasSetting
-
-    setGasLevel(selectedGasLevel)
-
-    if (selectedGasLevel === 'advanced') {
-      if (uses1559Fees) {
-        setMaxFeePerGas(maxFeePerGas)
-        setMaxPriorityFeePerGas(maxPriorityFeePerGas)
-      } else {
-        setGasPrice(gasPrice)
-      }
-      setGasLimit(gasLimit)
-      setStorageLimit(storageLimit)
-    } else {
-      if (uses1559Fees) {
-        const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
-        const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
-        setMaxFeePerGas(
-          convertDecimal(
-            new Big(suggestedMaxFeePerGas).round(9).toString(10),
-            'multiply',
-            GWEI_DECIMALS,
-          ),
-        )
-        setMaxPriorityFeePerGas(
-          convertDecimal(
-            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
-            'multiply',
-            GWEI_DECIMALS,
-          ),
-        )
-      } else {
-        setGasPrice(formatHexToDecimal(suggestedGasPrice))
-      }
+  const handleSaveAdvancedFees = changes => {
+    if (Object.keys(changes).length > 0) {
+      setTxOptions(current => ({...current, ...changes}))
+      onTxOptionsChange?.()
     }
-    if (onSubmit) {
+
+    setAdvancedInitialValues(null)
+  }
+
+  const canSave = hasGasPrices && !resendDisabled
+  const canSubmit =
+    canSave &&
+    !estimateLoading &&
+    !estimateError &&
+    Boolean(sendParams.gas) &&
+    estimatedGasUsed !== undefined &&
+    !gasLimitError &&
+    (!networkTypeIsCfx || Boolean(sendParams.storageLimit))
+  const buttonDisabled = isResend ? !canSubmit : !canSave
+
+  const handleSave = () => {
+    if (buttonDisabled) return
+
+    if (isResend) {
       onSubmit(sendParams)
     } else {
-      history.goBack()
+      onSave(txOptions)
     }
+  }
+
+  const handleBack = () => {
+    if (isEditingAdvanced) {
+      setAdvancedInitialValues(null)
+    } else {
+      onBack()
+    }
+  }
+
+  let titleKey = 'editGasFee'
+
+  if (isEditingAdvanced) {
+    titleKey = 'advanced'
+  } else if (resendType === 'speedup') {
+    titleKey = 'speedUp'
+  } else if (resendType === 'expeditedCancellation') {
+    titleKey = 'expeditedCancellation'
+  } else if (isResend) {
+    titleKey = 'cancel'
   }
 
   return (
     <div
       id="editGasFeeContainer"
-      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-0 pb-6"
+      className="flex h-full w-full flex-col bg-blue-circles bg-no-repeat bg-0"
     >
-      <div className="flex-1">
+      <div className="shrink-0">
         <TitleNav
-          onGoBack={() => {
-            if (isSendTx) {
-              setTimeout(() => clearAdvancedGasSetting(), 500)
-            } else {
-              setTimeout(() => clearSendTransactionParams(), 500)
-            }
-          }}
-          title={
-            isSendTx
-              ? t('editGasFee')
-              : resendType === 'speedup'
-              ? t('speedUp')
-              : resendType === 'expeditedCancellation'
-              ? t('expeditedCancellation')
-              : t('cancel')
-          }
+          title={t(titleKey)}
+          autoGoBack={false}
+          onGoBack={handleBack}
         />
-        <main className="mt-3 px-4 flex flex-col flex-1">
-          <GasCost estimate={feeEstimate} network={network} />
-          <GasFeeOptions
-            uses1559Fees={uses1559Fees}
-            showFeeLevels={uses1559Fees && !resendType}
-            gasInfoEip1559={gasInfoEip1559}
-            gasLimit={estimateGasLimit}
-            suggestedGasPrice={suggestedGasPrice}
-            selectedGasLevel={selectedGasLevel}
-            advancedGasSetting={advancedGasSetting}
-            isCfxChain={isCfxChain}
-            onSelectGasLevel={handleSelectGasLevel}
-            onEditAdvancedFees={handleEditAdvancedFees}
-          />
-        </main>
       </div>
-      <footer className="flex flex-col px-4">
-        {!isSendTx && (
-          <div className="bg-warning-10 text-warning px-3 py-2 mb-3 text-xs rounded-sm">
-            {resendType === 'speedup' || resendType === 'expeditedCancellation'
-              ? t('speedupTxDes')
-              : t('cancelTxDes')}
-          </div>
-        )}
-        <Button
-          className="w-full mx-auto z-50"
-          id="saveGasFeeBtn"
-          onClick={saveGasData}
-          disabled={
-            (uses1559Fees &&
-              selectedGasLevel !== 'advanced' &&
-              !gasInfoEip1559[selectedGasLevel]) ||
-            (!uses1559Fees && !suggestedGasPrice) ||
-            resendDisabled
-          }
-        >
-          {isSendTx ? t('save') : t('submit')}
-        </Button>
-      </footer>
+
+      {isEditingAdvanced ? (
+        <AdvancedGasEditor
+          transaction={tx}
+          network={network}
+          initialValues={advancedInitialValues}
+          uses1559Fees={uses1559Fees}
+          suggestedNonce={formatHexToDecimal(baseEstimate.data?.nonce)}
+          maxGasLimit={formatHexToDecimal(maxGasLimit)}
+          canEditNonce={!isResend}
+          onSave={handleSaveAdvancedFees}
+        />
+      ) : (
+        <>
+          <main className="mt-3 px-4 flex flex-col flex-1">
+            <GasCost
+              estimate={feeEstimate || {error: estimateError}}
+              network={network}
+            />
+
+            <GasFeeOptions
+              uses1559Fees={uses1559Fees}
+              showFeeLevels={uses1559Fees && !isResend}
+              gasInfoEip1559={gasInfoEip1559}
+              transaction={sendParams}
+              suggestedGasPrice={suggestedGasPrice}
+              selectedGasLevel={selectedGasLevel}
+              isCfxChain={isCfxChain}
+              onSelectGasLevel={handleSelectGasLevel}
+              onEditAdvancedFees={handleEditAdvancedFees}
+            />
+          </main>
+
+          {isResend && <AlertMessage inline estimateError={gasLimitError} />}
+
+          <footer className="flex shrink-0 flex-col px-4 pb-6">
+            {isResend && (
+              <div className="bg-warning-10 text-warning px-3 py-2 mb-3 text-xs rounded-sm">
+                {resendType === 'speedup' ||
+                resendType === 'expeditedCancellation'
+                  ? t('speedupTxDes')
+                  : t('cancelTxDes')}
+              </div>
+            )}
+
+            <Button
+              className="w-full mx-auto z-50"
+              id="saveGasFeeBtn"
+              onClick={handleSave}
+              disabled={buttonDisabled}
+            >
+              {isResend ? t('submit') : t('save')}
+            </Button>
+          </footer>
+        </>
+      )}
     </div>
   )
 }
 
 EditGasFee.propTypes = {
+  tx: PropTypes.object.isRequired,
+  initialTxOptions: PropTypes.object,
+  onSave: PropTypes.func,
+  onBack: PropTypes.func.isRequired,
   onSubmit: PropTypes.func,
-  onClickGasStationItem: PropTypes.func,
-  isSpeedUp: PropTypes.bool,
-  tx: PropTypes.object,
+  onTxOptionsChange: PropTypes.func,
   resendGasPrice: PropTypes.string,
   resendType: PropTypes.string,
   resendDisabled: PropTypes.bool,
 }
-
 export default EditGasFee

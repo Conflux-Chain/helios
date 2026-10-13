@@ -37,13 +37,9 @@ import DappAddNetwork from './pages/DappAddNetwork'
 import DappSwitchNetwork from './pages/DappSwitchNetwork'
 import DappAddToken from './pages/DappAddToken'
 import SendTransaction from './pages/SendTransaction'
-import EditGasFee from './pages/EditGasFee'
-import AdvancedGas from './pages/AdvancedGas'
-import EditAllowance from './pages/EditAllowance'
 import ConfirmTransaction from './pages/ConfirmTransaction'
 import ConfirmCallBundle from './pages/ConfirmCallBundle'
 import History from './pages/History'
-import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
 import AuthorizedWebsite from './pages/AuthorizedWebsite'
 import NetworkManagement from './pages/NetworkManagement'
@@ -81,12 +77,8 @@ const {
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
-  EDIT_GAS_FEE,
-  ADVANCED_GAS,
-  EDIT_ALLOWANCE,
   CONFIRM_TRANSACTION,
   CONFIRM_CALL_BUNDLE,
-  VIEW_DATA,
   VIEW_PERMIT_DATA,
   HISTORY,
   ACCOUNT_MANAGEMENT,
@@ -152,28 +144,12 @@ const routes = [
     component: ConfirmCallBundle,
   },
   {
-    path: EDIT_GAS_FEE,
-    component: EditGasFee,
-  },
-  {
-    path: ADVANCED_GAS,
-    component: AdvancedGas,
-  },
-  {
-    path: EDIT_ALLOWANCE,
-    component: EditAllowance,
-  },
-  {
     path: SET_PASSWORD,
     component: SetPassword,
   },
   {
     path: SELECT_CREATE_TYPE,
     component: SelectCreateType,
-  },
-  {
-    path: VIEW_DATA,
-    component: ViewData,
   },
   {
     path: VIEW_PERMIT_DATA,

@@ -6,7 +6,6 @@ import {
   convertDataToValue,
   GWEI_DECIMALS,
   toThousands,
-  convertDecimal,
 } from '@fluent-wallet/data-format'
 import {addUnitForValue} from '../utils'
 
@@ -19,14 +18,7 @@ const GasFeeOption = ({
   isCfxChain = false,
 }) => {
   const {t} = useTranslation()
-  const {
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gasLimit,
-    baseFee,
-    gasPrice,
-    gasLevel,
-  } = data
+  const {maxFeePerGas, maxPriorityFeePerGas, gasLimit, baseFee, gasPrice} = data
   return (
     <div
       className={`w-full h-10 px-3 mb-3 flex cursor-pointer items-center justify-between rounded hover:bg-primary-10 text-xs border ${
@@ -38,7 +30,7 @@ const GasFeeOption = ({
       <span className="text-gray-60">{t(level)}</span>
       <div className="flex items-center">
         <span className="text-primary">
-          {gasLevel === 'advanced' || level !== 'advanced'
+          {selected || level !== 'advanced'
             ? addUnitForValue(
                 uses1559Fees ? maxFeePerGas : gasPrice,
                 isCfxChain,
@@ -101,10 +93,9 @@ function GasFeeOptions({
   uses1559Fees,
   showFeeLevels = uses1559Fees,
   gasInfoEip1559,
-  gasLimit,
+  transaction,
   suggestedGasPrice,
   selectedGasLevel,
-  advancedGasSetting,
   isCfxChain,
   onSelectGasLevel,
   onEditAdvancedFees,
@@ -129,7 +120,7 @@ function GasFeeOptions({
                   maxFeePerGas: gasInfoEip1559?.[level]?.suggestedMaxFeePerGas,
                   maxPriorityFeePerGas:
                     gasInfoEip1559?.[level]?.suggestedMaxPriorityFeePerGas,
-                  gasLimit: convertDataToValue(gasLimit),
+                  gasLimit: convertDataToValue(transaction?.gas),
                   baseFee: gasInfoEip1559?.estimatedBaseFee,
                 }
               : {
@@ -149,24 +140,11 @@ function GasFeeOptions({
       <GasFeeOption
         level="advanced"
         data={{
-          maxFeePerGas: convertDecimal(
-            advancedGasSetting?.maxFeePerGas,
-            'divide',
+          maxFeePerGas: convertDataToValue(
+            transaction?.maxFeePerGas,
             GWEI_DECIMALS,
           ),
-          maxPriorityFeePerGas: convertDecimal(
-            advancedGasSetting?.maxPriorityFeePerGas,
-            'divide',
-            GWEI_DECIMALS,
-          ),
-          gasLimit: advancedGasSetting?.gasLimit,
-          gasPrice: convertDecimal(
-            advancedGasSetting?.gasPrice,
-            'divide',
-            GWEI_DECIMALS,
-          ),
-          baseFee: gasInfoEip1559?.estimatedBaseFee,
-          gasLevel: advancedGasSetting?.gasLevel,
+          gasPrice: convertDataToValue(transaction?.gasPrice, GWEI_DECIMALS),
         }}
         uses1559Fees={uses1559Fees}
         isCfxChain={isCfxChain}
@@ -181,10 +159,9 @@ GasFeeOptions.propTypes = {
   uses1559Fees: PropTypes.bool,
   showFeeLevels: PropTypes.bool,
   gasInfoEip1559: PropTypes.object,
-  gasLimit: PropTypes.string,
+  transaction: PropTypes.object,
   suggestedGasPrice: PropTypes.string,
   selectedGasLevel: PropTypes.string,
-  advancedGasSetting: PropTypes.object,
   isCfxChain: PropTypes.bool,
   onSelectGasLevel: PropTypes.func.isRequired,
   onEditAdvancedFees: PropTypes.func.isRequired,

@@ -1,22 +1,17 @@
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
 import GasFee from '../../../components/GasFee'
 import GasFeePlaceholder from '../../../components/GasFeePlaceholder'
 import SponsoredGasFee from '../../../components/SponsoredGasFee'
-import {useCurrentTxStore} from '../../../hooks'
 import {useCurrentAddress} from '../../../hooks/useApi'
-import {ROUTES} from '../../../constants'
 
 function ConfirmGasFee({
   sponsoredUserOperation,
   nativeToken,
   estimateRst,
-  uses1559Fees,
+  feePerGas,
+  editLabel,
+  onEdit,
 }) {
-  const {t} = useTranslation()
-  const history = useHistory()
-  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
   const {
     data: {network},
   } = useCurrentAddress()
@@ -38,9 +33,9 @@ function ConfirmGasFee({
     <GasFee
       estimate={estimateRst}
       network={network}
-      feePerGas={uses1559Fees ? maxFeePerGas : gasPrice}
-      editLabel={uses1559Fees ? t(gasLevel) : t('edit')}
-      onEdit={() => history.push(ROUTES.EDIT_GAS_FEE)}
+      feePerGas={feePerGas}
+      editLabel={editLabel}
+      onEdit={onEdit}
     />
   )
 }
@@ -53,7 +48,9 @@ ConfirmGasFee.propTypes = {
   }),
   nativeToken: PropTypes.object,
   estimateRst: PropTypes.object,
-  uses1559Fees: PropTypes.bool,
+  feePerGas: PropTypes.string,
+  editLabel: PropTypes.string,
+  onEdit: PropTypes.func.isRequired,
 }
 
 export default ConfirmGasFee

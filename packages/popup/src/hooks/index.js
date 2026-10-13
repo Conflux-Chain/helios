@@ -41,6 +41,7 @@ import {
   getServiceNamesWithAddresses,
 } from '../utils'
 import {useTransactionEstimate} from './useTransactionEstimate'
+import {updateApprovalAmount} from '../utils/approval'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -141,44 +142,26 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
 
   return data
 }
-
-const initAdvancedGasSetting = {
-  gasLimit: '',
-  storageLimit: '',
-  gasPrice: '',
-  maxFeePerGas: '',
-  maxPriorityFeePerGas: '',
-  nonce: '',
-  gasLevel: '',
-}
-
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
-  gasPrice: '',
-  maxFeePerGas: '',
-  maxPriorityFeePerGas: '',
-  gasLimit: '',
-  storageLimit: '',
-  gasLevel: 'medium',
-  advancedGasSetting: initAdvancedGasSetting,
+  /** @type {import('../utils/gas').TxOptions} */
+  txOptions: {},
   data: '',
-  nonce: '',
-  customNonce: '',
   sendTokenId: 'native',
-  customAllowance: '',
-
+  // Base-unit decimal string. undefined uses the original approval amount.
+  customAllowance: undefined,
   sponsorshipDeclined: false,
 
   tx: {},
   txContext: {},
-  // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
+  // Preset transactions must not be overwritten by the send form.
   syncTxWithForm: true,
-  // MAX is user intent. The final amount may change after gas is resolved.
+  // MAX is user intent; the final amount depends on the resolved fee.
   isMaxSelected: false,
 }
 
-export const useCurrentTxStore = create((set, get) => ({
+export const useCurrentTxStore = create(set => ({
   ...defaultSendTransactionParams,
 
   setTx: tx => set({tx}),
@@ -193,24 +176,22 @@ export const useCurrentTxStore = create((set, get) => ({
   setData: data => set({data}),
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),
-  setGasPrice: gasPrice => set({gasPrice}),
-  setMaxFeePerGas: maxFeePerGas => set({maxFeePerGas}),
-  setMaxPriorityFeePerGas: maxPriorityFeePerGas => set({maxPriorityFeePerGas}),
-  setGasLimit: gasLimit => set({gasLimit}),
-  setStorageLimit: storageLimit => set({storageLimit}),
-  setGasLevel: gasLevel => set({gasLevel}),
+  setTxOptions: txOptions => set({txOptions}),
   setIsMaxSelected: isMaxSelected => set({isMaxSelected}),
-  setAdvancedGasSetting: advancedGasSetting => {
-    const oldSetting = get().advancedGasSetting
-    const newSetting = {...oldSetting, ...advancedGasSetting}
-    set({advancedGasSetting: newSetting})
-  },
-  clearAdvancedGasSetting: () =>
-    set({advancedGasSetting: initAdvancedGasSetting}),
-  setCustomAllowance: customAllowance => set({customAllowance}),
+  setCustomAllowance: customAllowance =>
+    set(state => {
+      if (customAllowance === state.customAllowance) return state
+
+      return {
+        customAllowance,
+        txOptions: {
+          ...state.txOptions,
+          gasLimit: '',
+          storageLimit: '',
+        },
+      }
+    }),
   setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
-  setNonce: nonce => set({nonce}),
-  setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
@@ -392,7 +373,9 @@ export const useDecodeDisplay = ({
     displayToAddress,
     displayFromAddress
   const {from, to, value} = tx
-  const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
+  const toAddress = useCurrentTxStore(state => state.toAddress)
+  const sendTokenId = useCurrentTxStore(state => state.sendTokenId)
+  const sendAmount = useCurrentTxStore(state => state.sendAmount)
   const {
     data: {value: address, account},
   } = useAddress({
@@ -506,34 +489,21 @@ export function padHexData(data) {
   return '0x' + hex
 }
 
-export const useViewData = (
-  {data} = {},
-  isApproveToken,
-  passedDecodeData,
-  passedToken,
-) => {
-  const {customAllowance} = useCurrentTxParams()
-  const allowance =
-    convertValueToData(customAllowance, passedToken?.decimals) || '0x0'
-  const firstArg = passedDecodeData?.args?.[0]
-  const spender =
-    isApproveToken && firstArg
-      ? validateBase32Address(firstArg)
-        ? decode(firstArg).hexAddress
-        : firstArg
-      : ''
-  const viewData = useMemo(() => {
-    const shouldUseCustom = customAllowance && isApproveToken
-    if (shouldUseCustom) {
-      if (!spender) {
-        return data
-      }
-      return iface.encodeFunctionData('approve', [spender, allowance])
-    } else {
+export const useViewData = ({data} = {}, isApproveToken, passedDecodeData) => {
+  const customAllowance = useCurrentTxStore(state => state.customAllowance)
+  const isApprovalDecoded = Boolean(passedDecodeData?.args?.[0])
+
+  return useMemo(() => {
+    if (customAllowance === undefined || !isApproveToken) {
       return padHexData(data)
     }
-  }, [customAllowance, data, allowance, spender, isApproveToken])
-  return viewData
+
+    if (!isApprovalDecoded) {
+      return data
+    }
+
+    return updateApprovalAmount(padHexData(data), customAllowance)
+  }, [customAllowance, data, isApproveToken, isApprovalDecoded])
 }
 
 export const useDisplayErrorMessage = errorMessage => {

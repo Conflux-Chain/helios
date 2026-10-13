@@ -1,6 +1,27 @@
 import {useTranslation} from 'react-i18next'
 import {Big} from '@fluent-wallet/data-format'
 
+// Gas limits use decimal strings.
+export function getGasLimitError({gasLimit, minGasLimit, maxGasLimit}, t) {
+  if (!gasLimit) return ''
+
+  const limit = new Big(gasLimit)
+
+  if (minGasLimit !== undefined && limit.lt(minGasLimit)) {
+    return t('gasLimitMinErr', {
+      gasUsed: minGasLimit,
+    })
+  }
+
+  if (maxGasLimit && limit.gt(maxGasLimit)) {
+    return t('gasLimitMaxErr', {
+      gasMax: maxGasLimit,
+    })
+  }
+
+  return ''
+}
+
 // Fee inputs use GWei/GDrip. Gas limits and nonce use decimal strings.
 export function useGasFeeValidation({
   values,
@@ -16,7 +37,7 @@ export function useGasFeeValidation({
   const errors = {
     gasPrice: '',
     maxPriorityFeePerGas: '',
-    gasLimit: '',
+    gasLimit: getGasLimitError({gasLimit, minGasLimit, maxGasLimit}, t),
     nonce: '',
   }
 
@@ -36,20 +57,6 @@ export function useGasFeeValidation({
       amount: isCfxChain ? 1 : 0.000000001,
       unit: isCfxChain ? 'GDrip' : 'GWei',
     })
-  }
-
-  if (gasLimit) {
-    const limit = new Big(gasLimit)
-
-    if (limit.lt(minGasLimit)) {
-      errors.gasLimit = t('gasLimitMinErr', {
-        gasUsed: minGasLimit,
-      })
-    } else if (maxGasLimit && limit.gt(maxGasLimit)) {
-      errors.gasLimit = t('gasLimitMaxErr', {
-        gasMax: maxGasLimit,
-      })
-    }
   }
 
   if (canEditNonce && nonce && new Big(nonce).lt(0)) {

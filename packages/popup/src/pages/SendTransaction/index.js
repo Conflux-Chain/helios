@@ -4,7 +4,6 @@ import {useHistory} from 'react-router-dom'
 import {isNumber} from '@fluent-wallet/checks'
 import {
   convertDataToValue,
-  formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
@@ -83,6 +82,7 @@ const useToAddressPlaceHolder = ({type, netId}) => {
 function SendTransaction() {
   const {t} = useTranslation()
   const history = useHistory()
+
   const {
     toAddress,
     sendAmount,
@@ -91,12 +91,6 @@ function SendTransaction() {
     setToAddress,
     setSendAmount,
     setSendTokenId,
-    setGasPrice,
-    setMaxPriorityFeePerGas,
-    setMaxFeePerGas,
-    setGasLimit,
-    setNonce,
-    setStorageLimit,
     setIsMaxSelected,
     setSponsorshipDeclined,
     setSyncTxWithForm,
@@ -163,41 +157,9 @@ function SendTransaction() {
 
   const estimateRst =
     useEstimateTx(tx, !isNativeToken ? {[tokenAddress]: sendValue} : {}) || {}
-  const {
-    gasPrice: estimateGasPrice,
-    maxFeePerGas: estimateMaxFeePerGas,
-    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
-    gasLimit: estimateGasLimit,
-    storageCollateralized: estimateStorageLimit,
-    nonce,
-    nativeMaxDrip,
-    loading,
-  } = estimateRst
 
-  useEffect(() => {
-    estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
-    estimateMaxPriorityPerGas &&
-      setMaxPriorityFeePerGas(formatHexToDecimal(estimateMaxPriorityPerGas))
-    estimateMaxFeePerGas &&
-      setMaxFeePerGas(formatHexToDecimal(estimateMaxFeePerGas))
-    estimateGasLimit && setGasLimit(formatHexToDecimal(estimateGasLimit))
-    nonce && setNonce(formatHexToDecimal(nonce))
-    estimateStorageLimit &&
-      setStorageLimit(formatHexToDecimal(estimateStorageLimit))
-  }, [
-    estimateGasPrice,
-    estimateMaxPriorityPerGas,
-    estimateMaxFeePerGas,
-    estimateGasLimit,
-    nonce,
-    estimateStorageLimit,
-    setGasPrice,
-    setMaxPriorityFeePerGas,
-    setMaxFeePerGas,
-    setGasLimit,
-    setNonce,
-    setStorageLimit,
-  ])
+  const {nativeMaxDrip, loading} = estimateRst
+
   const errorMessage = useEstimateError(
     estimateRst,
     tokenAddress,

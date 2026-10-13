@@ -52,7 +52,10 @@ function TokenSpendingCapEditor({
             {t('spendLimitPermission')}
           </div>
           <div className="text-xs text-gray-40 my-1" id="dappOrigin">
-            {t('allowSpendDes', {dapp: dappOrigin})}
+            {t('allowSpendDes', {
+              dapp: dappOrigin,
+              interpolation: {escapeValue: false},
+            })}
           </div>
           <a
             className="cursor-pointer text-xs text-primary mt-1 hover:text-primary-dark"
@@ -84,7 +87,10 @@ function TokenSpendingCapEditor({
                   {t('proposedApprovalLimit')}
                 </div>
                 <div className="text-xs text-gray-60 mt-1 mb-0.5">
-                  {t('proposedApprovalLimitDes', {dapp: dappOrigin})}
+                  {t('proposedApprovalLimitDes', {
+                    dapp: dappOrigin,
+                    interpolation: {escapeValue: false},
+                  })}
                 </div>
                 <div className="flex">
                   <DisplayBalance
