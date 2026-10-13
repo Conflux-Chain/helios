@@ -1,26 +1,24 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {convertDataToValue, convertDecimal} from '@fluent-wallet/data-format'
 import {useCurrentDapp} from '../../../hooks/useApi'
-import {useCurrentTxParams, useDappIcon} from '../../../hooks'
+import {useDappIcon} from '../../../hooks'
 import {
   DisplayBalance,
   WrapIcon,
   CurrentNetworkDisplay,
 } from '../../../components'
-import {ROUTES} from '../../../constants'
 import {bn16} from '../../../utils'
 import {MaxUint256} from '@fluent-wallet/consts'
 import {BN} from 'bn.js'
 import {useMemo} from 'react'
-const {EDIT_ALLOWANCE} = ROUTES
 
 function InfoList({
   isDapp,
   isApproveToken,
   canEditAllowance = false,
+  onEditAllowance,
 
   isSign,
   token,
@@ -32,26 +30,25 @@ function InfoList({
   pendingAuthReq,
 }) {
   const {t} = useTranslation()
-  const history = useHistory()
+
   const data = useCurrentDapp()
-  const {customAllowance} = useCurrentTxParams()
+
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app
   const currentNetwork = isDapp ? app?.currentNetwork : {}
 
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
-  const effectiveAllowance = customAllowance || allowance
   const isUnlimited = useMemo(() => {
     if (!isApproveToken) return false
     try {
       return bn16(MaxUint256).eq(
-        new BN(convertDecimal(effectiveAllowance, 'multiply', token?.decimals)),
+        new BN(convertDecimal(allowance, 'multiply', token?.decimals)),
       )
     } catch {
       return false
     }
-  }, [isApproveToken, effectiveAllowance, token?.decimals])
+  }, [isApproveToken, allowance, token?.decimals])
 
   return (
     <div className="info-list-container flex flex-col">
@@ -68,7 +65,7 @@ function InfoList({
           <span className="flex items-center">
             <DisplayBalance
               id="allowance"
-              balance={effectiveAllowance}
+              balance={allowance}
               isUnlimited={isUnlimited}
               mode="allowance"
               maxWidth={160}
@@ -80,7 +77,7 @@ function InfoList({
                 <EditOutlined
                   className="w-4 h-4 cursor-pointer group-hover:text-primary"
                   id="editAllowance"
-                  onClick={() => history.push(EDIT_ALLOWANCE)}
+                  onClick={onEditAllowance}
                 />
               </WrapIcon>
             )}
@@ -140,6 +137,7 @@ InfoList.propTypes = {
   method: PropTypes.string,
   pendingAuthReq: PropTypes.array,
   canEditAllowance: PropTypes.bool,
+  onEditAllowance: PropTypes.func.isRequired,
 }
 
 export default InfoList
