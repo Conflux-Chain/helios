@@ -180,6 +180,8 @@ function ResendTransaction() {
       return
     }
 
+    setEstimateError('')
+
     if (isHwAccount) {
       if (!ledgerBindingApi) {
         return
@@ -265,8 +267,12 @@ function ResendTransaction() {
         resendType={resendType}
         onSubmit={onResend}
         tx={{...resendTxParams}}
-        resendDisabled={resendParamsInvalid || !!estimateError}
-        onClickGasStationItem={() => setEstimateError('')}
+        resendDisabled={resendParamsInvalid}
+        onTxOptionsChange={() => setEstimateError('')}
+        onBack={() => {
+          clearSendTransactionParams()
+          history.goBack()
+        }}
       />
       {sendStatus && (
         <TransactionResult
