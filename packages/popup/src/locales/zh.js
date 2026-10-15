@@ -211,6 +211,7 @@ const zh = {
     totalFee: '总费用',
     customNonce: '自定义随机数',
     gasPriceErr: '燃气价格最小值是 {{amount}} {{unit}}',
+    maxFeePerGasLowErr: '每单位燃气最高价格必须大于 0 {{unit}}',
     maxPriorityFeePerGasLowErr: '此处输入的最小值应为 {{amount}} {{unit}}',
     maxPriorityFeePerGasHighErr: '输入的值需要小于等于 "每单位燃气最高价格"',
     gasLimitMinErr: '燃气限制至少是 {{gasUsed}}',

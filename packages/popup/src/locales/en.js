@@ -216,6 +216,7 @@ const en = {
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     gasPriceErr: 'The minimum Gas Price is {{amount}} {{unit}}',
+    maxFeePerGasLowErr: 'Max Fee Per Gas must be greater than 0 {{unit}}',
     maxPriorityFeePerGasLowErr:
       'The minimum typed value is {{amount}} {{unit}}',
     maxPriorityFeePerGasHighErr: 'Typed value <= "Max Fee Per Gas" is required',

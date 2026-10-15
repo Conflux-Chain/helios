@@ -40,11 +40,7 @@ function CallBundleGasFee({
       estimate={estimate || {error}}
       network={network}
       titleClassName="mx-1 mb-4"
-      feePerGas={
-        estimate?.customMaxFeePerGas ||
-        estimate?.maxFeePerGas ||
-        transaction?.maxFeePerGas
-      }
+      feePerGas={transaction?.maxFeePerGas}
       editLabel={t(gasLevel)}
       editDisabled={!transaction}
       onEdit={onEdit}
