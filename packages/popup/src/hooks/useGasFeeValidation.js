@@ -53,7 +53,7 @@ export function useGasFeeValidation({
 
     // The fee cap must be positive, even when the priority fee is zero.
     if (maxFeePerGas && maxFee.lte(0)) {
-      errors.maxFeePerGas = t('customLimitErr', {unit})
+      errors.maxFeePerGas = t('maxFeePerGasLowErr', {unit})
     }
 
     // The protocol allows a zero priority fee.
