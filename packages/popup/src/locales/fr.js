@@ -223,6 +223,8 @@ const fr = {
     totalFee: 'Frais Totaux',
     customNonce: 'Nonce personalisé',
     gasPriceErr: 'Le prix minimum du Gas est de {{amount}} {{unit}}',
+    maxFeePerGasLowErr:
+      'Le prix maximal par unité de gas doit être supérieur à 0 {{unit}}',
     maxPriorityFeePerGasLowErr:
       'Le minimum de la valeur tapée est {{amount}} {{unit}}',
     maxPriorityFeePerGasHighErr:

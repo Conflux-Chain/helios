@@ -219,6 +219,8 @@ const uk = {
     totalFee: 'Підсумкова вартість',
     customNonce: 'Номер користувача (Nonce)',
     gasPriceErr: 'Мінімальна ціна на газ складає {{amount}} {{unit}}',
+    maxFeePerGasLowErr:
+      'Максимальна ціна за одиницю газу має бути більшою за 0 {{unit}}',
     maxPriorityFeePerGasLowErr:
       'The minimum typed value is {{amount}} {{unit}}',
     maxPriorityFeePerGasHighErr: 'Typed value <= "Max Fee Per Gas" is required',

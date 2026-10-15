@@ -219,6 +219,8 @@ const ru = {
     totalFee: 'Итоговая стоимость',
     customNonce: 'Пользовательский номер (Nonce)',
     gasPriceErr: 'Минимальная цена на газ составляет {{amount}} {{unit}}',
+    maxFeePerGasLowErr:
+      'Максимальная цена за единицу газа должна быть больше 0 {{unit}}',
     maxPriorityFeePerGasLowErr:
       'The minimum typed value is {{amount}} {{unit}}',
     maxPriorityFeePerGasHighErr: 'Typed value <= "Max Fee Per Gas" is required',
