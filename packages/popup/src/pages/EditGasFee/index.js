@@ -13,6 +13,7 @@ import GasFeeOptions from '../../components/GasFeeOptions'
 import {useUses1559Fees} from '../../hooks'
 import {getGasLimitError} from '../../hooks/useGasFeeValidation'
 import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
+import {useAdvancedGasEditor} from '../../hooks/useAdvancedGasEditor'
 import {NETWORK_TYPE} from '../../constants'
 import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
 import {
@@ -45,8 +46,9 @@ function EditGasFee({
   const isResend = Boolean(resendType)
 
   const [txOptions, setTxOptions] = useState(initialTxOptions)
-  const [advancedInitialValues, setAdvancedInitialValues] = useState(null)
-  const isEditingAdvanced = advancedInitialValues !== null
+  const advancedGas = useAdvancedGasEditor({uses1559Fees})
+  const isEditingAdvanced = advancedGas.isEditing
+  const currentTxOptions = advancedGas.draftTxOptions ?? txOptions
 
   const estimateParams = {...tx}
   delete estimateParams.gas
@@ -74,8 +76,8 @@ function EditGasFee({
   const {gasInfoEip1559, gasPrice: suggestedGasPrice} = feeSuggestions || {}
 
   const effectiveTxOptions = isResend
-    ? {gasLevel: 'medium', ...txOptions}
-    : txOptions
+    ? {gasLevel: 'medium', ...currentTxOptions}
+    : currentTxOptions
 
   const txWithOptions = applyTxOptions({
     tx,
@@ -139,6 +141,8 @@ function EditGasFee({
       gasPrice: '',
       maxFeePerGas: '',
       maxPriorityFeePerGas: '',
+      // Discard gas limit changes from this edit when selecting a preset.
+      gasLimit: initialTxOptions.gasLimit,
     }))
     onTxOptionsChange?.()
   }
@@ -146,25 +150,17 @@ function EditGasFee({
   const handleEditAdvancedFees = () => {
     if (!hasGasPrices) return
 
-    setAdvancedInitialValues({
-      gasPrice: formatHexToDecimal(txWithOptions.gasPrice),
-      maxFeePerGas: formatHexToDecimal(txWithOptions.maxFeePerGas),
-      maxPriorityFeePerGas: formatHexToDecimal(
-        txWithOptions.maxPriorityFeePerGas,
-      ),
-      gasLimit: formatHexToDecimal(txWithOptions.gas),
-      storageLimit: formatHexToDecimal(txWithOptions.storageLimit),
-      nonce: txOptions.nonce || '',
+    advancedGas.startEditing({
+      originalTx: tx,
+      currentTx: sendParams,
+      txOptions,
     })
   }
 
-  const handleSaveAdvancedFees = changes => {
-    if (Object.keys(changes).length > 0) {
-      setTxOptions(current => ({...current, ...changes}))
-      onTxOptionsChange?.()
-    }
-
-    setAdvancedInitialValues(null)
+  const handleSaveAdvancedFees = () => {
+    setTxOptions(advancedGas.draftTxOptions)
+    onTxOptionsChange?.()
+    advancedGas.reset()
   }
 
   const canSave = hasGasPrices && !resendDisabled
@@ -190,7 +186,7 @@ function EditGasFee({
 
   const handleBack = () => {
     if (isEditingAdvanced) {
-      setAdvancedInitialValues(null)
+      advancedGas.reset()
     } else {
       onBack()
     }
@@ -223,13 +219,15 @@ function EditGasFee({
 
       {isEditingAdvanced ? (
         <AdvancedGasEditor
-          transaction={tx}
+          transaction={sendParams}
           network={network}
-          initialValues={advancedInitialValues}
+          values={advancedGas.values}
+          estimate={feeEstimate || {error: estimateError}}
           uses1559Fees={uses1559Fees}
           suggestedNonce={formatHexToDecimal(baseEstimate.data?.nonce)}
           maxGasLimit={formatHexToDecimal(maxGasLimit)}
           canEditNonce={!isResend}
+          onChange={advancedGas.updateField}
           onSave={handleSaveAdvancedFees}
         />
       ) : (
@@ -245,6 +243,7 @@ function EditGasFee({
               showFeeLevels={uses1559Fees && !isResend}
               gasInfoEip1559={gasInfoEip1559}
               transaction={sendParams}
+              suggestedGasLimit={baseEstimate.data?.gasLimit}
               suggestedGasPrice={suggestedGasPrice}
               selectedGasLevel={selectedGasLevel}
               isCfxChain={isCfxChain}

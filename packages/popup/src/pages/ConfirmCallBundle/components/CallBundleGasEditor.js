@@ -10,6 +10,7 @@ import {NETWORK_TYPE} from '../../../constants'
 import {useCallBundleEstimate} from '../useCallBundleEstimate'
 import {getSelectedGasLevel} from '../../../utils/gas'
 import TitleNav from '../../../components/TitleNav'
+import {useAdvancedGasEditor} from '../../../hooks/useAdvancedGasEditor'
 
 function CallBundleGasEditor({
   transaction,
@@ -21,13 +22,15 @@ function CallBundleGasEditor({
 }) {
   const {t} = useTranslation()
   const [txOptions, setTxOptions] = useState(initialTxOptions)
-  const [advancedInitialValues, setAdvancedInitialValues] = useState(null)
+  const advancedGas = useAdvancedGasEditor({uses1559Fees: true})
+  const isEditingAdvanced = advancedGas.isEditing
+  const currentTxOptions = advancedGas.draftTxOptions ?? txOptions
 
   const transactionEstimate = useCallBundleEstimate({
     transaction,
     calls,
     network,
-    txOptions,
+    txOptions: currentTxOptions,
   })
 
   const {
@@ -39,18 +42,19 @@ function CallBundleGasEditor({
 
   const gasLevel = getSelectedGasLevel({
     tx: transaction,
-    txOptions,
+    txOptions: currentTxOptions,
     uses1559Fees: true,
   })
 
-  const isEditingAdvanced = advancedInitialValues !== null
-
   const handleSelectGasLevel = gasLevel => {
+    if (!transactionEstimate.gasInfoEip1559?.[gasLevel]) return
+
     setTxOptions(current => ({
       ...current,
       gasLevel,
       maxFeePerGas: '',
       maxPriorityFeePerGas: '',
+      gasLimit: initialTxOptions?.gasLimit,
     }))
   }
 
@@ -59,25 +63,21 @@ function CallBundleGasEditor({
       return
     }
 
-    setAdvancedInitialValues({
-      maxFeePerGas: formatHexToDecimal(currentTx.maxFeePerGas),
-      maxPriorityFeePerGas: formatHexToDecimal(currentTx.maxPriorityFeePerGas),
-      gasLimit: txOptions?.gasLimit ?? formatHexToDecimal(transaction.gas),
-      nonce: txOptions?.nonce || '',
+    advancedGas.startEditing({
+      originalTx: transaction,
+      currentTx,
+      txOptions,
     })
   }
 
-  const handleSaveAdvancedFees = changes => {
-    if (Object.keys(changes).length > 0) {
-      setTxOptions(current => ({...current, ...changes}))
-    }
-
-    setAdvancedInitialValues(null)
+  const handleSaveAdvancedFees = () => {
+    setTxOptions(advancedGas.draftTxOptions)
+    advancedGas.reset()
   }
 
   const handleBack = () => {
     if (isEditingAdvanced) {
-      setAdvancedInitialValues(null)
+      advancedGas.reset()
     } else {
       onClose()
     }
@@ -98,13 +98,15 @@ function CallBundleGasEditor({
       </header>
       {isEditingAdvanced ? (
         <AdvancedGasEditor
-          transaction={transaction}
+          transaction={currentTx}
           network={network}
-          initialValues={advancedInitialValues}
+          values={advancedGas.values}
+          estimate={estimate || {error}}
           uses1559Fees
           suggestedNonce={formatHexToDecimal(
             transactionEstimate.suggestedNonce,
           )}
+          onChange={advancedGas.updateField}
           onSave={handleSaveAdvancedFees}
         />
       ) : (
@@ -119,6 +121,7 @@ function CallBundleGasEditor({
                 uses1559Fees
                 gasInfoEip1559={transactionEstimate.gasInfoEip1559}
                 transaction={currentTx}
+                suggestedGasLimit={transactionEstimate.suggestedGasLimit}
                 selectedGasLevel={gasLevel}
                 isCfxChain={
                   network.ticker.symbol?.toLowerCase() === NETWORK_TYPE.CFX
