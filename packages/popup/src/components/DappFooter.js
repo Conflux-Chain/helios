@@ -32,6 +32,7 @@ function DappFooter({
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
+  simulate,
   setSendStatus,
   setSendError,
   setAuthStatus,
@@ -172,6 +173,20 @@ function DappFooter({
         {cancelText}
       </Button>
       <div className="w-3" />
+      {simulate && (
+        <>
+          <Button
+            id="simulateBtn"
+            className="flex-1"
+            variant="outlined"
+            onClick={simulate.onClick}
+            disabled={simulate.disabled}
+          >
+            {t('simulate')}
+          </Button>
+          <div className="w-3" />
+        </>
+      )}
       {ConfirmComponent ? (
         <ConfirmComponent
           onConfirm={onConfirm}
@@ -199,6 +214,10 @@ DappFooter.propTypes = {
   confirmDisabled: PropTypes.bool,
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
+  simulate: PropTypes.shape({
+    onClick: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
+  }),
   setSendStatus: PropTypes.func,
   setSendError: PropTypes.func,
   setIsAppOpen: PropTypes.func,

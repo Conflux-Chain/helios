@@ -840,6 +840,16 @@ function ConfirmTransaction() {
               >
                 {t('cancel')}
               </Button>
+              {showSimulate && (
+                <Button
+                  variant="outlined"
+                  className="flex-1 mr-3"
+                  onClick={onSimulate}
+                  disabled={simulateDisabled}
+                >
+                  {t('simulate')}
+                </Button>
+              )}
               <Button
                 className="flex-1"
                 onClick={onSend}
@@ -863,6 +873,11 @@ function ConfirmTransaction() {
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
               showError={false}
+              simulate={
+                showSimulate
+                  ? {onClick: onSimulate, disabled: simulateDisabled}
+                  : undefined
+              }
             />
           )}
           <AlertMessage

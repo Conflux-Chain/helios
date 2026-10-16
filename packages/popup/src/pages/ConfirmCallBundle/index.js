@@ -601,6 +601,17 @@ function CallBundleConfirmation({
           >
             {t('cancel')}
           </Button>
+          {showSimulate && (
+            <Button
+              type="button"
+              variant="outlined"
+              className="flex-1"
+              disabled={simulateDisabled}
+              onClick={onSimulate}
+            >
+              {t('simulate')}
+            </Button>
+          )}
           <Button
             type="button"
             className="flex-1"
