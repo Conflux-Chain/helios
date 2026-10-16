@@ -2,6 +2,7 @@ const en = {
   translation: {
     // - common
     cancel: 'Cancel',
+    simulate: 'Simulate',
     create: 'Create',
     next: 'Next',
     import: 'Import',
@@ -402,6 +403,9 @@ const en = {
       'Fluent will be the first option when connecting to any dApp on EVM networks.',
     showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
+    enableSimulate: 'eSpace Simulate',
+    enableSimulateDes:
+      'When enabled, Simulate appears on Conflux eSpace signing pages for return values, Trace, and Logs. Available only on eSpace — not supported on Core Space or Ethereum.',
     eip7702Upgrade: 'EIP-7702 Upgrade',
     eip7702UpgradeIntro:
       'By upgrading EIP-7702, your account gains additional <Highlight>smart features</Highlight>:',
