@@ -42,14 +42,9 @@ export function encodeCalldataForUrl(data = '0x') {
       16,
     )
   }
-  // For larger inputs, choose the shortest representation including its prefix.
+  // Above 256 bytes, Base64URL is always shorter than hex (including prefixes).
   // b1 is Base64URL; d1 is raw DEFLATE followed by Base64URL (no zlib/gzip header).
-  const candidates = [
-    hex,
-    `b1.${bytesToBase64Url(bytes)}`,
-    `d1.${bytesToBase64Url(deflateRaw(bytes, {level: 9}))}`,
-  ]
-  return candidates.reduce((shortest, candidate) =>
-    candidate.length < shortest.length ? candidate : shortest,
-  )
+  const base64 = `b1.${bytesToBase64Url(bytes)}`
+  const deflate = `d1.${bytesToBase64Url(deflateRaw(bytes, {level: 9}))}`
+  return deflate.length < base64.length ? deflate : base64
 }

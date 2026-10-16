@@ -3,7 +3,6 @@ import {
   CFX_ESPACE_MAINNET_CHAINID,
   CFX_ESPACE_TESTNET_CHAINID,
 } from '@fluent-wallet/consts'
-import {validateAndCopyAccessList} from './accessList'
 
 const MAX_ACCESS_LIST_JSON_LENGTH = 128 * 1024
 
@@ -62,9 +61,7 @@ export function getSimulateUrl(scanUrl, transaction) {
     }
   }
   if (transaction.accessList !== undefined) {
-    const value = JSON.stringify(
-      validateAndCopyAccessList(transaction.accessList),
-    )
+    const value = JSON.stringify(transaction.accessList)
     if (value.length > MAX_ACCESS_LIST_JSON_LENGTH) {
       throw new RangeError('accessList: exceeds the 128 Ki character URL limit')
     }

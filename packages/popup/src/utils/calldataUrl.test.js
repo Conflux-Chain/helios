@@ -1,7 +1,9 @@
 import {inflateRawSync} from 'node:zlib'
 import {describe, expect, it} from 'vitest'
 import {encodeCalldataForUrl} from './calldataUrl'
-// Reference vectors from Conflux-Chain/sirius-next/packages/common/src/utils/test/fixtures.
+// Shared Scan protocol vectors; keep this fixture identical to
+// Conflux-Chain/sirius-next/packages/common/src/utils/test/fixtures/calldataUrlEncoding.json.
+// Exact outputs check interoperability; node:zlib independently checks decoding.
 import vectors from './test/fixtures/calldataUrlEncoding.json'
 
 const inputFor = ({input, generation}) => {
