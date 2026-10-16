@@ -32,7 +32,6 @@ function DappFooter({
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
-  simulate,
   setSendStatus,
   setSendError,
   setAuthStatus,
@@ -41,6 +40,7 @@ function DappFooter({
   pendingAuthReq: customPendingAuthReq,
   targetNetwork,
   confirmComponent: ConfirmComponent,
+  className,
 }) {
   const {t} = useTranslation()
 
@@ -163,7 +163,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="flex w-full px-3 z-50">
+    <footer className={`flex w-full px-3 z-50 ${className}`}>
       <Button
         id="cancelBtn"
         className="flex-1"
@@ -173,20 +173,6 @@ function DappFooter({
         {cancelText}
       </Button>
       <div className="w-3" />
-      {simulate && (
-        <>
-          <Button
-            id="simulateBtn"
-            className="flex-1"
-            variant="outlined"
-            onClick={simulate.onClick}
-            disabled={simulate.disabled}
-          >
-            {t('simulate')}
-          </Button>
-          <div className="w-3" />
-        </>
-      )}
       {ConfirmComponent ? (
         <ConfirmComponent
           onConfirm={onConfirm}
@@ -214,10 +200,6 @@ DappFooter.propTypes = {
   confirmDisabled: PropTypes.bool,
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
-  simulate: PropTypes.shape({
-    onClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-  }),
   setSendStatus: PropTypes.func,
   setSendError: PropTypes.func,
   setIsAppOpen: PropTypes.func,
@@ -227,6 +209,7 @@ DappFooter.propTypes = {
   showError: PropTypes.bool,
   targetNetwork: PropTypes.object,
   confirmComponent: PropTypes.elementType,
+  className: PropTypes.string,
 }
 
 export default DappFooter

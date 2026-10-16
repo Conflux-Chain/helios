@@ -579,6 +579,17 @@ function CallBundleConfirmation({
           {t('viewData')}
           <RightOutlined className="ml-1 h-3 w-3" />
         </button>
+        {showSimulate && (
+          <button
+            id="simulateBtn"
+            type="button"
+            className="mt-2 flex items-center justify-center px-3 py-1 rounded-[4px] text-sm font-normal bg-[#F0F3FF] text-[#808BE7] cursor-pointer disabled:bg-gray-20 disabled:text-gray-40 disabled:cursor-not-allowed"
+            disabled={simulateDisabled}
+            onClick={onSimulate}
+          >
+            {t('simulate')}
+          </button>
+        )}
 
         <div className="flex w-full gap-3">
           <Button
@@ -590,17 +601,6 @@ function CallBundleConfirmation({
           >
             {t('cancel')}
           </Button>
-          {showSimulate && (
-            <Button
-              type="button"
-              variant="outlined"
-              className="flex-1"
-              disabled={simulateDisabled}
-              onClick={onSimulate}
-            >
-              {t('simulate')}
-            </Button>
-          )}
           <Button
             type="button"
             className="flex-1"
