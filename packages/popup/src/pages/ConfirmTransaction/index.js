@@ -766,7 +766,7 @@ function ConfirmTransaction() {
         />
       </header>
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
-        <div className="flex flex-col px-3">
+        <div className="flex flex-col px-3 overflow-y-auto">
           <AddressCard
             nickname={displayAccount?.nickname}
             token={displayToken}
@@ -863,6 +863,7 @@ function ConfirmTransaction() {
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
               showError={false}
+              className="mt-4"
             />
           )}
           <AlertMessage

@@ -24,7 +24,7 @@ function AlertMessage({
   return (
     <div
       className={`bg-bg bg-gray-circles bg-no-repeat bg-contain w-full flex shrink-0 flex-col pt-6 px-3 rounded-t-xl ${
-        inline ? 'pb-4' : 'absolute bottom-0 pb-[88px]'
+        inline ? 'pb-4' : 'absolute bottom-0 pb-[110px]'
       }`}
     >
       <div className="flex items-start">
