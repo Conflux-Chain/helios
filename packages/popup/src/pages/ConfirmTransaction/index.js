@@ -64,6 +64,7 @@ import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
 import {updateApprovalAmount} from '../../utils/approval'
 import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
+import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import ViewData from '../ViewData'
 import EditAllowance from '../EditAllowance'
 import EditGasFee from '../EditGasFee'
@@ -706,6 +707,14 @@ function ConfirmTransaction() {
     setView('confirm')
   }
 
+  const {showSimulate, simulateDisabled, onSimulate} = useSimulateTransaction({
+    transaction: sendTransactionParams,
+    network: isDapp ? dappApp?.currentNetwork : network,
+    sponsorshipLoading: sponsoredUserOperation.loading,
+    sponsored: isSponsoredSubmission,
+    estimationLoading: Boolean(baseEstimate.loading || estimateForSend.loading),
+  })
+
   if (view === 'gas') {
     return (
       <EditGasFee
@@ -820,6 +829,16 @@ function ConfirmTransaction() {
               >
                 {t('cancel')}
               </Button>
+              {showSimulate && (
+                <Button
+                  variant="outlined"
+                  className="flex-1 mr-3"
+                  onClick={onSimulate}
+                  disabled={simulateDisabled}
+                >
+                  {t('simulate')}
+                </Button>
+              )}
               <Button
                 className="flex-1"
                 onClick={onSend}
@@ -843,6 +862,11 @@ function ConfirmTransaction() {
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
               showError={false}
+              simulate={
+                showSimulate
+                  ? {onClick: onSimulate, disabled: simulateDisabled}
+                  : undefined
+              }
             />
           )}
           <AlertMessage

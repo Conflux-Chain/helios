@@ -10,6 +10,7 @@ export const schemas = {
     {closed: true},
     ['hideTestNetwork', {optional: true}, boolean],
     ['overrideWindowDotEthereum', {optional: true}, boolean],
+    ['enableSimulate', {optional: true}, boolean],
   ],
 }
 

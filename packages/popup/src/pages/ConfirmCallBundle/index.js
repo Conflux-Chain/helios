@@ -38,6 +38,7 @@ import CallBundleGasEditor from './components/CallBundleGasEditor'
 import CallBundleGasFee from './components/CallBundleGasFee'
 
 import {getSelectedGasLevel} from '../../utils/gas'
+import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 
 const {
@@ -280,6 +281,15 @@ function CallBundleConfirmation({
   const requiredDelegationAction = sponsorship.available
     ? sponsorship.requiredDelegationAction
     : transactionDelegationAction
+
+  const {showSimulate, simulateDisabled, onSimulate} = useSimulateTransaction({
+    transaction: transactionEstimate.simulationTransaction,
+    network: currentNetwork,
+    sponsorshipLoading: sponsorship.loading,
+    sponsored: sponsorship.available,
+    estimationLoading: transactionEstimate.loading,
+    disabled,
+  })
 
   const editingCall = isEditingAllowance
     ? confirmationCalls[view.callIndex]
@@ -580,6 +590,17 @@ function CallBundleConfirmation({
           >
             {t('cancel')}
           </Button>
+          {showSimulate && (
+            <Button
+              type="button"
+              variant="outlined"
+              className="flex-1"
+              disabled={simulateDisabled}
+              onClick={onSimulate}
+            >
+              {t('simulate')}
+            </Button>
+          )}
           <Button
             type="button"
             className="flex-1"

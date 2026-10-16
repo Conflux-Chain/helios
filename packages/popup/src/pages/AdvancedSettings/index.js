@@ -83,6 +83,24 @@ function AdvancedSettings() {
           </div>
           <div className="text-sm text-gray-60 mt-1">{t('showTestnetDes')}</div>
         </div>
+        <div className="w-full h-px bg-gray-20 mt-6 mb-3" />
+        <div>
+          <div className="flex items-center justify-between h-13">
+            <div className="text-gray-80 text-base font-medium">
+              {t('enableSimulate')}
+            </div>
+            <SwitchButtonGroup
+              showLeft={!preferencesData?.enableSimulate}
+              onSwitch={status => onSwitchMode('enableSimulate', !status)}
+              leftSwitchClassName="!w-8 !h-8 !text-gray-60"
+              rightSwitchClassName="!w-8 !h-8"
+              WrapperId="enable-simulate"
+            />
+          </div>
+          <div className="text-sm text-gray-60 mt-1">
+            {t('enableSimulateDes')}
+          </div>
+        </div>
       </main>
     </div>
   ) : null
