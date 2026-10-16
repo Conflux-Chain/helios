@@ -823,7 +823,7 @@ function ConfirmTransaction() {
             <button
               id="simulateBtn"
               type="button"
-              className="mt-2 flex items-center justify-center px-3 py-1 rounded-[4px] text-sm font-normal bg-[#F0F3FF] text-[#808BE7] cursor-pointer disabled:bg-gray-20 disabled:text-gray-40 disabled:cursor-not-allowed"
+              className="z-50 mt-2 flex items-center justify-center px-3 py-1 rounded-[4px] text-sm font-normal bg-[#F0F3FF] text-[#808BE7] cursor-pointer disabled:bg-gray-20 disabled:text-gray-40 disabled:cursor-not-allowed"
               onClick={onSimulate}
               disabled={simulateDisabled}
             >
