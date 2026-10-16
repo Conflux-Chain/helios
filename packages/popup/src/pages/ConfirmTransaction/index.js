@@ -766,7 +766,7 @@ function ConfirmTransaction() {
         />
       </header>
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
-        <div className="flex flex-col px-3">
+        <div className="flex flex-col px-3 overflow-y-auto">
           <AddressCard
             nickname={displayAccount?.nickname}
             token={displayToken}
@@ -814,14 +814,25 @@ function ConfirmTransaction() {
             dappApp &&
             !!txWithOptions.data &&
             txWithOptions.data !== '0x' && (
-              <Link onClick={() => setView('data')} className="mb-6">
+              <Link onClick={() => setView('data')}>
                 {t('viewData')}
                 <RightOutlined className="w-3 h-3 text-primary ml-1" />
               </Link>
             )}
+          {showSimulate && (
+            <button
+              id="simulateBtn"
+              type="button"
+              className="z-50 mt-2 flex items-center justify-center px-3 py-1 rounded-[4px] text-sm font-normal bg-[#F0F3FF] text-[#808BE7] cursor-pointer disabled:bg-gray-20 disabled:text-gray-40 disabled:cursor-not-allowed"
+              onClick={onSimulate}
+              disabled={simulateDisabled}
+            >
+              {t('simulate')}
+            </button>
+          )}
 
           {!isDapp && !isSwitchInfoDrawerOpen && !pendingDelegationAction && (
-            <div className="w-full flex px-3 z-50">
+            <div className="w-full flex px-3 z-50 mt-4">
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"
@@ -829,16 +840,6 @@ function ConfirmTransaction() {
               >
                 {t('cancel')}
               </Button>
-              {showSimulate && (
-                <Button
-                  variant="outlined"
-                  className="flex-1 mr-3"
-                  onClick={onSimulate}
-                  disabled={simulateDisabled}
-                >
-                  {t('simulate')}
-                </Button>
-              )}
               <Button
                 className="flex-1"
                 onClick={onSend}
@@ -862,11 +863,7 @@ function ConfirmTransaction() {
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
               showError={false}
-              simulate={
-                showSimulate
-                  ? {onClick: onSimulate, disabled: simulateDisabled}
-                  : undefined
-              }
+              className="mt-4"
             />
           )}
           <AlertMessage
