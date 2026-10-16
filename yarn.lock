@@ -18800,6 +18800,7 @@ __metadata:
     dayjs: "npm:1.10.7"
     i18next: "npm:21.5.2"
     i18next-browser-languagedetector: "npm:6.1.2"
+    pako: "npm:2.0.2"
     punycode: "npm:2.1.1"
     qrcode.react: "npm:1.0.1"
     react-copy-to-clipboard: "npm:5.0.4"
@@ -24410,6 +24411,13 @@ __metadata:
   bin:
     pacote: lib/bin.js
   checksum: 10/54cd5eeace0423b58def9de95f175e3b977cf245c438b88cdc719bb5018a56e733ca55e6c50664f2720bc9d6f4981148fb95b79449a757eabb51372af0b793be
+  languageName: node
+  linkType: hard
+
+"pako@npm:2.0.2":
+  version: 2.0.2
+  resolution: "pako@npm:2.0.2"
+  checksum: 10/7551e07cac62292128ac7b63b998e569b9e0e205b70cb410ac960979139ade9a0058574a1a3df5cae54341c373886e761a2b2af80e7684c91c989ce45fc9cb9d
   languageName: node
   linkType: hard
 

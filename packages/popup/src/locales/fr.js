@@ -2,6 +2,7 @@ const fr = {
   translation: {
     // - common
     cancel: 'Annuler',
+    simulate: 'Simuler',
     create: 'Créer',
     next: 'Suivant',
     import: 'Importer',
@@ -414,6 +415,9 @@ const fr = {
     showTestnet: 'Afficher la Testnet',
     showTestnetDes:
       'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    enableSimulate: 'Simulation eSpace',
+    enableSimulateDes:
+      'Une fois cette option activée, le bouton « Simuler » apparaît sur les pages de signature des transactions Conflux eSpace et permet de consulter les valeurs de retour, les traces de transaction et les journaux. Disponible uniquement sur eSpace ; Core Space et Ethereum ne sont pas pris en charge.',
     eip7702Upgrade: 'Mise à niveau vers EIP-7702',
     eip7702UpgradeIntro:
       'En passant à EIP-7702, votre compte bénéficie de <Highlight>fonctionnalités intelligentes</Highlight> supplémentaires :',

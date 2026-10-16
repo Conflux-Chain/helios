@@ -83,6 +83,10 @@ export function useCallBundleEstimate({
     loading,
     error,
     transaction: finalTransaction,
+    // After estimation fails, keep current edits available for simulation and
+    // leave missing gas unset. This fallback does not imply readiness to send.
+    simulationTransaction:
+      finalTransaction || (transaction ? transactionWithGas : null),
     gasInfoEip1559: baseEstimate.data?.gasInfoEip1559,
     suggestedNonce: baseEstimate.data?.nonce,
   }
