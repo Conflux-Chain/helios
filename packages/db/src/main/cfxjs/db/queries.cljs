@@ -2445,7 +2445,8 @@
   (query-tx-list {}))
 
 (defonce default-preferences {:hideTestNetwork           true
-                              :overrideWindowDotEthereum false})
+                              :overrideWindowDotEthereum false
+                              :enableSimulate false})
 
 (defn get-preferences []
   (let [preferences (or (:preferences
