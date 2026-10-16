@@ -2,6 +2,7 @@ const zh = {
   translation: {
     // - common
     cancel: '取消',
+    simulate: '模拟',
     create: '创建',
     next: '下一步',
     import: '导入',
@@ -387,6 +388,9 @@ const zh = {
     priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
     showTestnet: '显示测试网络',
     showTestnetDes: '开启后，可在网络列表中展示测试网络',
+    enableSimulate: 'eSpace模拟',
+    enableSimulateDes:
+      '开启后，会在 Conflux eSpace 的交易签名页显示「模拟」按钮，可点击模拟后查看返回值、交易追踪与日志。目前只支持eSpace网络，不支持 Core Space和Ethereum 网络。',
     eip7702Upgrade: 'EIP-7702 升级',
     eip7702UpgradeIntro:
       '升级 EIP-7702 后，您的账户将获得更多 <Highlight>智能特性</Highlight>：',
