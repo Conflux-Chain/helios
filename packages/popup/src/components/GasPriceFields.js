@@ -11,6 +11,7 @@ function GasPriceFields({
   gasPriceErr,
   onChangeGasPrice,
   inputMaxFeePerGas,
+  maxFeePerGasErr,
   onChangeMaxFeePerGas,
   inputMaxPriorityFeePerGas,
   maxPriorityFeePerGasErr,
@@ -32,6 +33,7 @@ function GasPriceFields({
               width="w-full"
               decimals={GWEI_DECIMALS}
               value={inputMaxFeePerGas}
+              errorMessage={maxFeePerGasErr}
               onChange={onChangeMaxFeePerGas}
             />
           </CompWithLabel>
@@ -76,6 +78,7 @@ GasPriceFields.propTypes = {
   onChangeMaxFeePerGas: PropTypes.func,
   inputMaxPriorityFeePerGas: PropTypes.string,
   maxPriorityFeePerGasErr: PropTypes.string,
+  maxFeePerGasErr: PropTypes.string,
   onChangeMaxPriorityFeePerGas: PropTypes.func,
 }
 

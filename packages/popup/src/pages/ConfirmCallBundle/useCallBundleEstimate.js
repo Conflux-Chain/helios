@@ -1,4 +1,5 @@
 import {ethGetFeeData} from '@fluent-wallet/estimate-tx'
+import {formatDecimalToHex} from '@fluent-wallet/data-format'
 import {applyTxOptions} from '../../utils/gas'
 import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
 import {bn16} from '../../utils'
@@ -9,48 +10,54 @@ export function useCallBundleEstimate({
   network,
   txOptions,
 }) {
-  const baseEstimate = useTransactionEstimate({
-    transaction,
+  // undefined keeps the original nonce; '' lets the estimator choose it.
+  const nonce =
+    txOptions?.nonce === undefined
+      ? transaction?.nonce
+      : formatDecimalToHex(txOptions.nonce)
+
+  // The transaction is part of SWR's estimate cache key.
+  // Omit limits and prices so editing them reuses the existing estimate.
+  // Keep nonce because changing it requires a new estimate.
+  const txForEstimate = {
+    ...transaction,
+    gas: undefined,
+    gasPrice: undefined,
+    maxFeePerGas: undefined,
+    maxPriorityFeePerGas: undefined,
+    nonce: nonce || undefined,
+  }
+
+  const transactionEstimate = useTransactionEstimate({
+    transaction: transaction ? txForEstimate : null,
     network,
   })
+  const {data: estimate, error} = transactionEstimate
 
-  const transactionWithGas = applyTxOptions({
+  // Apply user choices and use the estimate for missing fee prices.
+  const txWithOptions = applyTxOptions({
     tx: transaction,
     txOptions,
-    estimate: baseEstimate.data,
+    estimate,
     uses1559Fees: true,
   })
 
   const hasGasPrices = Boolean(
-    transactionWithGas.maxFeePerGas && transactionWithGas.maxPriorityFeePerGas,
+    txWithOptions.maxFeePerGas && txWithOptions.maxPriorityFeePerGas,
   )
 
-  const selectedTransaction =
-    transaction && hasGasPrices ? transactionWithGas : null
-
-  const editedEstimate = useTransactionEstimate({
-    transaction: txOptions ? selectedTransaction : null,
-    network,
-  })
-
-  const currentEstimate = txOptions ? editedEstimate : baseEstimate
-  const error =
-    currentEstimate.error ||
-    (!selectedTransaction ? baseEstimate.error : undefined)
+  const finalTransaction =
+    transaction && hasGasPrices
+      ? {
+          ...txWithOptions,
+          gas: txWithOptions.gas || estimate?.gasLimit,
+        }
+      : null
 
   const loading =
     Boolean(transaction) &&
     !error &&
-    (!selectedTransaction || currentEstimate.loading)
-
-  const estimate = !loading && !error ? currentEstimate.data : undefined
-
-  const finalTransaction = selectedTransaction
-    ? {
-        ...selectedTransaction,
-        gas: selectedTransaction.gas || estimate?.gasLimit,
-      }
-    : null
+    (!finalTransaction || transactionEstimate.loading)
 
   let data
 
@@ -60,7 +67,7 @@ export function useCallBundleEstimate({
       bn16('0x0'),
     )
 
-    // Calculate fees using the parameters that will actually be submitted.
+    // Calculate fees and balance using the final transaction parameters.
     const feeData = ethGetFeeData(
       {
         gas: finalTransaction.gas,
@@ -86,8 +93,9 @@ export function useCallBundleEstimate({
     // After estimation fails, keep current edits available for simulation and
     // leave missing gas unset. This fallback does not imply readiness to send.
     simulationTransaction:
-      finalTransaction || (transaction ? transactionWithGas : null),
-    gasInfoEip1559: baseEstimate.data?.gasInfoEip1559,
-    suggestedNonce: baseEstimate.data?.nonce,
+      finalTransaction || (transaction ? txWithOptions : null),
+    gasInfoEip1559: estimate?.gasInfoEip1559,
+    suggestedGasLimit: estimate?.gasLimit,
+    suggestedNonce: estimate?.nonce,
   }
 }

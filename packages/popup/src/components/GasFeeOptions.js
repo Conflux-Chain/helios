@@ -94,6 +94,7 @@ function GasFeeOptions({
   showFeeLevels = uses1559Fees,
   gasInfoEip1559,
   transaction,
+  suggestedGasLimit,
   suggestedGasPrice,
   selectedGasLevel,
   isCfxChain,
@@ -120,7 +121,7 @@ function GasFeeOptions({
                   maxFeePerGas: gasInfoEip1559?.[level]?.suggestedMaxFeePerGas,
                   maxPriorityFeePerGas:
                     gasInfoEip1559?.[level]?.suggestedMaxPriorityFeePerGas,
-                  gasLimit: convertDataToValue(transaction?.gas),
+                  gasLimit: convertDataToValue(suggestedGasLimit),
                   baseFee: gasInfoEip1559?.estimatedBaseFee,
                 }
               : {
@@ -160,6 +161,7 @@ GasFeeOptions.propTypes = {
   showFeeLevels: PropTypes.bool,
   gasInfoEip1559: PropTypes.object,
   transaction: PropTypes.object,
+  suggestedGasLimit: PropTypes.string,
   suggestedGasPrice: PropTypes.string,
   selectedGasLevel: PropTypes.string,
   isCfxChain: PropTypes.bool,
