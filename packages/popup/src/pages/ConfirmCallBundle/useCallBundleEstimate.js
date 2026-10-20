@@ -27,6 +27,10 @@ export function useCallBundleEstimate({
     error,
     transaction:
       transaction && hasGasPrices ? data?.transaction || txWithOptions : null,
+    // Keep current edits available for simulation if estimation fails.
+    simulationTransaction: transaction
+      ? data?.transaction || txWithOptions
+      : null,
     gasInfoEip1559: feeSuggestions?.gasInfoEip1559,
     suggestedGasLimit: data?.estimatedGasLimit,
     suggestedNonce: data?.nonce,

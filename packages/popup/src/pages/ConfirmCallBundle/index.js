@@ -38,6 +38,7 @@ import CallBundleGasEditor from './components/CallBundleGasEditor'
 import CallBundleGasFee from './components/CallBundleGasFee'
 
 import {getSelectedGasLevel} from '../../utils/gas'
+import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 
 const {
@@ -282,6 +283,15 @@ function CallBundleConfirmation({
   const requiredDelegationAction = sponsorship.available
     ? sponsorship.requiredDelegationAction
     : transactionDelegationAction
+
+  const {showSimulate, simulateDisabled, onSimulate} = useSimulateTransaction({
+    transaction: transactionEstimate.simulationTransaction,
+    network: currentNetwork,
+    sponsorshipLoading: sponsorship.loading,
+    sponsored: sponsorship.available,
+    estimationLoading: transactionEstimate.loading,
+    disabled,
+  })
 
   const editingCall = isEditingAllowance
     ? confirmationCalls[view.callIndex]
@@ -561,6 +571,17 @@ function CallBundleConfirmation({
           {t('viewData')}
           <RightOutlined className="ml-1 h-3 w-3" />
         </button>
+        {showSimulate && (
+          <button
+            id="simulateBtn"
+            type="button"
+            className="mt-2 flex items-center justify-center px-3 py-1 rounded-[4px] text-sm font-normal bg-[#F0F3FF] text-[#808BE7] cursor-pointer disabled:bg-gray-20 disabled:text-gray-40 disabled:cursor-not-allowed"
+            disabled={simulateDisabled}
+            onClick={onSimulate}
+          >
+            {t('simulate')}
+          </button>
+        )}
 
         <div className="flex w-full gap-3">
           <Button

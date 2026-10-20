@@ -40,6 +40,7 @@ function DappFooter({
   pendingAuthReq: customPendingAuthReq,
   targetNetwork,
   confirmComponent: ConfirmComponent,
+  className,
 }) {
   const {t} = useTranslation()
 
@@ -162,7 +163,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="flex w-full px-3 z-50">
+    <footer className={`flex w-full px-3 z-50 ${className}`}>
       <Button
         id="cancelBtn"
         className="flex-1"
@@ -208,6 +209,7 @@ DappFooter.propTypes = {
   showError: PropTypes.bool,
   targetNetwork: PropTypes.object,
   confirmComponent: PropTypes.elementType,
+  className: PropTypes.string,
 }
 
 export default DappFooter
