@@ -12,6 +12,7 @@ import {
   catn,
   Hash32,
 } from '@fluent-wallet/spec'
+import {BigNumber} from '@ethersproject/bignumber'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {parseUnits} from '@ethersproject/units'
@@ -234,7 +235,12 @@ export const main = async args => {
     }
   }
 
-  if (is1559Tx && network1559Compatible && !isV1LedgerAPP) {
+  if (
+    is1559Tx &&
+    network1559Compatible &&
+    !isV1LedgerAPP &&
+    (!newTx.maxPriorityFeePerGas || !newTx.maxFeePerGas)
+  ) {
     const gasInfoEip1559 = await cfx_estimate1559Fee()
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
       gasInfoEip1559?.medium || {}
@@ -248,6 +254,15 @@ export const main = async args => {
         suggestedMaxFeePerGas,
         'gwei',
       ).toHexString()
+  }
+
+  if (
+    is1559Tx &&
+    BigNumber.from(newTx.maxPriorityFeePerGas).gt(newTx.maxFeePerGas)
+  ) {
+    throw InvalidParams(
+      'maxPriorityFeePerGas cannot be greater than maxFeePerGas',
+    )
   }
 
   let raw

@@ -16,7 +16,6 @@ import {
 } from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 import {
-  useEstimateTx,
   padHexData,
   useCurrentTxStore,
   useLedgerBindingApi,
@@ -27,7 +26,7 @@ import {decodeCallData} from '@fluent-wallet/contract-method-name'
 import {formatStatus, request, checkBalance} from '../../utils'
 import {TransactionResult, AlertMessage} from '../../components'
 import {ExecutedTransaction} from './components'
-
+import {useGasFeeSuggestions} from '../../hooks/useGasFeeSuggestions'
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
 import {buildResendTxParams, omitFalsyTxParams} from './resendParams'
@@ -51,8 +50,9 @@ function ResendTransaction() {
   const [isAppOpen, setIsAppOpen] = useState(true)
 
   const {
-    data: {account},
+    data: {account, network},
   } = useCurrentAddress()
+
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const accountType = account?.accountGroup?.vault?.type
@@ -104,20 +104,12 @@ function ResendTransaction() {
       : decodedCall.args[2]._hex
     : '0x0'
 
-  const token20Params = isSendingToken
-    ? {
-        [token.address]: sendTokenValue,
-      }
-    : {}
+  const {data: feeSuggestions, loading} = useGasFeeSuggestions({
+    network,
+    uses1559Fees,
+  })
 
-  const resendEstimateRst =
-    useEstimateTx({...resendTxParams}, token20Params) || {}
-
-  const {
-    gasPrice: estimateGasPrice,
-    gasInfoEip1559 = {},
-    loading,
-  } = resendEstimateRst
+  const {gasPrice: estimateGasPrice, gasInfoEip1559 = {}} = feeSuggestions || {}
 
   const resendEstimateGasPrice = useMemo(() => {
     if (

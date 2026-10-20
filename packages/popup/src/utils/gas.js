@@ -2,6 +2,7 @@ import {
   Big,
   convertValueToData,
   formatDecimalToHex,
+  formatHexToDecimal,
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 
@@ -23,40 +24,48 @@ import {
  */
 
 /**
- * Return a new transaction with the selected options and suggested prices.
- * Transaction numbers use hex strings. Only prices are read from estimate.
- * The caller adds automatic gas/storage limits after estimation.
+ * Apply user choices, fee suggestions, and estimated Gas/Storage limits.
+ * Transaction numbers use hex strings.
+ * The caller checks estimate readiness and validates the selected limits.
  *
  * @param {Object} params
  * @param {Object|null} [params.tx] Original transaction.
  * @param {TxOptions|null} [params.txOptions] User choices.
- * @param {Object} [params.estimate] Current fee suggestions.
+ * @param {Object} [params.feeSuggestions] Recommended gas prices.
+ * @param {Object} [params.limitEstimate] Latest Gas and Storage limit estimates.
  * @param {boolean} [params.uses1559Fees] Whether the transaction uses EIP-1559 fees.
  * @returns {Object} A new transaction with RPC hex quantities.
  */
-export function applyTxOptions({tx, txOptions, estimate, uses1559Fees}) {
+export function applyTxOptions({
+  tx,
+  txOptions,
+  feeSuggestions,
+  limitEstimate,
+  uses1559Fees,
+}) {
   const settings = txOptions || {}
-  const fees = estimate?.gasInfoEip1559?.[settings.gasLevel || 'medium']
+  const fees = feeSuggestions?.gasInfoEip1559?.[settings.gasLevel || 'medium']
 
   // A selected fee level ignores the original prices.
   const initialPrices = settings.gasLevel ? {} : tx
 
   const transaction = {
     ...tx,
-    gas:
-      settings.gasLimit === undefined
-        ? tx?.gas
-        : formatDecimalToHex(settings.gasLimit),
-    storageLimit:
-      settings.storageLimit === undefined
-        ? tx?.storageLimit
-        : formatDecimalToHex(settings.storageLimit),
+    gas: selectLimit({
+      originalLimit: tx?.gas,
+      userLimit: settings.gasLimit,
+      estimatedLimit: limitEstimate?.estimatedGasLimit,
+    }),
+    storageLimit: selectLimit({
+      originalLimit: tx?.storageLimit,
+      userLimit: settings.storageLimit,
+      estimatedLimit: limitEstimate?.estimatedStorageLimit,
+    }),
     nonce:
       settings.nonce === undefined
         ? tx?.nonce
         : formatDecimalToHex(settings.nonce),
   }
-
   if (uses1559Fees) {
     delete transaction.gasPrice
 
@@ -93,7 +102,7 @@ export function applyTxOptions({tx, txOptions, estimate, uses1559Fees}) {
     transaction.gasPrice =
       (settings.gasPrice === undefined
         ? initialPrices?.gasPrice
-        : formatDecimalToHex(settings.gasPrice)) || estimate?.gasPrice
+        : formatDecimalToHex(settings.gasPrice)) || feeSuggestions?.gasPrice
   }
 
   if (!transaction.gas) delete transaction.gas
@@ -129,4 +138,38 @@ export function getSelectedGasLevel({tx, txOptions, uses1559Fees}) {
     : gasPrice
 
   return hasCustomPrices ? 'advanced' : settings.gasLevel || 'medium'
+}
+
+/**
+ * Select a Gas or Storage limit after input validation.
+ *
+ * originalLimit / estimatedLimit: hex quantities.
+ * userLimit: decimal integer string.
+ * undefined inherits the original value; '' requests an automatic value.
+ *
+ * The caller checks the selected value against the estimate and chain limits.
+ */
+function selectLimit({originalLimit, userLimit, estimatedLimit}) {
+  if (userLimit === '') {
+    return estimatedLimit
+  }
+
+  // Preserve explicit user choices, including zero.
+  if (userLimit !== undefined) {
+    return formatDecimalToHex(userLimit)
+  }
+
+  // Keep the original value for display while estimation is unavailable.
+  if (estimatedLimit === undefined) {
+    return originalLimit
+  }
+
+  if (originalLimit === undefined) {
+    return estimatedLimit
+  }
+
+  const original = new Big(formatHexToDecimal(originalLimit))
+  const estimated = new Big(formatHexToDecimal(estimatedLimit))
+
+  return original.lt(estimated) ? estimatedLimit : originalLimit
 }

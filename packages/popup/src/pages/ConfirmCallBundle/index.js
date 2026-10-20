@@ -236,11 +236,13 @@ function CallBundleConfirmation({
     txOptions,
   })
 
-  const estimatedGasUsed = formatHexToDecimal(transactionEstimate.data?.gasUsed)
+  const estimatedGasLimit = formatHexToDecimal(
+    transactionEstimate.data?.estimatedGasLimit,
+  )
   const gasLimitError = getGasLimitError(
     {
       gasLimit: formatHexToDecimal(transactionEstimate.transaction?.gas),
-      minGasLimit: estimatedGasUsed,
+      minGasLimit: estimatedGasLimit,
     },
     t,
   )
@@ -259,7 +261,7 @@ function CallBundleConfirmation({
 
   const isTransactionReady =
     Boolean(transactionEstimate.transaction?.gas) &&
-    estimatedGasUsed !== undefined &&
+    estimatedGasLimit !== undefined &&
     !gasLimitError &&
     transactionEstimate.data?.isBalanceEnough === true
 
@@ -327,16 +329,6 @@ function CallBundleConfirmation({
 
       setConfirmationCalls(updatedCalls)
       setConfirmationTransaction(updatedTransaction)
-
-      setTxOptions(current =>
-        current
-          ? {
-              ...current,
-              gasLimit: '',
-              storageLimit: '',
-            }
-          : current,
-      )
 
       setView({type: 'confirm'})
     } catch (error) {

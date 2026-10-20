@@ -167,6 +167,7 @@ const zh = {
     sendToken: '发送代币',
     toAddress: '接收方地址',
     gasFee: '燃气费',
+    lowGasPriceWarning: '低手续费可能等待较久。',
     edit: '设置',
     sponsored: '已赞助',
     partSponsored: '部分赞助',

@@ -172,6 +172,7 @@ const uk = {
     sendToken: 'Відправити токен',
     toAddress: 'За адресою',
     gasFee: 'Плата за газ',
+    lowGasPriceWarning: 'За низької комісії підтвердження може тривати довше.',
     edit: 'Редагувати',
     sponsored: 'Спонсорується',
     partSponsored: 'Частково спонсорується',

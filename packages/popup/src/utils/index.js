@@ -210,7 +210,10 @@ export const checkBalance = async (
   const storageFeeDrip = bn16(storageLimit)
     .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
     .divn(1024)
-  const gasFeeDrip = bn16(gas).mul(bn16(uses1559Fees ? maxFeePerGas : gasPrice))
+
+  const feePerGas = uses1559Fees ? maxFeePerGas : gasPrice
+  const gasFeeDrip = bn16(gas).mul(bn16(feePerGas))
+
   const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
   const {address: tokenAddress} = token
   try {
@@ -242,7 +245,7 @@ export const checkBalance = async (
         from,
         to,
         gas,
-        gasPrice,
+        feePerGas,
         storageLimit,
         'latest_state',
       ])

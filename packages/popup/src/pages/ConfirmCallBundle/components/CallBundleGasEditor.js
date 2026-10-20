@@ -64,7 +64,6 @@ function CallBundleGasEditor({
     }
 
     advancedGas.startEditing({
-      originalTx: transaction,
       currentTx,
       txOptions,
     })

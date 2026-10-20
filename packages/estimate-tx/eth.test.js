@@ -1,6 +1,6 @@
 import {describe, expect, test, vi} from 'vitest'
 import {ETH_TX_TYPES, NULL_HEX_ADDRESS} from '@fluent-wallet/consts'
-import {ethEstimate} from './eth.js'
+import {ethEstimateGas} from './eth.js'
 
 const FROM = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const TARGET = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
@@ -12,6 +12,7 @@ const DUMMY_SIGNATURE = `0x${'11'.repeat(32)}`
 const BASE_TX = {
   from: FROM,
   to: FROM,
+  nonce: '0x5',
   value: '0x0',
   data: CALL_DATA,
   type: ETH_TX_TYPES.EIP7702,
@@ -22,48 +23,21 @@ function createRequest(gasEstimateResults) {
   const queuedGasEstimates = [...gasEstimateResults]
 
   return vi.fn(async ({method}) => {
-    switch (method) {
-      case 'wallet_network1559Compatible':
-        return true
-
-      case 'wallet_getBalance':
-        return {
-          [FROM.toLowerCase()]: {
-            '0x0': '0xde0b6b3a7640000',
-          },
-        }
-
-      case 'eth_estimate1559Fee':
-        return {
-          medium: {
-            suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '2',
-          },
-        }
-
-      case 'eth_getTransactionCount':
-        return '0x5'
-
-      case 'eth_chainId':
-        return CHAIN_ID
-
-      case 'eth_estimateGas': {
-        if (!queuedGasEstimates.length) {
-          throw new Error('Unexpected eth_estimateGas request')
-        }
-
-        const result = queuedGasEstimates.shift()
-
-        if (result instanceof Error) {
-          throw result
-        }
-
-        return result
-      }
-
-      default:
-        throw new Error(`Unexpected RPC method ${method}`)
+    if (method !== 'eth_estimateGas') {
+      throw new Error(`Unexpected RPC method ${method}`)
     }
+
+    if (!queuedGasEstimates.length) {
+      throw new Error('Unexpected eth_estimateGas request')
+    }
+
+    const result = queuedGasEstimates.shift()
+
+    if (result instanceof Error) {
+      throw result
+    }
+
+    return result
   })
 }
 
@@ -74,16 +48,14 @@ function getGasEstimateRequests(request) {
 }
 
 function estimateTransaction(tx, request, options = {}) {
-  return ethEstimate(tx, {
+  return ethEstimateGas(tx, {
     request,
-    isFluentRequest: true,
-    toAddressType: 'unknown',
-    defaultGasBuffer: 1,
+    chainId: CHAIN_ID,
     ...options,
   })
 }
 
-describe('ethEstimate EIP-7702 data-to-self estimation', () => {
+describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
   test('combines delegation and execution estimates', async () => {
     const request = createRequest(['0x11558', '0x5c5d'])
 
@@ -155,7 +127,9 @@ describe('ethEstimate EIP-7702 data-to-self estimation', () => {
       '0x5c5d',
     ])
 
-    const result = await estimateTransaction(BASE_TX, request)
+    const result = await estimateTransaction(BASE_TX, request, {
+      retryOnNonceTooOld: true,
+    })
     const gasEstimateRequests = getGasEstimateRequests(request)
 
     expect(result.nonce).toBe('0x6')

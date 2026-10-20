@@ -75,6 +75,7 @@ export const useAddress = (opts = {}) => {
         nativeBalance: 1,
         _account: {nickname: 1, eid: 1, _accountGroup: {vault: {type: 1}}},
         network: {
+          /** @deprecated Gas estimation no longer uses this field. */
           gasBuffer: 1,
           eid: 1,
           ticker: 1,
