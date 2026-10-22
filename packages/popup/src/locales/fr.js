@@ -617,6 +617,25 @@ const fr = {
     deleteContactContent: 'Souhaitez-vous supprimer ce contact ?',
     name: 'Nom',
     address: 'Adresse',
+
+    // address status tooltip
+    tokenNotableTitle: 'Token d’intérêt public',
+    tokenNotableDesc:
+      'Ce token est considéré par ConfluxScan comme présentant un intérêt public.',
+    tokenVerifiedTitle: 'Token vérifié',
+    tokenVerifiedDesc:
+      'L’adresse du contrat de ce token a été vérifiée sur ConfluxScan.',
+    tokenUnverifiedTitle: 'Token non vérifié',
+    tokenUnverifiedDesc:
+      'Le contrat de ce token n’est pas vérifié sur ConfluxScan. Veuillez évaluer vous-même les risques.',
+    contractNotableTitle: 'Contrat d’intérêt public',
+    contractNotableDesc:
+      'Ce contrat est considéré par ConfluxScan comme présentant un intérêt public.',
+    contractVerifiedTitle: 'Contrat vérifié',
+    contractVerifiedDesc: 'Ce contrat a été vérifié sur ConfluxScan.',
+    contractUnverifiedTitle: 'Contrat non vérifié',
+    contractUnverifiedDesc:
+      'Ce contrat n’est pas vérifié sur ConfluxScan. Veuillez évaluer vous-même les risques avant de confirmer.',
   },
 }
 

@@ -3,10 +3,8 @@ import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import TitleNav from '../../components/TitleNav'
 import {useSignatureRequestData} from '../../hooks/useSignatureRequestData'
-import {formatIntoChecksumAddress} from '../../utils'
 import {useEffect, useMemo} from 'react'
 import {REQUEST_SIGNATURE} from '../../constants/route'
-import {shortenAddress} from '@fluent-wallet/shorten-address'
 import dayjs from 'dayjs'
 import PermitTokenInfo from '../../components/PermitTokenInfo'
 import {
@@ -14,7 +12,6 @@ import {
   EndsWithArrayReg,
   getPermitFieldDisplay,
 } from '../../utils/permit'
-import Tooltip from '@fluent-wallet/component-tooltip'
 import PermitAmount from './components/PermitAmount'
 import PermitRow from './components/PermitRow'
 import PermitAddress from './components/PermitAddress'
@@ -31,20 +28,7 @@ const renderValue = ({type, value, display}) => {
     return <PermitTokenInfo tokenAddress={value} />
   }
   if (type === 'address' && typeof value === 'string') {
-    let displayAddress
-    try {
-      displayAddress = shortenAddress(formatIntoChecksumAddress(value))
-    } catch {
-      return value
-    }
-    return (
-      <div className="flex items-center gap-1">
-        <PermitAddress address={value} />
-        <Tooltip content={value} placement="bottomLeft">
-          <span>{displayAddress}</span>
-        </Tooltip>
-      </div>
-    )
+    return <PermitAddress address={value} />
   }
   if (display?.kind === 'date' && type.startsWith('uint')) {
     const date = dayjs(value * 1000)

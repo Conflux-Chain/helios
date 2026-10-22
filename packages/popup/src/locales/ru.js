@@ -607,6 +607,25 @@ const ru = {
     deleteContactContent: 'Do you want to delete this contact?',
     name: 'Name',
     address: 'Address',
+
+    // address status tooltip
+    tokenNotableTitle: 'Токен, представляющий общественный интерес',
+    tokenNotableDesc:
+      'По оценке ConfluxScan, этот токен представляет общественный интерес.',
+    tokenVerifiedTitle: 'Верифицированный токен',
+    tokenVerifiedDesc:
+      'Адрес контракта этого токена прошёл верификацию на ConfluxScan.',
+    tokenUnverifiedTitle: 'Неверифицированный токен',
+    tokenUnverifiedDesc:
+      'Контракт этого токена не прошёл верификацию на ConfluxScan. Пожалуйста, самостоятельно оцените риски.',
+    contractNotableTitle: 'Контракт, представляющий общественный интерес',
+    contractNotableDesc:
+      'По оценке ConfluxScan, этот контракт представляет общественный интерес.',
+    contractVerifiedTitle: 'Верифицированный контракт',
+    contractVerifiedDesc: 'Этот контракт прошёл верификацию на ConfluxScan.',
+    contractUnverifiedTitle: 'Неверифицированный контракт',
+    contractUnverifiedDesc:
+      'Этот контракт не прошёл верификацию на ConfluxScan. Пожалуйста, самостоятельно оцените риски перед подтверждением.',
   },
 }
 

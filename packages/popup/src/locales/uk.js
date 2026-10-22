@@ -602,6 +602,25 @@ const uk = {
     deleteContactContent: 'Do you want to delete this contact?',
     name: 'Name',
     address: 'Address',
+
+    // address status tooltip
+    tokenNotableTitle: 'Токен, що становить суспільний інтерес',
+    tokenNotableDesc:
+      'За оцінкою ConfluxScan, цей токен становить суспільний інтерес.',
+    tokenVerifiedTitle: 'Верифікований токен',
+    tokenVerifiedDesc:
+      'Адреса контракту цього токена пройшла верифікацію на ConfluxScan.',
+    tokenUnverifiedTitle: 'Неверифікований токен',
+    tokenUnverifiedDesc:
+      'Контракт цього токена не пройшов верифікацію на ConfluxScan. Будь ласка, самостійно оцініть ризики.',
+    contractNotableTitle: 'Контракт, що становить суспільний інтерес',
+    contractNotableDesc:
+      'За оцінкою ConfluxScan, цей контракт становить суспільний інтерес.',
+    contractVerifiedTitle: 'Верифікований контракт',
+    contractVerifiedDesc: 'Цей контракт пройшов верифікацію на ConfluxScan.',
+    contractUnverifiedTitle: 'Неверифікований контракт',
+    contractUnverifiedDesc:
+      'Цей контракт не пройшов верифікацію на ConfluxScan. Будь ласка, самостійно оцініть ризики перед підтвердженням.',
   },
 }
 

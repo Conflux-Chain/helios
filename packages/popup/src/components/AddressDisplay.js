@@ -146,7 +146,8 @@ function AddressDisplay({
   useFetchAddressNameInfos({
     network: effectiveNetwork,
     addresses: address ? [address] : [],
-    autoFetch: autoFetch && (kind === 'token' || kind === 'contract'),
+    autoFetch:
+      autoFetch && (kind === 'token' || (kind === 'contract' && showIcon)),
   })
 
   let displayAddress = address || ''
@@ -183,35 +184,23 @@ function AddressDisplay({
     )
   }
 
-  if (kind === 'contract') {
-    return (
-      <ContractDisplay
-        displayAddress={displayAddress}
-        showIcon={showIcon}
-        label={label}
-        hideText={hideText}
-        labelClassName={labelClassName}
-        iconClassName={iconClassName}
-        wrapperClassName={wrapperClassName}
-        isNotable={nameInfo?.isNotable}
-        isVerified={nameInfo?.isVerified}
-        showStatusIcon={showStatusIcon}
-      />
-    )
-  }
-  if (hideText) return null
   return (
-    <div className={classNames('flex items-center gap-1', wrapperClassName)}>
-      <span
-        className={classNames('text-gray-80 font-semibold', labelClassName)}
-      >
-        {label ?? displayAddress}
-      </span>
-    </div>
+    <ContractDisplay
+      displayAddress={displayAddress}
+      showIcon={showIcon}
+      label={label}
+      hideText={hideText}
+      labelClassName={labelClassName}
+      iconClassName={iconClassName}
+      wrapperClassName={wrapperClassName}
+      isNotable={nameInfo?.isNotable}
+      isVerified={nameInfo?.isVerified}
+      showStatusIcon={showStatusIcon}
+    />
   )
 }
 AddressDisplay.propTypes = {
-  // contract | token | address
+  // contract | token
   kind: PropTypes.string.isRequired,
   network: PropTypes.shape({
     type: PropTypes.oneOf(['cfx', 'eth']).isRequired,
