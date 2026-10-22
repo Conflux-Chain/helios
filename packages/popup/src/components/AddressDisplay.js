@@ -100,9 +100,7 @@ function ContractDisplay({
         </VerificationBadge>
       )}
       {!hideText && (
-        <span
-          className={classNames('text-gray-80 font-semibold', labelClassName)}
-        >
+        <span className={classNames('text-gray-80', labelClassName)}>
           {displayText}
         </span>
       )}

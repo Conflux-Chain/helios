@@ -209,6 +209,7 @@ export const Permit = ({
                 address={displayData.spender}
                 kind="contract"
                 iconClassName="w-4 h-4"
+                labelClassName="font-semibold"
                 showIcon={isContract}
                 autoFetch={isContract}
               />
@@ -255,7 +256,6 @@ export const Permit = ({
                 address={verifyingContract}
                 kind="contract"
                 iconClassName="w-4 h-4"
-                labelClassName="!font-normal"
               />
               <CopyButton
                 text={verifyingContract}
