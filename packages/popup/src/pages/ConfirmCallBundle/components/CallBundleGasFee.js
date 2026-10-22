@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import GasFee from '../../../components/GasFee'
 import GasFeePlaceholder from '../../../components/GasFeePlaceholder'
 import SponsoredGasFee from '../../../components/SponsoredGasFee'
+import {isGasFeeLow} from '../../../utils/gas'
 
 function CallBundleGasFee({
   sponsorship,
@@ -33,18 +34,33 @@ function CallBundleGasFee({
     )
   }
 
-  const {data: estimate, error, transaction} = transactionEstimate
+  const {
+    data: estimate,
+    error,
+    transaction,
+    gasInfoEip1559,
+  } = transactionEstimate
+  const isLowGasFee = isGasFeeLow({
+    transaction,
+    feeSuggestions: {gasInfoEip1559},
+    uses1559Fees: true,
+  })
 
   return (
-    <GasFee
-      estimate={estimate || {error}}
-      network={network}
-      titleClassName="mx-1 mb-4"
-      feePerGas={transaction?.maxFeePerGas}
-      editLabel={t(gasLevel)}
-      editDisabled={!transaction}
-      onEdit={onEdit}
-    />
+    <>
+      <GasFee
+        estimate={estimate || {error}}
+        network={network}
+        titleClassName="mx-1 mb-4"
+        feePerGas={transaction?.maxFeePerGas}
+        editLabel={t(gasLevel)}
+        editDisabled={!transaction}
+        onEdit={onEdit}
+      />
+      {isLowGasFee && (
+        <p className="mt-2 text-xs text-warning">{t('lowGasPriceWarning')}</p>
+      )}
+    </>
   )
 }
 
@@ -59,6 +75,7 @@ CallBundleGasFee.propTypes = {
     transaction: PropTypes.object,
     loading: PropTypes.bool,
     error: PropTypes.object,
+    gasInfoEip1559: PropTypes.object,
   }).isRequired,
   network: PropTypes.object.isRequired,
   gasLevel: PropTypes.string.isRequired,

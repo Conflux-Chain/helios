@@ -56,7 +56,7 @@ import {ROUTES, RPC_METHODS, TX_STATUS} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
 import {updateApprovalAmount} from '../../utils/approval'
-import {getSelectedGasLevel} from '../../utils/gas'
+import {getSelectedGasLevel, isGasFeeLow} from '../../utils/gas'
 import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import ViewData from '../ViewData'
 import EditAllowance from '../EditAllowance'
@@ -428,13 +428,11 @@ function ConfirmTransaction() {
       : sendTransactionParams.gasPrice || estimateForSend.gasPrice,
   )
 
-  const recommendedGasPrice = feeSuggestions?.gasPrice
-
-  const isLowGasPrice =
-    uses1559Fees === false &&
-    sendTransactionParams.gasPrice !== undefined &&
-    recommendedGasPrice !== undefined &&
-    bn16(sendTransactionParams.gasPrice).lt(bn16(recommendedGasPrice))
+  const isLowGasFee = isGasFeeLow({
+    transaction: sendTransactionParams,
+    feeSuggestions,
+    uses1559Fees,
+  })
 
   useEffect(() => {
     if (!isSponsoredSubmission) return
@@ -821,7 +819,7 @@ function ConfirmTransaction() {
           />
           {!sponsoredUserOperation.loading &&
             !isSponsoredSubmission &&
-            isLowGasPrice && (
+            isLowGasFee && (
               <p className="mt-2 text-xs text-warning">
                 {t('lowGasPriceWarning')}
               </p>
