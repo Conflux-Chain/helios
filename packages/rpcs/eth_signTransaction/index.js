@@ -1,4 +1,5 @@
 import * as spec from '@fluent-wallet/spec'
+import {BigNumber} from '@ethersproject/bignumber'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {
   ethSignEip7702Transaction,
@@ -204,7 +205,10 @@ export const main = async args => {
       throw err
     }
   }
-  if ((is1559Tx && network1559Compatible) || is7702Tx) {
+  if (
+    ((is1559Tx && network1559Compatible) || is7702Tx) &&
+    (!newTx.maxPriorityFeePerGas || !newTx.maxFeePerGas)
+  ) {
     const gasInfoEip1559 = await eth_estimate1559Fee()
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
       gasInfoEip1559?.medium || {}
@@ -218,6 +222,15 @@ export const main = async args => {
         suggestedMaxFeePerGas,
         'gwei',
       ).toHexString()
+  }
+
+  if (
+    uses1559Fees &&
+    BigNumber.from(newTx.maxPriorityFeePerGas).gt(newTx.maxFeePerGas)
+  ) {
+    throw InvalidParams(
+      'maxPriorityFeePerGas cannot be greater than maxFeePerGas',
+    )
   }
 
   let raw

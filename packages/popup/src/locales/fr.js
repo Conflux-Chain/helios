@@ -178,6 +178,8 @@ const fr = {
     sendToken: 'Envoyer le Jeton',
     toAddress: 'Vers l’Adresse',
     gasFee: 'Frais de Gas',
+    lowGasPriceWarning:
+      'Des frais peu élevés peuvent allonger le délai de confirmation.',
     edit: 'Éditer',
     sponsored: 'Sponsorisé',
     partSponsored: 'Partiellement sponsorisé',

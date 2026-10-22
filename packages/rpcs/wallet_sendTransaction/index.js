@@ -7,7 +7,6 @@ import {
   withEthereumNonceLock,
 } from '@fluent-wallet/nonce-manager'
 import {ERROR} from '@fluent-wallet/json-rpc-error'
-import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {createPendingTransaction} from './create-pending-transaction.js'
@@ -23,8 +22,8 @@ export const permissions = {
   methods: [
     'cfx_signTransaction',
     'eth_signTransaction',
+    'wallet_network1559Compatible',
     'eth_blockNumber',
-    'cfx_gasPrice',
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_userRejectedAuthRequest',
@@ -46,9 +45,9 @@ export const main = async ({
     wallet_enrichConfluxTx,
     wallet_enrichEthereumTx,
     eth_blockNumber,
-    cfx_gasPrice,
     cfx_signTransaction,
     eth_signTransaction,
+    wallet_network1559Compatible,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
     wallet_handleUnfinishedCFXTx,
@@ -105,14 +104,39 @@ export const main = async ({
       throw InvalidParams(`Invalid from address in tx ${from}`)
 
     delete params[0].nonce
-    if (params[0].type === ETH_TX_TYPES.EIP1559 && params[0].gasPrice) {
-      delete params[0].gasPrice
-    }
+
     try {
-      // try sign tx
+      const transaction = {...params[0]}
+      let uses1559Fees = transaction.type === ETH_TX_TYPES.EIP1559
+
+      // Use the network default if type is missing.
+      if (transaction.type === undefined) {
+        const networkSupports1559 = await wallet_network1559Compatible(
+          {network: app.currentNetwork, errorFallThrough: true},
+          [],
+        )
+        uses1559Fees = Boolean(networkSupports1559)
+      }
+
+      if (uses1559Fees) {
+        const hasOnlyGasPrice =
+          transaction.gasPrice !== undefined &&
+          transaction.maxFeePerGas === undefined &&
+          transaction.maxPriorityFeePerGas === undefined
+
+        // Keep the dapp price in both fee fields.
+        if (hasOnlyGasPrice) {
+          transaction.maxFeePerGas = transaction.gasPrice
+          transaction.maxPriorityFeePerGas = transaction.gasPrice
+        }
+
+        delete transaction.gasPrice
+      }
+
+      // Check the transaction before confirmation.
       await signTxFn(
         {app, network: app.currentNetwork, errorFallThrough: true},
-        [...params, {dryRun: true}],
+        [transaction, {dryRun: true}],
       )
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
@@ -125,22 +149,6 @@ export const main = async ({
 
         throw err
       }
-    }
-
-    if (
-      network.type === 'cfx' &&
-      app.currentNetwork.name === CFX_MAINNET_NAME
-    ) {
-      try {
-        const gasPrice = await cfx_gasPrice({errorFallThrough: true}, [])
-        if (
-          BigNumber.from(gasPrice).gt(
-            BigNumber.from(params[0].gasPrice || '0x0'),
-          )
-        ) {
-          params[0].gasPrice = gasPrice
-        }
-      } catch (err) {} // eslint-disable-line no-empty
     }
 
     return await wallet_addPendingUserAuthRequest({
