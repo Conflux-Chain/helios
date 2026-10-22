@@ -40,7 +40,6 @@ import {
   getSingleServiceNameWithAddress,
   getServiceNamesWithAddresses,
 } from '../utils'
-import {useTransactionEstimate} from './useTransactionEstimate'
 import {updateApprovalAmount} from '../utils/approval'
 
 const {HOME} = ROUTES
@@ -121,27 +120,6 @@ export const useFontSize = (
   }, [targetRef, hiddenRef, maxWidth, value, initialFontSize])
 }
 
-export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
-  const {
-    data: {network},
-  } = useCurrentAddress()
-
-  const {data, loading, error} = useTransactionEstimate({
-    transaction: tx,
-    network,
-    tokensAmount,
-  })
-
-  if (loading) {
-    return {loading}
-  }
-
-  if (error) {
-    return {error}
-  }
-
-  return data
-}
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
@@ -182,14 +160,7 @@ export const useCurrentTxStore = create(set => ({
     set(state => {
       if (customAllowance === state.customAllowance) return state
 
-      return {
-        customAllowance,
-        txOptions: {
-          ...state.txOptions,
-          gasLimit: '',
-          storageLimit: '',
-        },
-      }
+      return {customAllowance}
     }),
   setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
   setSendTokenId: sendTokenId => set({sendTokenId}),

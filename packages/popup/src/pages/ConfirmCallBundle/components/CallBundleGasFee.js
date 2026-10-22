@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import GasFee from '../../../components/GasFee'
 import GasFeePlaceholder from '../../../components/GasFeePlaceholder'
 import SponsoredGasFee from '../../../components/SponsoredGasFee'
+import {useLowGasFee} from '../../../hooks/useLowGasFee'
 
 function CallBundleGasFee({
   sponsorship,
@@ -13,6 +14,11 @@ function CallBundleGasFee({
   onEdit,
 }) {
   const {t} = useTranslation()
+  const isLowGasFee = useLowGasFee({
+    transaction: transactionEstimate.transaction,
+    network: sponsorship.loading || sponsorship.available ? null : network,
+    uses1559Fees: true,
+  })
 
   if (sponsorship.loading) {
     return <GasFeePlaceholder />
@@ -36,15 +42,20 @@ function CallBundleGasFee({
   const {data: estimate, error, transaction} = transactionEstimate
 
   return (
-    <GasFee
-      estimate={estimate || {error}}
-      network={network}
-      titleClassName="mx-1 mb-4"
-      feePerGas={transaction?.maxFeePerGas}
-      editLabel={t(gasLevel)}
-      editDisabled={!transaction}
-      onEdit={onEdit}
-    />
+    <>
+      <GasFee
+        estimate={estimate || {error}}
+        network={network}
+        titleClassName="mx-1 mb-4"
+        feePerGas={transaction?.maxFeePerGas}
+        editLabel={t(gasLevel)}
+        editDisabled={!transaction}
+        onEdit={onEdit}
+      />
+      {isLowGasFee && (
+        <p className="mt-2 text-xs text-warning">{t('lowGasPriceWarning')}</p>
+      )}
+    </>
   )
 }
 
