@@ -56,7 +56,8 @@ import {ROUTES, RPC_METHODS, TX_STATUS} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
 import {updateApprovalAmount} from '../../utils/approval'
-import {getSelectedGasLevel, isGasFeeLow} from '../../utils/gas'
+import {getSelectedGasLevel} from '../../utils/gas'
+import {useLowGasFee} from '../../hooks/useLowGasFee'
 import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import ViewData from '../ViewData'
 import EditAllowance from '../EditAllowance'
@@ -275,7 +276,6 @@ function ConfirmTransaction() {
     data: transactionEstimate,
     loading: transactionEstimateLoading,
     error: transactionEstimateError,
-    feeSuggestions,
     txWithOptions,
     hasGasPrices,
   } = useTransactionEstimate({
@@ -428,9 +428,10 @@ function ConfirmTransaction() {
       : sendTransactionParams.gasPrice || estimateForSend.gasPrice,
   )
 
-  const isLowGasFee = isGasFeeLow({
+  const isLowGasFee = useLowGasFee({
     transaction: sendTransactionParams,
-    feeSuggestions,
+    network:
+      sponsoredUserOperation.loading || isSponsoredSubmission ? null : network,
     uses1559Fees,
   })
 

@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import GasFee from '../../../components/GasFee'
 import GasFeePlaceholder from '../../../components/GasFeePlaceholder'
 import SponsoredGasFee from '../../../components/SponsoredGasFee'
-import {isGasFeeLow} from '../../../utils/gas'
+import {useLowGasFee} from '../../../hooks/useLowGasFee'
 
 function CallBundleGasFee({
   sponsorship,
@@ -14,6 +14,11 @@ function CallBundleGasFee({
   onEdit,
 }) {
   const {t} = useTranslation()
+  const isLowGasFee = useLowGasFee({
+    transaction: transactionEstimate.transaction,
+    network: sponsorship.loading || sponsorship.available ? null : network,
+    uses1559Fees: true,
+  })
 
   if (sponsorship.loading) {
     return <GasFeePlaceholder />
@@ -34,17 +39,7 @@ function CallBundleGasFee({
     )
   }
 
-  const {
-    data: estimate,
-    error,
-    transaction,
-    gasInfoEip1559,
-  } = transactionEstimate
-  const isLowGasFee = isGasFeeLow({
-    transaction,
-    feeSuggestions: {gasInfoEip1559},
-    uses1559Fees: true,
-  })
+  const {data: estimate, error, transaction} = transactionEstimate
 
   return (
     <>
@@ -75,7 +70,6 @@ CallBundleGasFee.propTypes = {
     transaction: PropTypes.object,
     loading: PropTypes.bool,
     error: PropTypes.object,
-    gasInfoEip1559: PropTypes.object,
   }).isRequired,
   network: PropTypes.object.isRequired,
   gasLevel: PropTypes.string.isRequired,

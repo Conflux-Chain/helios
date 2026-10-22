@@ -1,6 +1,5 @@
 import {
   Big,
-  convertDataToValue,
   convertValueToData,
   formatDecimalToHex,
   formatHexToDecimal,
@@ -160,42 +159,6 @@ export function getSelectedGasLevel({tx, txOptions, uses1559Fees}) {
     : gasPrice
 
   return hasCustomPrices ? 'advanced' : settings.gasLevel || 'medium'
-}
-
-// Compare final prices with the wallet's default quote for a warning only.
-export function isGasFeeLow({transaction, feeSuggestions, uses1559Fees}) {
-  if (!transaction) return false
-
-  // Legacy tx
-  if (!uses1559Fees) {
-    const recommendedGasPrice = feeSuggestions?.gasPrice
-    if (!transaction.gasPrice || !recommendedGasPrice) return false
-
-    return new Big(formatHexToDecimal(transaction.gasPrice)).lt(
-      formatHexToDecimal(recommendedGasPrice),
-    )
-  }
-
-  const fees = feeSuggestions?.gasInfoEip1559?.medium
-  if (!fees || !transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas) {
-    return false
-  }
-
-  // Compare in Gwei/GDrip, using the same precision as the default quote.
-  const maxFee = convertDataToValue(transaction.maxFeePerGas, GWEI_DECIMALS)
-  const priorityFee = convertDataToValue(
-    transaction.maxPriorityFeePerGas,
-    GWEI_DECIMALS,
-  )
-
-  return (
-    new Big(maxFee).lt(
-      new Big(fees.suggestedMaxFeePerGas).round(GWEI_DECIMALS),
-    ) ||
-    new Big(priorityFee).lt(
-      new Big(fees.suggestedMaxPriorityFeePerGas).round(GWEI_DECIMALS),
-    )
-  )
 }
 
 /**
