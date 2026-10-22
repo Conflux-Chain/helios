@@ -15,7 +15,7 @@ import {getGasLimitError} from '../../hooks/useGasFeeValidation'
 import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
 import {useAdvancedGasEditor} from '../../hooks/useAdvancedGasEditor'
 import {NETWORK_TYPE} from '../../constants'
-import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
+import {getSelectedGasLevel} from '../../utils/gas'
 import {
   useCurrentAddress,
   useCfxMaxGasLimit,
@@ -50,18 +50,9 @@ function EditGasFee({
   const isEditingAdvanced = advancedGas.isEditing
   const currentTxOptions = advancedGas.draftTxOptions ?? txOptions
 
-  const estimateParams = {...tx}
-  delete estimateParams.gas
-  delete estimateParams.storageLimit
-
-  const baseEstimate = useTransactionEstimate({
-    transaction: estimateParams,
-    network,
-  })
-
   // Replacement transactions use the quote provided by the resend flow.
   const replacementPrice = convertDataToValue(resendGasPrice, GWEI_DECIMALS)
-  const feeSuggestions = isResend
+  const replacementFeeSuggestions = isResend
     ? {
         gasPrice: resendGasPrice,
         gasInfoEip1559: {
@@ -71,20 +62,28 @@ function EditGasFee({
           },
         },
       }
-    : baseEstimate.data
-
-  const {gasInfoEip1559, gasPrice: suggestedGasPrice} = feeSuggestions || {}
+    : undefined
 
   const effectiveTxOptions = isResend
     ? {gasLevel: 'medium', ...currentTxOptions}
     : currentTxOptions
 
-  const txWithOptions = applyTxOptions({
-    tx,
+  const {
+    data: feeEstimate,
+    loading: estimateLoading,
+    error: estimateError,
+    feeSuggestions,
+    txWithOptions,
+    hasGasPrices,
+  } = useTransactionEstimate({
+    transaction: tx,
     txOptions: effectiveTxOptions,
-    estimate: feeSuggestions,
+    feeSuggestions: replacementFeeSuggestions,
     uses1559Fees,
+    network,
   })
+
+  const {gasInfoEip1559, gasPrice: suggestedGasPrice} = feeSuggestions || {}
 
   const selectedGasLevel = getSelectedGasLevel({
     tx,
@@ -92,42 +91,14 @@ function EditGasFee({
     uses1559Fees,
   })
 
-  const hasGasPrices =
-    uses1559Fees !== undefined &&
-    Boolean(
-      uses1559Fees
-        ? txWithOptions.maxFeePerGas && txWithOptions.maxPriorityFeePerGas
-        : txWithOptions.gasPrice,
-    )
+  const sendParams = feeEstimate?.transaction || txWithOptions
 
-  const transactionEstimate = useTransactionEstimate({
-    transaction: hasGasPrices ? txWithOptions : null,
-    network,
-  })
-  const {data: feeEstimate} = transactionEstimate
-  const estimateError = hasGasPrices
-    ? transactionEstimate.error
-    : baseEstimate.error
-  const estimateLoading =
-    !estimateError && (!hasGasPrices || transactionEstimate.loading)
-
-  const sendParams = {
-    ...txWithOptions,
-    gas: txWithOptions.gas || feeEstimate?.gasLimit,
-    ...(networkTypeIsCfx
-      ? {
-          storageLimit:
-            txWithOptions.storageLimit || feeEstimate?.storageCollateralized,
-        }
-      : {}),
-  }
-
-  const estimatedGasUsed = formatHexToDecimal(feeEstimate?.gasUsed)
+  const estimatedGasLimit = formatHexToDecimal(feeEstimate?.estimatedGasLimit)
   const gasLimitError = hasGasPrices
     ? getGasLimitError(
         {
           gasLimit: formatHexToDecimal(sendParams.gas),
-          minGasLimit: estimatedGasUsed,
+          minGasLimit: estimatedGasLimit,
           maxGasLimit: formatHexToDecimal(maxGasLimit),
         },
         t,
@@ -151,7 +122,6 @@ function EditGasFee({
     if (!hasGasPrices) return
 
     advancedGas.startEditing({
-      originalTx: tx,
       currentTx: sendParams,
       txOptions,
     })
@@ -169,9 +139,12 @@ function EditGasFee({
     !estimateLoading &&
     !estimateError &&
     Boolean(sendParams.gas) &&
-    estimatedGasUsed !== undefined &&
+    estimatedGasLimit !== undefined &&
     !gasLimitError &&
-    (!networkTypeIsCfx || Boolean(sendParams.storageLimit))
+    (!networkTypeIsCfx ||
+      (sendParams.storageLimit !== undefined &&
+        feeEstimate?.estimatedStorageLimit !== undefined))
+
   const buttonDisabled = isResend ? !canSubmit : !canSave
 
   const handleSave = () => {
@@ -224,7 +197,7 @@ function EditGasFee({
           values={advancedGas.values}
           estimate={feeEstimate || {error: estimateError}}
           uses1559Fees={uses1559Fees}
-          suggestedNonce={formatHexToDecimal(baseEstimate.data?.nonce)}
+          suggestedNonce={formatHexToDecimal(feeEstimate?.nonce)}
           maxGasLimit={formatHexToDecimal(maxGasLimit)}
           canEditNonce={!isResend}
           onChange={advancedGas.updateField}
@@ -243,7 +216,7 @@ function EditGasFee({
               showFeeLevels={uses1559Fees && !isResend}
               gasInfoEip1559={gasInfoEip1559}
               transaction={sendParams}
-              suggestedGasLimit={baseEstimate.data?.gasLimit}
+              suggestedGasLimit={feeEstimate?.gasLimit}
               suggestedGasPrice={suggestedGasPrice}
               selectedGasLevel={selectedGasLevel}
               isCfxChain={isCfxChain}

@@ -13,6 +13,7 @@ export const schemas = {
     {closed: true},
     ['originalTxHash', Bytes32],
     ['action', actionSchema],
+    ['type', {optional: true}, Uint],
     ['gas', {optional: true}, Uint],
     ['gasPrice', {optional: true}, Uint],
     ['storageLimit', {optional: true}, Uint],
@@ -41,6 +42,7 @@ export const main = ({
   const {
     action,
     originalTxHash,
+    type,
     gas,
     gasPrice,
     storageLimit,
@@ -61,6 +63,7 @@ export const main = ({
       ? buildConfluxReplacementTransaction({
           action,
           originalTransaction,
+          type,
           gas,
           gasPrice,
           storageLimit,

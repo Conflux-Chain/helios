@@ -27,9 +27,9 @@ import {
 } from '../../components'
 import {
   useCurrentTxParams,
-  useEstimateTx,
   useEstimateError,
   useInputAddressInfo,
+  useUses1559Fees,
 } from '../../hooks'
 import {
   ToAddressInput,
@@ -45,6 +45,7 @@ import {
 import {ROUTES, NETWORK_TYPE} from '../../constants'
 import {bn16, isGasSponsorshipConfigured} from '../../utils'
 import useGlobalStore from '../../stores'
+import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
 
@@ -95,16 +96,19 @@ function SendTransaction() {
     setSponsorshipDeclined,
     setSyncTxWithForm,
     tx,
+    txOptions,
     clearSendTransactionParams,
   } = useCurrentTxParams()
 
   const {
     data: {
       value: address,
-      network: {eid: networkId, type, netId, chainId, ticker: nativeToken},
+      network,
       account: {nickname},
     },
   } = useCurrentAddress()
+
+  const {eid: networkId, type, netId, chainId, ticker: nativeToken} = network
 
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
 
@@ -155,10 +159,21 @@ function SendTransaction() {
   const canDeferGasBalanceValidation =
     sponsorshipConfigured && hasTransferBalance
 
-  const estimateRst =
-    useEstimateTx(tx, !isNativeToken ? {[tokenAddress]: sendValue} : {}) || {}
+  const uses1559Fees = useUses1559Fees(tx?.type)
+  const {
+    data: estimate,
+    loading,
+    error,
+  } = useTransactionEstimate({
+    transaction: tx,
+    txOptions,
+    uses1559Fees,
+    network,
+    tokensAmount: !isNativeToken ? {[tokenAddress]: sendValue} : {},
+  })
 
-  const {nativeMaxDrip, loading} = estimateRst
+  const estimateRst = {...estimate, loading, error}
+  const {nativeMaxDrip} = estimate || {}
 
   const errorMessage = useEstimateError(
     estimateRst,

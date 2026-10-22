@@ -15,7 +15,6 @@ import {ETH_TX_TYPES, USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {
   padHexData,
   useCurrentTxParams,
-  useEstimateTx,
   useEstimateError,
   useDecodeData,
   useDecodeDisplay,
@@ -30,7 +29,7 @@ import {
   useCfxMaxGasLimit,
 } from '../../hooks/useApi'
 import {getGasLimitError} from '../../hooks/useGasFeeValidation'
-import {useConnect} from '../../hooks/useLedger'
+import {useLedgerTransaction} from '../../hooks/useLedger'
 import {
   request,
   getPageType,
@@ -53,21 +52,18 @@ import {
   TransactionResult,
   AlertMessage,
 } from '../../components'
-import {
-  ROUTES,
-  RPC_METHODS,
-  LEDGER_AUTH_STATUS,
-  LEDGER_OPEN_STATUS,
-  TX_STATUS,
-} from '../../constants'
+import {ROUTES, RPC_METHODS, TX_STATUS} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
 import {updateApprovalAmount} from '../../utils/approval'
-import {applyTxOptions, getSelectedGasLevel} from '../../utils/gas'
+import {getSelectedGasLevel} from '../../utils/gas'
+import {useLowGasFee} from '../../hooks/useLowGasFee'
 import {useSimulateTransaction} from '../../hooks/useSimulateTransaction'
 import ViewData from '../ViewData'
 import EditAllowance from '../EditAllowance'
 import EditGasFee from '../EditGasFee'
+
+import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
 
 const {HOME} = ROUTES
 
@@ -113,18 +109,9 @@ function ConfirmTransaction() {
   const history = useHistory()
   const [view, setView] = useState('confirm')
 
-  const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
-    useConnect()
   const [authStatus, setAuthStatus] = useState(true)
   const [isAppOpen, setIsAppOpen] = useState(true)
-  useEffect(() => {
-    setAuthStatus(
-      authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
-    )
-    setIsAppOpen(
-      isAppOpenFromLedger === LEDGER_OPEN_STATUS.UNOPEN ? false : true,
-    )
-  }, [authStatusFromLedger, isAppOpenFromLedger])
+
   const [sendStatus, setSendStatus] = useState()
   const [sendError, setSendError] = useState({})
   const [balanceCheckError, setBalanceCheckError] = useState('')
@@ -225,17 +212,44 @@ function ConfirmTransaction() {
       ? new Big(customAllowance).times(`1e-${token.decimals}`).toFixed()
       : displayValue
 
-  const type = displayAccount?.accountGroup?.vault?.type
-  const isHwAccount = type === 'hw' && type !== undefined
-  const isHwUnAuth = !authStatus && isHwAccount
-  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
+  const accountType = displayAccount?.accountGroup?.vault?.type
+  const isHwAccount = accountType === 'hw'
+  const defaultUses1559Fees = useUses1559Fees()
 
-  // params in wallet send or dapp send
   const originParams = {
     ...currentTx,
     ...(isInternalEip7702Tx ? {type: ETH_TX_TYPES.EIP7702} : {}),
   }
   delete originParams.nonce
+
+  // Use the network default when no type was requested.
+  if (originParams.type === undefined && defaultUses1559Fees != null) {
+    originParams.type = defaultUses1559Fees
+      ? ETH_TX_TYPES.EIP1559
+      : ETH_TX_TYPES.LEGACY
+  }
+
+  const ledger = useLedgerTransaction({
+    enabled: isHwAccount,
+    type: originParams.type,
+  })
+  originParams.type = ledger.type
+
+  useEffect(() => {
+    setAuthStatus(ledger.isAuthed !== false)
+    setIsAppOpen(ledger.isOpen !== false)
+  }, [ledger.isAuthed, ledger.isOpen])
+
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
+
+  const ledgerErrorMessage = ledger.error?.message
+  const isFeeTypeReady = accountType !== undefined && ledger.isTypeReady
+
+  const uses1559Fees = isFeeTypeReady
+    ? originParams.type === ETH_TX_TYPES.EIP1559 ||
+      originParams.type === ETH_TX_TYPES.EIP7702
+    : undefined
 
   const addressCardFromAddress = isInternalEip7702Tx
     ? originParams?.from
@@ -243,35 +257,11 @@ function ConfirmTransaction() {
   const addressCardToAddress = isInternalEip7702Tx
     ? eip7702Display.delegateAddress
     : displayToAddress
-
-  const uses1559Fees = useUses1559Fees(originParams?.type)
-
-  // Both estimates use the current approval data.
+  // Use the current approval data when estimating the transaction.
   const transactionData = useViewData(originParams, isApproveToken, decodeData)
   const transaction = {...originParams, data: transactionData}
 
   if (!transaction.data) delete transaction.data
-
-  const estimateParams = {...transaction}
-  delete estimateParams.gas
-  delete estimateParams.storageLimit
-
-  const baseEstimate = useEstimateTx(estimateParams) || {}
-
-  const txWithOptions = applyTxOptions({
-    tx: transaction,
-    txOptions,
-    estimate: baseEstimate,
-    uses1559Fees,
-  })
-
-  const hasGasPrices =
-    uses1559Fees !== undefined &&
-    Boolean(
-      uses1559Fees
-        ? txWithOptions.maxFeePerGas && txWithOptions.maxPriorityFeePerGas
-        : txWithOptions.gasPrice,
-    )
 
   const gasLevel = getSelectedGasLevel({
     tx: transaction,
@@ -280,11 +270,20 @@ function ConfirmTransaction() {
   })
 
   const {address: displayTokenAddress} = displayToken || {}
-
   const isNativeToken = !displayTokenAddress
-  const transactionEstimate =
-    useEstimateTx(
-      hasGasPrices ? txWithOptions : null,
+
+  const {
+    data: transactionEstimate,
+    loading: transactionEstimateLoading,
+    error: transactionEstimateError,
+    txWithOptions,
+    hasGasPrices,
+  } = useTransactionEstimate({
+    transaction,
+    txOptions,
+    uses1559Fees,
+    network,
+    tokensAmount:
       !isNativeToken && isSendToken
         ? {
             [displayTokenAddress]: convertValueToData(
@@ -293,13 +292,13 @@ function ConfirmTransaction() {
             ),
           }
         : {},
-    ) || {}
-  const estimateRst = hasGasPrices
-    ? transactionEstimate
-    : {
-        loading: !baseEstimate.error,
-        error: baseEstimate.error,
-      }
+  })
+
+  const estimateRst = {
+    ...transactionEstimate,
+    loading: transactionEstimateLoading,
+    error: transactionEstimateError,
+  }
 
   const inputAmountHex = isNativeToken
     ? txWithOptions.value || '0x0'
@@ -369,13 +368,15 @@ function ConfirmTransaction() {
     ? maxValueAfterGas
     : txWithOptions.value
 
-  // Recheck the balance flag against the value that will actually be sent.
+  // Recheck the balance against the final value and the sender's fees.
   const estimateForSend = shouldSubtractGasFromMax
     ? {
         ...estimateRst,
-        isBalanceEnough: bn16(estimateRst.balanceDrip).gte(
-          bn16(sendValue).add(bn16(estimateRst.txFeeDrip)),
-        ),
+        isBalanceEnough:
+          estimateRst.isFeeBalanceEnough === true &&
+          bn16(estimateRst.balanceDrip).gte(
+            bn16(sendValue).add(bn16(estimateRst.userTxFeeDrip)),
+          ),
       }
     : estimateRst
 
@@ -384,23 +385,17 @@ function ConfirmTransaction() {
     USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
   const sendTransactionParams = {
-    ...txWithOptions,
-    gas: txWithOptions.gas || estimateRst.gasLimit,
-    ...(networkTypeIsCfx
-      ? {
-          storageLimit:
-            txWithOptions.storageLimit || estimateRst.storageCollateralized,
-        }
-      : {}),
+    ...(estimateRst.transaction || txWithOptions),
     ...(shouldSubtractGasFromMax ? {value: sendValue} : {}),
   }
 
-  const estimatedGasUsed = formatHexToDecimal(estimateRst.gasUsed)
+  const estimatedGasLimit = formatHexToDecimal(estimateRst.estimatedGasLimit)
+
   const gasLimitError = hasGasPrices
     ? getGasLimitError(
         {
           gasLimit: formatHexToDecimal(sendTransactionParams.gas),
-          minGasLimit: estimatedGasUsed,
+          minGasLimit: estimatedGasLimit,
           maxGasLimit: formatHexToDecimal(maxGasLimit),
         },
         t,
@@ -432,6 +427,13 @@ function ConfirmTransaction() {
       ? sendTransactionParams.maxFeePerGas || estimateForSend.maxFeePerGas
       : sendTransactionParams.gasPrice || estimateForSend.gasPrice,
   )
+
+  const isLowGasFee = useLowGasFee({
+    transaction: sendTransactionParams,
+    network:
+      sponsoredUserOperation.loading || isSponsoredSubmission ? null : network,
+    uses1559Fees,
+  })
 
   useEffect(() => {
     if (!isSponsoredSubmission) return
@@ -469,14 +471,18 @@ function ConfirmTransaction() {
       : ''
 
   const estimateError =
-    sponsoredUserOperation.loading || isSponsoredSubmission
+    ledgerErrorMessage ||
+    (sponsoredUserOperation.loading || isSponsoredSubmission
       ? ''
-      : maxAmountError || errorMessage || balanceCheckError
+      : maxAmountError || errorMessage || balanceCheckError)
 
   const isTransactionReady =
     hasGasPrices &&
     Boolean(sendTransactionParams.gas) &&
-    estimatedGasUsed !== undefined &&
+    estimatedGasLimit !== undefined &&
+    (!networkTypeIsCfx ||
+      (sendTransactionParams.storageLimit !== undefined &&
+        estimateRst.estimatedStorageLimit !== undefined)) &&
     estimateForSend.isBalanceEnough === true &&
     !maxAmountError &&
     !errorMessage &&
@@ -485,6 +491,8 @@ function ConfirmTransaction() {
 
   const confirmDisabled =
     view !== 'confirm' ||
+    !isFeeTypeReady ||
+    Boolean(ledgerErrorMessage) ||
     sponsoredUserOperation.loading ||
     (!isSponsoredSubmission && !isTransactionReady) ||
     (customAllowance !== undefined && isDecoding)
@@ -712,7 +720,7 @@ function ConfirmTransaction() {
     network: isDapp ? dappApp?.currentNetwork : network,
     sponsorshipLoading: sponsoredUserOperation.loading,
     sponsored: isSponsoredSubmission,
-    estimationLoading: Boolean(baseEstimate.loading || estimateForSend.loading),
+    estimationLoading: transactionEstimateLoading,
   })
 
   if (view === 'gas') {
@@ -806,8 +814,17 @@ function ConfirmTransaction() {
             estimateRst={estimateForSend}
             feePerGas={feePerGas}
             editLabel={uses1559Fees ? t(gasLevel) : t('edit')}
-            onEdit={() => setView('gas')}
+            onEdit={() => {
+              if (isFeeTypeReady && !ledgerErrorMessage) setView('gas')
+            }}
           />
+          {!sponsoredUserOperation.loading &&
+            !isSponsoredSubmission &&
+            isLowGasFee && (
+              <p className="mt-2 text-xs text-warning">
+                {t('lowGasPriceWarning')}
+              </p>
+            )}
         </div>
         <div className="flex flex-col items-center">
           {isDapp &&

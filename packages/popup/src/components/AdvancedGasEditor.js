@@ -30,7 +30,7 @@ function AdvancedGasEditor({
   const resolvedGasLimit = formatHexToDecimal(transaction?.gas)
   const storageLimit = formatHexToDecimal(transaction?.storageLimit)
 
-  const minGasLimit = formatHexToDecimal(estimate?.gasUsed) || '21000'
+  const minGasLimit = formatHexToDecimal(estimate?.estimatedGasLimit)
 
   const errors = useGasFeeValidation({
     values: {
@@ -49,9 +49,12 @@ function AdvancedGasEditor({
     : ['gasPrice']
 
   const saveDisabled =
+    Boolean(estimate?.error) ||
+    minGasLimit === undefined ||
     priceFields.some(field => values[field] === '') ||
     !resolvedGasLimit ||
-    (networkTypeIsCfx && !storageLimit) ||
+    (networkTypeIsCfx &&
+      (!storageLimit || estimate?.estimatedStorageLimit === undefined)) ||
     Object.values(errors).some(Boolean)
 
   const handleSave = () => {
@@ -83,7 +86,7 @@ function AdvancedGasEditor({
         <GasAndNonceFields
           showStorageLimit={networkTypeIsCfx}
           canEditNonce={canEditNonce}
-          inputGasLimit={values.gasLimit}
+          inputGasLimit={values.gasLimit ?? resolvedGasLimit ?? ''}
           gasLimitErr={errors.gasLimit}
           onChangeGasLimit={value => onChange('gasLimit', value)}
           inputNonce={values.nonce}
