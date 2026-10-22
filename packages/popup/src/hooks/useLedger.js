@@ -1,31 +1,76 @@
 import {useEffect, useState} from 'react'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {useLedgerBindingApi} from '../hooks'
-import {LEDGER_AUTH_STATUS, LEDGER_OPEN_STATUS} from '../constants'
+import {useNetworkTypeIsCfx} from './useApi'
 
-export const useConnect = () => {
-  const [authStatus, setAuthStatus] = useState(LEDGER_AUTH_STATUS.LOADING)
-  const [isAppOpen, setIsAppOpen] = useState(LEDGER_OPEN_STATUS.LOADING)
+export function useLedgerTransaction({enabled, type}) {
   const ledgerBindingApi = useLedgerBindingApi()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const [status, setStatus] = useState()
+
+  // Legacy fees do not depend on the app version.
+  const needsAppVersion =
+    enabled && networkTypeIsCfx && type !== ETH_TX_TYPES.LEGACY
 
   useEffect(() => {
-    if (ledgerBindingApi) {
-      const fetchStatus = async () => {
-        try {
+    setStatus(undefined)
+    if (!enabled || !ledgerBindingApi) return
+
+    let cancelled = false
+    let timer
+
+    const fetchStatus = async () => {
+      let nextStatus
+
+      try {
+        if (networkTypeIsCfx) {
+          nextStatus = await ledgerBindingApi.getAppStatus()
+        } else {
           const isAuthed = await ledgerBindingApi.isDeviceAuthed()
-          setAuthStatus(
-            isAuthed ? LEDGER_AUTH_STATUS.AUTHED : LEDGER_AUTH_STATUS.UNAUTHED,
-          )
-          const isOpen = await ledgerBindingApi.isAppOpen()
-          setIsAppOpen(
-            isOpen ? LEDGER_OPEN_STATUS.OPEN : LEDGER_OPEN_STATUS.UNOPEN,
-          )
-        } catch (err) {
-          // handle error in browsers without navigator.usb
-          if (!err?.message?.includes('navigator.usb is undefined')) throw err
+          nextStatus = {
+            isAuthed,
+            isOpen: isAuthed && (await ledgerBindingApi.isAppOpen()),
+          }
         }
+      } catch (error) {
+        nextStatus = {error}
       }
-      fetchStatus()
+
+      if (cancelled) return
+      setStatus({ledgerBindingApi, ...nextStatus})
+
+      // Retry until the required app is open.
+      if (needsAppVersion && !nextStatus.isOpen) {
+        timer = setTimeout(fetchStatus, 2000)
+      }
     }
-  }, [ledgerBindingApi])
-  return {authStatus, isAppOpen}
+
+    fetchStatus()
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [enabled, ledgerBindingApi, networkTypeIsCfx, needsAppVersion])
+
+  // Ignore results from the previous network.
+  const currentStatus =
+    enabled && status?.ledgerBindingApi === ledgerBindingApi
+      ? status
+      : undefined
+
+  // Conflux app v1 only supports Legacy transactions.
+  const transactionType =
+    needsAppVersion && currentStatus?.supports1559 === false
+      ? ETH_TX_TYPES.LEGACY
+      : type
+
+  return {
+    type: transactionType,
+    isTypeReady:
+      transactionType !== undefined &&
+      (!needsAppVersion || currentStatus?.isOpen === true),
+    isAuthed: currentStatus?.isAuthed,
+    isOpen: currentStatus?.isOpen,
+    error: needsAppVersion ? currentStatus?.error : undefined,
+  }
 }
