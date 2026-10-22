@@ -514,8 +514,7 @@ function CallBundleConfirmation({
                 address={from}
                 nickname={currentAccount.nickname}
                 showAvatar={false}
-                addressClassName="order-1 text-right text-sm !font-normal"
-                nicknameClassName="order-2 mt-0.5 max-w-60 truncate text-right text-xs text-gray-60"
+                nicknameClassName="text-right"
               />
             </dd>
           </div>

@@ -2,10 +2,17 @@ import PropTypes from 'prop-types'
 import {TokenItem} from './'
 import {isArray} from '@fluent-wallet/checks'
 
-function TokenList({tokenList, onSelectToken, children, contentClassName}) {
+function TokenList({
+  tokenList,
+  onSelectToken,
+  children,
+  contentClassName,
+  autoFetchNameInfo = true,
+}) {
   const child = isArray(tokenList)
     ? tokenList.map((token, index) => (
         <TokenItem
+          autoFetchNameInfo={autoFetchNameInfo}
           onSelect={onSelectToken}
           token={token}
           key={index}
@@ -27,6 +34,7 @@ function TokenList({tokenList, onSelectToken, children, contentClassName}) {
 }
 
 TokenList.propTypes = {
+  autoFetchNameInfo: PropTypes.bool,
   tokenList: PropTypes.array,
   onSelectToken: PropTypes.func,
   children: PropTypes.node,

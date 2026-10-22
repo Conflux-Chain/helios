@@ -2,9 +2,9 @@ import {useTranslation} from 'react-i18next'
 import {
   DappFooter,
   TitleNav,
-  AccountDisplay,
   DisplayBalance,
   TransactionResult,
+  AccountDisplay,
 } from '../../components'
 import {useBalance, useCurrentTicker} from '../../hooks/useApi'
 

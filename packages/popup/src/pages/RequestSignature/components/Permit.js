@@ -3,18 +3,17 @@ import {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   Security,
   QuestionCircleOutlined,
   RightOutlined,
-  FileOutlined,
   UpOutlined,
   DownOutlined,
 } from '@fluent-wallet/component-icons'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {
   AccountDisplay,
+  AddressDisplay,
   CopyButton,
   CurrentNetworkDisplay,
   DappFooter,
@@ -22,20 +21,9 @@ import {
 } from '../../../components'
 import {TX_STATUS} from '../../../constants'
 import {useAddressTypeInfo} from '../../../hooks/useApi'
-import {formatIntoChecksumAddress} from '../../../utils'
 import {formatPermitAmount, getPermitDisplayData} from '../../../utils/permit'
 import {VIEW_PERMIT_DATA} from '../../../constants/route'
 import ImageWithFallback from '../../../components/ImageWithFallback'
-
-const shortenPermitAddress = address => {
-  if (!address) return ''
-
-  try {
-    return shortenAddress(formatIntoChecksumAddress(address))
-  } catch {
-    return address
-  }
-}
 
 const PermitTooltip = ({content, title, placement, children}) => (
   <Tooltip
@@ -216,10 +204,14 @@ export const Permit = ({
                 </div>
               }
             >
-              {isContract && <FileOutlined className="w-4 h-4 text-primary" />}
-              <span className="truncate text-[14px] leading-[16px] font-semibold">
-                {shortenPermitAddress(displayData.spender) || '-'}
-              </span>
+              <AddressDisplay
+                network={currentNetwork}
+                address={displayData.spender}
+                kind="contract"
+                iconClassName="w-4 h-4"
+                showIcon={isContract}
+                autoFetch={isContract}
+              />
               {displayData.spender && (
                 <CopyButton
                   text={displayData.spender}
@@ -237,8 +229,7 @@ export const Permit = ({
                 address={address}
                 nickname={nickname}
                 showAvatar={false}
-                addressClassName="order-1 text-sm font-normal text-gray-80"
-                nicknameClassName="order-2 text-xs font-normal text-gray-60 text-right"
+                nicknameClassName="text-right"
               />
             </PermitRow>
             <PermitRow label={t('network')}>
@@ -259,8 +250,13 @@ export const Permit = ({
               <span className="truncate">{protocol}</span>
             </PermitRow>
             <PermitRow label={t('typedDataInteractWith')}>
-              <FileOutlined className="w-4 h-4 text-primary" />
-              {shortenPermitAddress(verifyingContract) || '-'}
+              <AddressDisplay
+                network={currentNetwork}
+                address={verifyingContract}
+                kind="contract"
+                iconClassName="w-4 h-4"
+                labelClassName="!font-normal"
+              />
               <CopyButton
                 text={verifyingContract}
                 className="h-4 w-4 text-gray-60"

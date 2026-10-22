@@ -16,16 +16,22 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
 import {useCheckImage} from '../../../hooks'
+import {useFetchAddressNameInfos} from '../../../hooks/useNameInfoStore'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
   const {
-    data: {eid: addressId},
+    data: {eid: addressId, network},
   } = useCurrentAddress()
   const [searchValue, setSearchValue] = useState('')
-  const {data: tokens} = useCurrentNetworkTokens({
+  const {data: tokens, tokenAddresses} = useCurrentNetworkTokens({
     addressId,
     fuzzy: searchValue || null,
+  })
+  useFetchAddressNameInfos({
+    network,
+    addresses: tokenAddresses,
+    autoFetch: open,
   })
   const homeTokenList = searchValue ? tokens : ['native'].concat(tokens)
   const onCloseTokenList = () => {
@@ -40,7 +46,11 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
       <span className="inline-block px-3 mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
-      <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
+      <TokenList
+        tokenList={homeTokenList}
+        onSelectToken={onSelectToken}
+        autoFetchNameInfo={false}
+      />
     </div>
   )
   return (
