@@ -29,7 +29,7 @@ import {
   useCfxMaxGasLimit,
 } from '../../hooks/useApi'
 import {getGasLimitError} from '../../hooks/useGasFeeValidation'
-import {useConnect} from '../../hooks/useLedger'
+import {useLedgerTransaction} from '../../hooks/useLedger'
 import {
   request,
   getPageType,
@@ -52,13 +52,7 @@ import {
   TransactionResult,
   AlertMessage,
 } from '../../components'
-import {
-  ROUTES,
-  RPC_METHODS,
-  LEDGER_AUTH_STATUS,
-  LEDGER_OPEN_STATUS,
-  TX_STATUS,
-} from '../../constants'
+import {ROUTES, RPC_METHODS, TX_STATUS} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useSponsoredUserOperation from './useSponsoredUserOperation'
 import {updateApprovalAmount} from '../../utils/approval'
@@ -114,18 +108,9 @@ function ConfirmTransaction() {
   const history = useHistory()
   const [view, setView] = useState('confirm')
 
-  const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
-    useConnect()
   const [authStatus, setAuthStatus] = useState(true)
   const [isAppOpen, setIsAppOpen] = useState(true)
-  useEffect(() => {
-    setAuthStatus(
-      authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
-    )
-    setIsAppOpen(
-      isAppOpenFromLedger === LEDGER_OPEN_STATUS.UNOPEN ? false : true,
-    )
-  }, [authStatusFromLedger, isAppOpenFromLedger])
+
   const [sendStatus, setSendStatus] = useState()
   const [sendError, setSendError] = useState({})
   const [balanceCheckError, setBalanceCheckError] = useState('')
@@ -226,17 +211,44 @@ function ConfirmTransaction() {
       ? new Big(customAllowance).times(`1e-${token.decimals}`).toFixed()
       : displayValue
 
-  const type = displayAccount?.accountGroup?.vault?.type
-  const isHwAccount = type === 'hw' && type !== undefined
-  const isHwUnAuth = !authStatus && isHwAccount
-  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
+  const accountType = displayAccount?.accountGroup?.vault?.type
+  const isHwAccount = accountType === 'hw'
+  const defaultUses1559Fees = useUses1559Fees()
 
-  // params in wallet send or dapp send
   const originParams = {
     ...currentTx,
     ...(isInternalEip7702Tx ? {type: ETH_TX_TYPES.EIP7702} : {}),
   }
   delete originParams.nonce
+
+  // Use the network default when no type was requested.
+  if (originParams.type === undefined && defaultUses1559Fees != null) {
+    originParams.type = defaultUses1559Fees
+      ? ETH_TX_TYPES.EIP1559
+      : ETH_TX_TYPES.LEGACY
+  }
+
+  const ledger = useLedgerTransaction({
+    enabled: isHwAccount,
+    type: originParams.type,
+  })
+  originParams.type = ledger.type
+
+  useEffect(() => {
+    setAuthStatus(ledger.isAuthed !== false)
+    setIsAppOpen(ledger.isOpen !== false)
+  }, [ledger.isAuthed, ledger.isOpen])
+
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
+
+  const ledgerErrorMessage = ledger.error?.message
+  const isFeeTypeReady = accountType !== undefined && ledger.isTypeReady
+
+  const uses1559Fees = isFeeTypeReady
+    ? originParams.type === ETH_TX_TYPES.EIP1559 ||
+      originParams.type === ETH_TX_TYPES.EIP7702
+    : undefined
 
   const addressCardFromAddress = isInternalEip7702Tx
     ? originParams?.from
@@ -244,9 +256,6 @@ function ConfirmTransaction() {
   const addressCardToAddress = isInternalEip7702Tx
     ? eip7702Display.delegateAddress
     : displayToAddress
-
-  const uses1559Fees = useUses1559Fees(originParams?.type)
-
   // Use the current approval data when estimating the transaction.
   const transactionData = useViewData(originParams, isApproveToken, decodeData)
   const transaction = {...originParams, data: transactionData}
@@ -463,9 +472,10 @@ function ConfirmTransaction() {
       : ''
 
   const estimateError =
-    sponsoredUserOperation.loading || isSponsoredSubmission
+    ledgerErrorMessage ||
+    (sponsoredUserOperation.loading || isSponsoredSubmission
       ? ''
-      : maxAmountError || errorMessage || balanceCheckError
+      : maxAmountError || errorMessage || balanceCheckError)
 
   const isTransactionReady =
     hasGasPrices &&
@@ -482,6 +492,8 @@ function ConfirmTransaction() {
 
   const confirmDisabled =
     view !== 'confirm' ||
+    !isFeeTypeReady ||
+    Boolean(ledgerErrorMessage) ||
     sponsoredUserOperation.loading ||
     (!isSponsoredSubmission && !isTransactionReady) ||
     (customAllowance !== undefined && isDecoding)
@@ -803,7 +815,9 @@ function ConfirmTransaction() {
             estimateRst={estimateForSend}
             feePerGas={feePerGas}
             editLabel={uses1559Fees ? t(gasLevel) : t('edit')}
-            onEdit={() => setView('gas')}
+            onEdit={() => {
+              if (isFeeTypeReady && !ledgerErrorMessage) setView('gas')
+            }}
           />
           {!sponsoredUserOperation.loading &&
             !isSponsoredSubmission &&

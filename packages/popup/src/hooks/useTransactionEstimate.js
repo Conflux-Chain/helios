@@ -11,6 +11,15 @@ import {useBalance} from './useApi'
 import {useGasFeeSuggestions} from './useGasFeeSuggestions'
 import {applyTxOptions} from '../utils/gas'
 
+const SWR_OPTIONS = {
+  revalidateOnMount: true,
+  refreshInterval: 0,
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  shouldRetryOnError: false,
+  onError: () => {},
+}
+
 export function useTransactionEstimate({
   transaction,
   txOptions,
@@ -29,7 +38,6 @@ export function useTransactionEstimate({
   })
   const feeSuggestions = providedFeeSuggestions ?? feeSuggestionsResult.data
 
-  // Prepare the current choices before the Gas/Storage estimate is available.
   const txWithOptions = applyTxOptions({
     tx: transaction,
     txOptions,
@@ -53,32 +61,75 @@ export function useTransactionEstimate({
         : txWithOptions.gasPrice,
     )
 
-  // Read balances for the fee and transfer checks.
   const balanceData = useBalance(
     enabled ? txWithOptions.from : null,
     network?.eid,
     ['0x0', ...Object.keys(tokensAmount)],
   )
-
   const balances = balanceData?.[txWithOptions.from?.toLowerCase()]
   const nativeBalance = balances?.['0x0']
 
-  // Wait for prices and balance before estimating the current transaction.
+  const networkKey = [
+    network?.eid,
+    network?.name,
+    network?.type,
+    network?.chainId,
+  ]
+  const request = rpcRequest =>
+    provider.request({...rpcRequest, networkName: network.name})
+
+  // Price and limit edits reuse the same Gas/Storage estimate.
+  const txForEstimate = {...txWithOptions}
+  delete txForEstimate.gas
+  delete txForEstimate.storageLimit
+  delete txForEstimate.gasPrice
+  delete txForEstimate.maxFeePerGas
+  delete txForEstimate.maxPriorityFeePerGas
+
   const {
-    data,
-    error: estimateError,
-    isValidating,
+    data: limitEstimate,
+    error: limitError,
+    isValidating: estimatingLimits,
   } = useSWR(
     enabled && hasGasPrices && provider && nativeBalance !== undefined
+      ? ['transactionLimits', networkKey, network.gasBuffer, txForEstimate]
+      : null,
+    () =>
+      estimateGasAndStorage({
+        transaction: txForEstimate,
+        network,
+        request,
+      }),
+    SWR_OPTIONS,
+  )
+
+  // Apply current choices to the estimated limits.
+  const selectedTransaction = applyTxOptions({
+    tx: transaction,
+    txOptions,
+    feeSuggestions,
+    limitEstimate,
+    uses1559Fees,
+  })
+
+  // Recalculate costs and Core sponsorship for the selected parameters.
+  const {
+    data: feeData,
+    error: feeError,
+    isValidating: calculatingFees,
+  } = useSWR(
+    enabled &&
+      hasGasPrices &&
+      provider &&
+      nativeBalance !== undefined &&
+      limitEstimate &&
+      !estimatingLimits &&
+      !limitError
       ? [
-          'transactionEstimate',
-          network.eid,
-          network.name,
-          network.type,
-          network.chainId,
-          transaction,
-          txOptions,
-          txWithOptions,
+          'transactionFees',
+          networkKey,
+          selectedTransaction,
+          limitEstimate.toAddressType,
           uses1559Fees,
           tokensAmount,
           valueForBalance,
@@ -86,39 +137,45 @@ export function useTransactionEstimate({
         ]
       : null,
     () =>
-      estimateTransaction({
-        transaction,
-        txOptions,
-        txWithOptions,
-        feeSuggestions,
+      calculateTransactionFees({
+        transaction: selectedTransaction,
+        toAddressType: limitEstimate.toAddressType,
         uses1559Fees,
         network,
         tokensAmount,
         valueForBalance,
         balances,
-        request: rpcRequest =>
-          provider.request({
-            ...rpcRequest,
-            networkName: network.name,
-          }),
+        request,
       }),
-    {
-      revalidateOnMount: true,
-      refreshInterval: 0,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      shouldRetryOnError: false,
-      onError: () => {},
-    },
+    SWR_OPTIONS,
   )
 
   // Recommendation errors only block transactions with missing prices.
-  const error = hasGasPrices ? estimateError : feeSuggestionsResult.error
-  const loading = enabled && !error && (!hasGasPrices || !data || isValidating)
+  const error = hasGasPrices
+    ? limitError || feeError
+    : feeSuggestionsResult.error
+  const loading =
+    enabled &&
+    !error &&
+    (!hasGasPrices ||
+      !limitEstimate ||
+      estimatingLimits ||
+      !feeData ||
+      calculatingFees)
 
-  // Only expose a completed estimate for the current inputs.
   return {
-    data: enabled && !loading && !error ? data : undefined,
+    data:
+      enabled && !loading && !error
+        ? {
+            ...limitEstimate,
+            ...feeData,
+            gasLimit: selectedTransaction.gas,
+            gasPrice: selectedTransaction.gasPrice,
+            maxFeePerGas: selectedTransaction.maxFeePerGas,
+            maxPriorityFeePerGas: selectedTransaction.maxPriorityFeePerGas,
+            transaction: selectedTransaction,
+          }
+        : undefined,
     loading,
     error: enabled ? error : undefined,
     feeSuggestions,
@@ -127,32 +184,19 @@ export function useTransactionEstimate({
   }
 }
 
-// Estimate limits, select transaction parameters, and calculate costs.
-async function estimateTransaction({
-  transaction,
-  txOptions,
-  txWithOptions,
-  feeSuggestions,
-  uses1559Fees,
-  network,
-  tokensAmount,
-  valueForBalance,
-  balances,
-  request,
-}) {
-  const nativeBalance = balances['0x0']
+async function estimateGasAndStorage({transaction, network, request}) {
   const isCfx = network.type === 'cfx'
-  const {from, to} = txWithOptions
-  const hasExplicitNonce = txWithOptions.nonce !== undefined
+  const {from, to} = transaction
+  const hasExplicitNonce = transaction.nonce !== undefined
 
-  // Get the nonce for simulation and the recipient type.
+  // Core uses an available nonce for simulation.
   const [nonce, addressInfo] = await Promise.all([
-    hasExplicitNonce
-      ? txWithOptions.nonce
-      : request({
+    isCfx || !hasExplicitNonce
+      ? request({
           method: isCfx ? 'cfx_getNextUsableNonce' : 'eth_getTransactionCount',
           params: isCfx ? [from] : [from, 'pending'],
-        }),
+        })
+      : transaction.nonce,
     to
       ? request({
           method: 'wallet_detectAddressType',
@@ -162,9 +206,8 @@ async function estimateTransaction({
   ])
 
   const toAddressType = addressInfo?.type
-  // An automatic nonce is only used for simulation.
-  const simulationTx = {...txWithOptions, nonce}
-
+  // Use this nonce only for simulation.
+  const simulationTx = {...transaction, nonce}
   const isEip7702Tx =
     simulationTx.type === ETH_TX_TYPES.EIP7702 ||
     !!simulationTx.authorizationList
@@ -177,7 +220,6 @@ async function estimateTransaction({
     !simulationTx.accessList?.length &&
     (isCfx ? toAddressType === 'user' : toAddressType !== 'contract')
 
-  // Estimate Gas and, on Core, storage collateral.
   let limitEstimate
 
   if (isPlainTransfer) {
@@ -196,33 +238,36 @@ async function estimateTransaction({
   } else if (isCfx) {
     limitEstimate = await cfxEstimateGasAndCollateral(simulationTx, {
       request,
-      retryOnNonceTooOld: !hasExplicitNonce,
+      retryOnNonceTooOld: true,
     })
   } else {
     limitEstimate = await ethEstimateGas(simulationTx, {
       request,
       chainId: network.chainId,
+      gasBuffer: network.gasBuffer || 1,
       retryOnNonceTooOld: !hasExplicitNonce,
     })
   }
 
-  // Apply the estimate to the original transaction and user choices.
-  const selectedTransaction = applyTxOptions({
-    tx: transaction,
-    txOptions,
-    feeSuggestions,
-    limitEstimate,
-    uses1559Fees,
-  })
+  return {...limitEstimate, toAddressType}
+}
 
-  // Calculate the sender's cost using the selected limits and prices.
+async function calculateTransactionFees({
+  transaction,
+  toAddressType,
+  uses1559Fees,
+  network,
+  tokensAmount,
+  valueForBalance,
+  balances,
+  request,
+}) {
   const feePerGas = uses1559Fees
-    ? selectedTransaction.maxFeePerGas
-    : selectedTransaction.gasPrice
+    ? transaction.maxFeePerGas
+    : transaction.gasPrice
 
   // Batch calls may spend more than the outer transaction's value.
-  const balanceValue = valueForBalance ?? selectedTransaction.value
-
+  const balanceValue = valueForBalance ?? transaction.value
   const tokensBalance = Object.fromEntries(
     Object.keys(tokensAmount).map(address => [
       address,
@@ -230,49 +275,36 @@ async function estimateTransaction({
     ]),
   )
 
-  let feeData
-
-  if (isCfx) {
-    feeData = await cfxGetFeeDataWithSponsorship(
+  if (network.type === 'cfx') {
+    return cfxGetFeeDataWithSponsorship(
       {
-        from: selectedTransaction.from,
-        to: selectedTransaction.to,
-        gas: selectedTransaction.gas,
+        from: transaction.from,
+        to: transaction.to,
+        gas: transaction.gas,
         feePerGas,
-        storageLimit: selectedTransaction.storageLimit,
+        storageLimit: transaction.storageLimit,
         value: balanceValue,
         tokensAmount,
       },
       {
         request,
         toAddressType,
-        balance: nativeBalance,
-        tokensBalance,
-      },
-    )
-  } else {
-    feeData = ethGetFeeData(
-      {
-        gas: selectedTransaction.gas,
-        gasPrice: feePerGas,
-        value: balanceValue,
-        tokensAmount,
-      },
-      {
-        balance: nativeBalance,
+        balance: balances['0x0'],
         tokensBalance,
       },
     )
   }
 
-  // Keep the selected transaction and its fee and balance data together.
-  return {
-    ...limitEstimate,
-    ...feeData,
-    gasLimit: selectedTransaction.gas,
-    gasPrice: selectedTransaction.gasPrice,
-    maxFeePerGas: selectedTransaction.maxFeePerGas,
-    maxPriorityFeePerGas: selectedTransaction.maxPriorityFeePerGas,
-    transaction: selectedTransaction,
-  }
+  return ethGetFeeData(
+    {
+      gas: transaction.gas,
+      gasPrice: feePerGas,
+      value: balanceValue,
+      tokensAmount,
+    },
+    {
+      balance: balances['0x0'],
+      tokensBalance,
+    },
+  )
 }

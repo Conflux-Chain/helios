@@ -4,13 +4,14 @@ import {toHexQuantity} from '@fluent-wallet/utils'
 export function buildConfluxReplacementTransaction({
   action,
   originalTransaction,
+  type: replacementType,
   gas,
   gasPrice,
   storageLimit,
   maxFeePerGas,
   maxPriorityFeePerGas,
 }) {
-  const type = toHexQuantity(originalTransaction.type)
+  const type = toHexQuantity(replacementType ?? originalTransaction.type)
 
   const transaction = {
     type,

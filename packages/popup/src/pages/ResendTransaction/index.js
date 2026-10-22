@@ -29,6 +29,9 @@ import {ExecutedTransaction} from './components'
 import {useGasFeeSuggestions} from '../../hooks/useGasFeeSuggestions'
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {useLedgerTransaction} from '../../hooks/useLedger'
+
 import {buildResendTxParams, omitFalsyTxParams} from './resendParams'
 
 const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
@@ -82,9 +85,37 @@ function ResendTransaction() {
   const resendParamsInvalid =
     Object.keys(txPayload).length > 0 && !Object.keys(resendTxParams).length
 
-  const uses1559Fees = useUses1559Fees(resendTxParams?.type)
+  // Keep the original price as the replacement pricing baseline.
+  const originalUses1559Fees = useUses1559Fees(txPayload.type)
+  const lastGasPrice = originalUses1559Fees ? maxFeePerGas : gasPrice
 
-  const lastGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
+  const defaultUses1559Fees = useUses1559Fees()
+
+  // Use the network default when no type was requested.
+  if (resendTxParams.type === undefined && defaultUses1559Fees != null) {
+    resendTxParams.type = defaultUses1559Fees
+      ? ETH_TX_TYPES.EIP1559
+      : ETH_TX_TYPES.LEGACY
+  }
+
+  const ledger = useLedgerTransaction({
+    enabled: isHwAccount,
+    type: resendTxParams.type,
+  })
+  resendTxParams.type = ledger.type
+
+  useEffect(() => {
+    setAuthStatus(ledger.isAuthed !== false)
+    setIsAppOpen(ledger.isOpen !== false)
+  }, [ledger.isAuthed, ledger.isOpen])
+
+  const ledgerErrorMessage = ledger.error?.message
+  const isFeeTypeReady = accountType !== undefined && ledger.isTypeReady
+
+  const uses1559Fees = isFeeTypeReady
+    ? resendTxParams.type === ETH_TX_TYPES.EIP1559 ||
+      resendTxParams.type === ETH_TX_TYPES.EIP7702
+    : undefined
 
   // decode erc20 data
   const decodedCall = useMemo(
@@ -149,6 +180,8 @@ function ResendTransaction() {
       ...gasParams,
     }
 
+    if (networkTypeIsCfx) requestParams.type = txParams.type
+
     try {
       await request(WALLET_SEND_TRANSACTION_WITH_ACTION, requestParams)
       clearSendTransactionParams()
@@ -168,7 +201,7 @@ function ResendTransaction() {
   }
 
   const onResend = async feeParams => {
-    if (loading || !accountType || resendParamsInvalid) {
+    if (loading || !isFeeTypeReady || resendParamsInvalid) {
       return
     }
 
@@ -255,11 +288,11 @@ function ResendTransaction() {
   return (
     <div className="relative h-full">
       <EditGasFee
-        resendGasPrice={suggestedGasPrice}
+        resendGasPrice={isFeeTypeReady ? suggestedGasPrice : undefined}
+        resendDisabled={resendParamsInvalid || !isFeeTypeReady}
         resendType={resendType}
         onSubmit={onResend}
         tx={{...resendTxParams}}
-        resendDisabled={resendParamsInvalid}
         onTxOptionsChange={() => setEstimateError('')}
         onBack={() => {
           clearSendTransactionParams()
@@ -277,7 +310,7 @@ function ResendTransaction() {
         isDapp={false}
         isHwUnAuth={isHwUnAuth}
         isHwOpenAlert={isHwOpenAlert}
-        estimateError={estimateError}
+        estimateError={ledgerErrorMessage || estimateError}
       />
       {executedTxResultStatus && (
         <ExecutedTransaction

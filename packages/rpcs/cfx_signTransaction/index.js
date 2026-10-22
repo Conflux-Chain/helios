@@ -143,39 +143,25 @@ export const main = async args => {
    * ledger app check, v1.x is not support 1559 transaction
    * so we need check this app version
    */
-  let isV1LedgerAPP = false
+  // Use the network default if type is missing.
+  if (!newTx.type) {
+    newTx.type = network1559Compatible
+      ? ETH_TX_TYPES.EIP1559
+      : ETH_TX_TYPES.LEGACY
+  }
 
   const needLedgerVersionCheck =
     fromAddr.account.accountGroup.vault.type === 'hw' && !dryRun && _popup
-  if (needLedgerVersionCheck) {
-    // is hw wallet, we check is 1.x app version
-    const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
-    let ledger = new LedgerConflux()
-    // this call will establish a connection to the ledger device
-    const isAppOpen = await ledger.isAppOpen()
-    if (!isAppOpen) {
-      throw Internal('Ledger app is not open')
-    }
-    const {version} = await ledger.getAppConfiguration()
-    if (version[0] === '1') {
-      isV1LedgerAPP = true
-    }
-    // disconnect from the ledger, if not disconnect will cause error when re-connect
-    await ledger.cleanUp()
-    ledger = null
-  }
 
-  if (!newTx.type) {
-    if (network1559Compatible && !isV1LedgerAPP) {
-      newTx.type = ETH_TX_TYPES.EIP1559
-    } else {
-      newTx.type = ETH_TX_TYPES.LEGACY
-    }
-  } else {
-    // if there has type, we need check is v1.x ledger app
-    if (isV1LedgerAPP) {
-      newTx.type = ETH_TX_TYPES.LEGACY
-    }
+  if (needLedgerVersionCheck) {
+    const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
+    const ledger = new LedgerConflux()
+    const {isOpen, supports1559} = await ledger.getAppStatus()
+
+    if (!isOpen) throw Internal('Ledger app is not open')
+
+    // Conflux app v1 only supports Legacy transactions.
+    if (!supports1559) newTx.type = ETH_TX_TYPES.LEGACY
   }
 
   // tx without to must have data (deploy contract)
@@ -238,7 +224,6 @@ export const main = async args => {
   if (
     is1559Tx &&
     network1559Compatible &&
-    !isV1LedgerAPP &&
     (!newTx.maxPriorityFeePerGas || !newTx.maxFeePerGas)
   ) {
     const gasInfoEip1559 = await cfx_estimate1559Fee()

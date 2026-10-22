@@ -23,6 +23,22 @@ import {
  * @property {string} [nonce] The user's transaction nonce.
  */
 
+// Read the original prices before applying user choices.
+function getInitialGasPrices(tx, uses1559Fees) {
+  const prices = {...tx}
+  const hasOnlyGasPrice =
+    prices.gasPrice !== undefined &&
+    prices.maxFeePerGas === undefined &&
+    prices.maxPriorityFeePerGas === undefined
+
+  if (uses1559Fees && hasOnlyGasPrice) {
+    prices.maxFeePerGas = prices.gasPrice
+    prices.maxPriorityFeePerGas = prices.gasPrice
+  }
+
+  return prices
+}
+
 /**
  * Apply user choices, fee suggestions, and estimated Gas/Storage limits.
  * Transaction numbers use hex strings.
@@ -47,7 +63,9 @@ export function applyTxOptions({
   const fees = feeSuggestions?.gasInfoEip1559?.[settings.gasLevel || 'medium']
 
   // A selected fee level ignores the original prices.
-  const initialPrices = settings.gasLevel ? {} : tx
+  const initialPrices = settings.gasLevel
+    ? {}
+    : getInitialGasPrices(tx, uses1559Fees)
 
   const transaction = {
     ...tx,
@@ -55,6 +73,7 @@ export function applyTxOptions({
       originalLimit: tx?.gas,
       userLimit: settings.gasLimit,
       estimatedLimit: limitEstimate?.estimatedGasLimit,
+      defaultLimit: limitEstimate?.gasLimit,
     }),
     storageLimit: selectLimit({
       originalLimit: tx?.storageLimit,
@@ -126,7 +145,9 @@ export function applyTxOptions({
  */
 export function getSelectedGasLevel({tx, txOptions, uses1559Fees}) {
   const settings = txOptions || {}
-  const initialPrices = settings.gasLevel ? {} : tx
+  const initialPrices = settings.gasLevel
+    ? {}
+    : getInitialGasPrices(tx, uses1559Fees)
 
   const gasPrice = settings.gasPrice ?? initialPrices?.gasPrice
   const maxFeePerGas = settings.maxFeePerGas ?? initialPrices?.maxFeePerGas
@@ -143,15 +164,21 @@ export function getSelectedGasLevel({tx, txOptions, uses1559Fees}) {
 /**
  * Select a Gas or Storage limit after input validation.
  *
- * originalLimit / estimatedLimit: hex quantities.
+ * originalLimit / estimatedLimit / defaultLimit: hex quantities.
  * userLimit: decimal integer string.
  * undefined inherits the original value; '' requests an automatic value.
+ * Automatic values use defaultLimit, which may include a buffer.
  *
  * The caller checks the selected value against the estimate and chain limits.
  */
-function selectLimit({originalLimit, userLimit, estimatedLimit}) {
+function selectLimit({
+  originalLimit,
+  userLimit,
+  estimatedLimit,
+  defaultLimit = estimatedLimit,
+}) {
   if (userLimit === '') {
-    return estimatedLimit
+    return defaultLimit
   }
 
   // Preserve explicit user choices, including zero.
@@ -165,7 +192,7 @@ function selectLimit({originalLimit, userLimit, estimatedLimit}) {
   }
 
   if (originalLimit === undefined) {
-    return estimatedLimit
+    return defaultLimit
   }
 
   const original = new Big(formatHexToDecimal(originalLimit))

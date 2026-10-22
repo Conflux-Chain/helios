@@ -32,7 +32,7 @@ export function useCallBundleEstimate({
       ? data?.transaction || txWithOptions
       : null,
     gasInfoEip1559: feeSuggestions?.gasInfoEip1559,
-    suggestedGasLimit: data?.estimatedGasLimit,
+    suggestedGasLimit: data?.gasLimit,
     suggestedNonce: data?.nonce,
   }
 }

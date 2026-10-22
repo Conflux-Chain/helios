@@ -216,7 +216,7 @@ function EditGasFee({
               showFeeLevels={uses1559Fees && !isResend}
               gasInfoEip1559={gasInfoEip1559}
               transaction={sendParams}
-              suggestedGasLimit={feeEstimate?.estimatedGasLimit}
+              suggestedGasLimit={feeEstimate?.gasLimit}
               suggestedGasPrice={suggestedGasPrice}
               selectedGasLevel={selectedGasLevel}
               isCfxChain={isCfxChain}

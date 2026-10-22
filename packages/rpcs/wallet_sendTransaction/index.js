@@ -106,7 +106,7 @@ export const main = async ({
     delete params[0].nonce
 
     try {
-      const transaction = params[0]
+      const transaction = {...params[0]}
       let uses1559Fees = transaction.type === ETH_TX_TYPES.EIP1559
 
       // Use the network default if type is missing.
@@ -136,7 +136,7 @@ export const main = async ({
       // Check the transaction before confirmation.
       await signTxFn(
         {app, network: app.currentNetwork, errorFallThrough: true},
-        [...params, {dryRun: true}],
+        [transaction, {dryRun: true}],
       )
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err

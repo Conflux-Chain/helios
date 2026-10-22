@@ -1,4 +1,5 @@
 import BN from 'bn.js'
+import Big from 'big.js'
 import {bn16, pre0x} from './util.js'
 import {
   EIP7702_DELEGATION_PREFIX,
@@ -28,6 +29,15 @@ async function requestGasEstimate(request, tx, stateOverride) {
     gasUsed: gas,
     gasLimit: gas,
   }
+}
+
+function getBufferedGasLimit(gasLimit, gasBuffer) {
+  // Round up after applying the network buffer.
+  const bufferedGasLimit = new Big(bn16(gasLimit).toString(10))
+    .times(gasBuffer)
+    .round(0, 3)
+
+  return pre0x(new BN(bufferedGasLimit.toFixed(0), 10).toString(16))
 }
 
 async function estimateGasWithNonceRetry(tx, estimate) {
@@ -84,7 +94,7 @@ async function estimateEip7702SelfCall(request, tx, finalDelegateAddress) {
 
 export const ethEstimateGas = async (
   tx,
-  {request, chainId, retryOnNonceTooOld = false},
+  {request, chainId, gasBuffer = 1, retryOnNonceTooOld = false},
 ) => {
   const simulationTx = {...tx}
   const {from, to, data} = simulationTx
@@ -154,6 +164,8 @@ export const ethEstimateGas = async (
 
   return {
     ...result,
+    gasLimit: getBufferedGasLimit(result.gasLimit, gasBuffer),
+    // Keep the node estimate as the validation minimum.
     estimatedGasLimit: result.gasLimit,
     nonce,
   }

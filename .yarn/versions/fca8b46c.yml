@@ -1,7 +1,7 @@
 releases:
   "@fluent-wallet/cfx_send-transaction": patch
   "@fluent-wallet/cfx_sign-transaction": patch
-  "@fluent-wallet/estimate-tx": patch
+  "@fluent-wallet/estimate-tx": minor
   "@fluent-wallet/eth_send-transaction": patch
   "@fluent-wallet/eth_sign-transaction": patch
   "@fluent-wallet/wallet_send-transaction": patch

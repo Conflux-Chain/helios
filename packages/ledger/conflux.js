@@ -149,19 +149,41 @@ export default class Conflux {
     return Boolean(devices.length)
   }
 
-  async isAppOpen() {
+  // Read the app name and version together.
+  async getAppStatus() {
     try {
       const isAuthed = await this.isDeviceAuthed()
-      if (!isAuthed) return false
-      const {name} = await this.getAppConfiguration()
-      return name === LEDGER_APP_NAME.CONFLUX
-    } catch (error) {
-      return false
+      if (!isAuthed) return {isAuthed: false, isOpen: false}
+
+      const configuration = await this.getAppConfiguration()
+      if (!configuration) {
+        throw new Error('Unable to read the Ledger app configuration')
+      }
+
+      const {name, version} = configuration
+      const isOpen = name === LEDGER_APP_NAME.CONFLUX
+      if (isOpen && !version) {
+        throw new Error('Unable to read the Ledger app version')
+      }
+
+      return {
+        isAuthed: true,
+        isOpen,
+        // Conflux app v1 only supports Legacy transactions.
+        supports1559: isOpen ? version.split('.')[0] !== '1' : undefined,
+      }
     } finally {
       await this.cleanUp()
     }
   }
 
+  async isAppOpen() {
+    try {
+      return (await this.getAppStatus()).isOpen
+    } catch (error) {
+      return false
+    }
+  }
   async openApp() {
     try {
       await this.transport?.send(

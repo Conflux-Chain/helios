@@ -9,6 +9,11 @@ import {
   EIP7702_NETWORK_CONFIGS,
   ETH_MAINNET_CHAINID,
 } from '@fluent-wallet/consts'
+import {
+  cfxGetFeeDataWithSponsorship,
+  ethGetFeeData,
+} from '@fluent-wallet/estimate-tx'
+
 import {isArray, isString} from '@fluent-wallet/checks'
 import {
   PASSWORD_REG_EXP,
@@ -18,6 +23,7 @@ import {
   PAGE_LIMIT,
   BUILTIN_NETWORK_ENDPOINTS,
 } from '../constants'
+
 const globalThis = window ?? global
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -207,63 +213,55 @@ export const checkBalance = async (
   uses1559Fees,
 ) => {
   const {from, to, gasPrice, maxFeePerGas, gas, value, storageLimit} = txParams
-  const storageFeeDrip = bn16(storageLimit)
-    .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
-    .divn(1024)
-
   const feePerGas = uses1559Fees ? maxFeePerGas : gasPrice
-  const gasFeeDrip = bn16(gas).mul(bn16(feePerGas))
+  const tokenAddress = token?.address
+  const isTokenTransfer = isSendToken && !isNativeToken
 
-  const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
-  const {address: tokenAddress} = token
   try {
     const balanceData = await request(WALLET_GET_BALANCE, {
       users: [from],
-      tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
+      tokens: isTokenTransfer ? ['0x0', tokenAddress] : ['0x0'],
     })
-    const balance = balanceData?.[from]
-
-    if (isSendToken) {
-      if (isNativeToken) {
-        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-          return 'balanceIsNotEnough'
-        } else {
-          return ''
-        }
-      } else {
-        if (bn16(balance[tokenAddress]).lt(bn16(sendTokenValue))) {
-          return 'balanceIsNotEnough'
-        } else {
-          return ''
-        }
-      }
-    }
-    let willPayCollateral = true,
-      willPayTxFee = true
-    if (networkTypeIsCfx) {
-      const response = await request('cfx_checkBalanceAgainstTransaction', [
-        from,
-        to,
-        gas,
-        feePerGas,
-        storageLimit,
-        'latest_state',
-      ])
-      willPayCollateral = response?.willPayCollateral
-      willPayTxFee = response?.willPayTxFee
-    }
+    const balances = balanceData?.[from.toLowerCase()]
 
     if (
-      (bn16(balance['0x0']).lt(txFeeDrip) &&
-        willPayTxFee &&
-        willPayCollateral) ||
-      (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
-      (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+      isTokenTransfer &&
+      bn16(balances[tokenAddress.toLowerCase()]).lt(bn16(sendTokenValue))
     ) {
-      return 'gasFeeIsNotEnough'
-    } else {
-      return ''
+      return 'balanceIsNotEnough'
     }
+
+    let feeData
+
+    if (networkTypeIsCfx) {
+      const addressInfo = to
+        ? await request('wallet_detectAddressType', {address: to})
+        : undefined
+
+      // Check sponsorship using the final transaction parameters.
+      feeData = await cfxGetFeeDataWithSponsorship(
+        {from, to, gas, feePerGas, storageLimit, value},
+        {
+          request: ({method, params}) => request(method, params),
+          toAddressType: addressInfo?.type,
+          balance: balances['0x0'],
+        },
+      )
+    } else {
+      feeData = ethGetFeeData(
+        {gas, gasPrice: feePerGas, value},
+        {balance: balances['0x0']},
+      )
+    }
+
+    // Include the transfer value and only the sender's fees.
+    if (!feeData.isBalanceEnough) {
+      return isSendToken && isNativeToken
+        ? 'balanceIsNotEnough'
+        : 'gasFeeIsNotEnough'
+    }
+
+    return ''
   } catch (err) {
     console.error(err)
     return ''
