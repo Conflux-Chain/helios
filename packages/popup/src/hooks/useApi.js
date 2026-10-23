@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {
   isNumber,
   isString,
@@ -370,7 +370,7 @@ export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
     },
   } = useCurrentAddress()
 
-  return useRPC(
+  const {data, ...rest} = useRPC(
     networkId
       ? [
           QUERY_TOKEN,
@@ -380,9 +380,14 @@ export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
           fuzzy || '',
         ]
       : null,
-    {fuzzy, addressId, networkId},
+    {fuzzy, addressId, networkId, g: {eid: 1, address: 1}},
     {fallbackData: []},
   )
+  return {
+    ...rest,
+    data: useMemo(() => data.map(token => token.eid), [data]),
+    tokenAddresses: useMemo(() => data.map(token => token.address), [data]),
+  }
 }
 
 export const useCurrentAddressTokens = () => {
@@ -390,17 +395,27 @@ export const useCurrentAddressTokens = () => {
     data: {eid: addressId},
   } = useCurrentAddress()
   useDbRefetchBalance()
-  return useRPC(
+  const {data, ...rest} = useRPC(
     addressId ? [QUERY_ADDRESS, 'useCurrentAddressTokens', addressId] : null,
     {
       addressId,
-      g: {token: 1},
+      g: {token: {eid: 1, address: 1}},
     },
     {
       fallbackData: [],
-      postprocessSuccessData: d => (d?.token || []).map(t => t.eid),
+      postprocessSuccessData: d =>
+        (d?.token || []).map(t => ({
+          id: t.eid,
+          address: t.address,
+        })),
     },
   )
+
+  return {
+    ...rest,
+    data: useMemo(() => data.map(t => t.id), [data]),
+    tokenAddresses: useMemo(() => data.map(t => t.address), [data]),
+  }
 }
 
 export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {

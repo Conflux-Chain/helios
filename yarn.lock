@@ -18780,6 +18780,7 @@ __metadata:
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/component-tooltip": "workspace:*"
     "@fluent-wallet/conflux-tx-error": "workspace:*"
+    "@fluent-wallet/confluxscan-api": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/contract-method-name": "workspace:packages/contract-method-name"

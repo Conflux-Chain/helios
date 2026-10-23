@@ -6,7 +6,7 @@ import {useValid20Token} from '../hooks/useApi'
 const PermitTokenInfo = ({tokenAddress, children}) => {
   const token = useValid20Token(tokenAddress || '')
   return (
-    <div className="flex items-center gap-1 text-[14px] leading-[16px] font-semibold">
+    <div className="flex items-center gap-1 text-[12px] leading-[16px] font-semibold">
       {children?.(token)}
       <ImageWithFallback
         src={token?.logoURI}
