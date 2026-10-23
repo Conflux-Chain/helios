@@ -86,7 +86,7 @@ function CallBundleCallCard({
         <dl className="flex flex-col gap-4 px-4 pb-4 text-sm text-gray-80">
           <div className="flex items-center justify-between gap-2">
             <dt className="text-gray-40">{t('callBundleInteractingWith')}</dt>
-            <dd className="flex shrink-0 items-center gap-1">
+            <dd className="flex shrink-0 items-center gap-1" title={address}>
               <AddressDisplay
                 address={address}
                 kind="contract"
