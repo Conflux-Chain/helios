@@ -216,3 +216,22 @@ export async function transactionsESpace({
     return
   }
 }
+
+export async function getAddressNameInfos({networkId, addresses}) {
+  const res = await fetch(getURL(networkId, '/account/infos'), {
+    searchParams: {accounts: addresses},
+  }).json()
+
+  // Core Space and eSpace Scan APIs use different response formats.
+  if (isCoreNetworkId(networkId)) {
+    if (res.code !== 0) {
+      throw new Error(res.message || 'Failed to fetch address name information')
+    }
+    return res.data
+  }
+
+  if (res.status !== '1') {
+    throw new Error(res.message || 'Failed to fetch address name information')
+  }
+  return res.result
+}
