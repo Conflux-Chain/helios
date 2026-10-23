@@ -596,6 +596,24 @@ const en = {
     deleteContactContent: 'Do you want to delete this contact?',
     name: 'Name',
     address: 'Address',
+
+    // address status tooltip
+    tokenNotableTitle: 'Notable token',
+    tokenNotableDesc: 'Evaluated by ConfluxScan as a token of public interest.',
+    tokenVerifiedTitle: 'Verified token',
+    tokenVerifiedDesc:
+      'This token’s contract address has been verified on ConfluxScan.',
+    tokenUnverifiedTitle: 'Unverified token',
+    tokenUnverifiedDesc:
+      'This token’s contract is not verified on ConfluxScan. Please assess the risk yourself.',
+    contractNotableTitle: 'Notable contract',
+    contractNotableDesc:
+      'This contract has been evaluated by ConfluxScan as a contract of public interest.',
+    contractVerifiedTitle: 'Verified contract',
+    contractVerifiedDesc: 'This contract has been verified on ConfluxScan.',
+    contractUnverifiedTitle: 'Unverified contract',
+    contractUnverifiedDesc:
+      'This contract is not verified on ConfluxScan. Please assess the risk yourself before confirming.',
   },
 }
 

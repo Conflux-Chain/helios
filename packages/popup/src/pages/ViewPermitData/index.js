@@ -1,69 +1,20 @@
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import TitleNav from '../../components/TitleNav'
 import {useSignatureRequestData} from '../../hooks/useSignatureRequestData'
-import {formatIntoChecksumAddress} from '../../utils'
-import {useValid20Token} from '../../hooks/useApi'
 import {useEffect, useMemo} from 'react'
 import {REQUEST_SIGNATURE} from '../../constants/route'
-import {shortenAddress} from '@fluent-wallet/shorten-address'
 import dayjs from 'dayjs'
 import PermitTokenInfo from '../../components/PermitTokenInfo'
 import {
   detectPermit,
   EndsWithArrayReg,
-  formatPermitAmount,
   getPermitFieldDisplay,
 } from '../../utils/permit'
-import Tooltip from '@fluent-wallet/component-tooltip'
-
-const PermitRow = ({label, children, nested = false}) => (
-  <div className={classNames('flex flex-wrap', nested && 'flex-col gap-4')}>
-    <span className="shrink-0 text-sm font-normal text-gray-40 capitalize">
-      {label}:
-    </span>
-    <div
-      className={classNames(
-        'flex min-w-0 justify-end gap-4 text-sm font-normal text-gray-80 break-all',
-        nested ? 'flex-col ml-2' : 'ml-auto',
-      )}
-    >
-      {children}
-    </div>
-  </div>
-)
-
-PermitRow.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  label: PropTypes.node.isRequired,
-  nested: PropTypes.bool,
-}
-
-const PermitAmount = ({type, amount, tokenAddress}) => {
-  const {t} = useTranslation()
-  const amountBits = Number(type.replace('uint', ''))
-  const token = useValid20Token(tokenAddress || '')
-  const displayAmount = formatPermitAmount(
-    amount,
-    token?.decimals,
-    amountBits,
-    t('unlimited'),
-  )
-  return (
-    <Tooltip content={displayAmount} placement="bottomLeft">
-      <span className="truncate">{displayAmount}</span>
-    </Tooltip>
-  )
-}
-
-PermitAmount.propTypes = {
-  type: PropTypes.string.isRequired,
-  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  tokenAddress: PropTypes.string,
-}
+import PermitAmount from './components/PermitAmount'
+import PermitRow from './components/PermitRow'
+import PermitAddress from './components/PermitAddress'
 
 const renderRawValue = value => {
   if (value === undefined) return '-'
@@ -77,15 +28,7 @@ const renderValue = ({type, value, display}) => {
     return <PermitTokenInfo tokenAddress={value} />
   }
   if (type === 'address' && typeof value === 'string') {
-    try {
-      return (
-        <Tooltip content={value} placement="bottomLeft">
-          <span>{shortenAddress(formatIntoChecksumAddress(value))}</span>
-        </Tooltip>
-      )
-    } catch {
-      return value
-    }
+    return <PermitAddress address={value} />
   }
   if (display?.kind === 'date' && type.startsWith('uint')) {
     const date = dayjs(value * 1000)

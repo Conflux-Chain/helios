@@ -3,10 +3,14 @@ import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
 import {useState, useEffect, useRef} from 'react'
 import {WrapIcon, TokenList} from '../../../components'
-import {useCurrentAddressTokens} from '../../../hooks/useApi'
+import {useCurrentAddress, useCurrentAddressTokens} from '../../../hooks/useApi'
+import {useFetchAddressNameInfos} from '../../../hooks/useNameInfoStore'
 
 function HomeTokenList({onOpenAddToken}) {
-  const {data: tokens, isValidating} = useCurrentAddressTokens()
+  const {data: tokens, tokenAddresses, isValidating} = useCurrentAddressTokens()
+  const {
+    data: {network},
+  } = useCurrentAddress()
 
   // In order for cfx that exist locally to appear with other tokens as much as possible
   // We should return 'native' with swr data
@@ -24,6 +28,11 @@ function HomeTokenList({onOpenAddToken}) {
 
   const {t} = useTranslation()
 
+  useFetchAddressNameInfos({
+    network,
+    addresses: tokenAddresses,
+  })
+
   return (
     <div
       className="relative home-token-list-wrapper flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 pt-3 z-0 overflow-auto"
@@ -38,7 +47,7 @@ function HomeTokenList({onOpenAddToken}) {
           <PlusOutlined className="w-3 h-3 text-primary" />
         </WrapIcon>
       </span>
-      <TokenList tokenList={homeTokenList} />
+      <TokenList tokenList={homeTokenList} autoFetchNameInfo={false} />
     </div>
   )
 }

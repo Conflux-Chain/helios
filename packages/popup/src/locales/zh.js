@@ -575,6 +575,21 @@ const zh = {
     deleteContactContent: '确认删除此联系人？',
     name: '名称',
     address: '地址',
+
+    // address status tooltip
+    tokenNotableTitle: '公众关注的代币',
+    tokenNotableDesc: '经 ConfluxScan 评估为公众关注的代币。',
+    tokenVerifiedTitle: '合约已验证',
+    tokenVerifiedDesc: '该 Token 合约地址已在 ConfluxScan 完成合约验证。',
+    tokenUnverifiedTitle: '未验证 Token',
+    tokenUnverifiedDesc:
+      '该 Token 合约地址未在 ConfluxScan 完成合约验证，请自行确认风险。',
+    contractNotableTitle: '公众关注的合约',
+    contractNotableDesc: '经 ConfluxScan 评估为公众关注的合约。',
+    contractVerifiedTitle: '合约已验证',
+    contractVerifiedDesc: '该合约已在 ConfluxScan 完成合约验证。',
+    contractUnverifiedTitle: '未验证合约',
+    contractUnverifiedDesc: '该合约未被 ConfluxScan 认证，请自行确认风险。',
   },
 }
 
