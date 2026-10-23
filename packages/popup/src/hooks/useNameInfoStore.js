@@ -1,86 +1,86 @@
 import create from 'zustand'
-import {getAddressNameInfos} from '@fluent-wallet/confluxscan-api/account'
-import {supportsConfluxScanApi} from '@fluent-wallet/confluxscan-api/utils'
 import useSWR from 'swr'
 import {useMemo} from 'react'
-import {decode, encode} from '@fluent-wallet/base32-address'
+import {getAddressNameInfos} from '@fluent-wallet/confluxscan-api/account'
+import {supportsConfluxScanApi} from '@fluent-wallet/confluxscan-api/utils'
+import {normalizeBase32Address} from '../utils'
 
 const NAME_INFO_BATCH_SIZE = 100
 
-const normalizeAddress = address => {
+export function getAddressNameInfoKey(address) {
   if (typeof address !== 'string') return ''
   if (address.includes(':')) {
     try {
-      const {hexAddress, netId} = decode(address)
-      return encode(hexAddress, netId).toLowerCase()
+      return normalizeBase32Address(address)
     } catch {
-      // Preserve invalid addresses so metadata cannot break request rendering.
+      // Malformed metadata addresses must not interrupt request rendering.
     }
   }
   return address.toLowerCase()
 }
 
-const getNetworkKey = network =>
+export const getNameInfoNetworkKey = network =>
   supportsConfluxScanApi(network) ? `${network.type}:${network.netId}` : null
 
-const useNameInfoStore = create(set => ({
-  contracts: {},
-
-  fetchNameInfos: async ({addresses, network}) => {
-    const networkKey = getNetworkKey(network)
-    if (!addresses || addresses.length === 0 || !networkKey) return
-    const result = {}
-    let firstError
-    for (
-      let offset = 0;
-      offset < addresses.length;
-      offset += NAME_INFO_BATCH_SIZE
-    ) {
-      try {
-        const res = await getAddressNameInfos({
-          addresses: addresses.slice(offset, offset + NAME_INFO_BATCH_SIZE),
-          networkId: network.netId,
-        })
-        const batchResult = {}
-        Object.keys(res).forEach(key => {
-          const info = res[key]
-          // Missing metadata is unknown, not evidence of an unverified contract.
-          if (!info || typeof info !== 'object' || Array.isArray(info)) return
-          batchResult[normalizeAddress(key)] = {
-            ...info,
-            isVerified: !!info?.verification?.name,
-            isNotable: !!info?.nameTag?.labels?.find(
-              label => label === 'Verified',
-            ),
-          }
-        })
-        Object.assign(result, batchResult)
-        set(state => ({
-          contracts: {
-            ...state.contracts,
-            [networkKey]: {
-              ...state.contracts[networkKey],
-              ...batchResult,
-            },
-          },
-        }))
-      } catch (error) {
-        // Finish remaining batches and keep successful data before SWR retries.
-        firstError =
-          firstError || error || new Error('Failed to fetch name information')
-      }
+export function parseAddressNameInfos(response) {
+  const result = {}
+  Object.entries(response).forEach(([address, info]) => {
+    // Missing metadata is unknown, not evidence of an unverified contract.
+    if (!info || typeof info !== 'object' || Array.isArray(info)) return
+    const labels = info.nameTag?.labels
+    result[getAddressNameInfoKey(address)] = {
+      ...info,
+      isVerified: !!info.verification?.name,
+      isNotable: Array.isArray(labels) && labels.includes('Verified'),
     }
-    if (firstError) throw firstError
-    return result
-  },
+  })
+  return result
+}
+
+export async function fetchAddressNameInfos({addresses, network, onBatch}) {
+  if (!addresses?.length || !getNameInfoNetworkKey(network)) return
+  const result = {}
+  let firstError
+  for (
+    let offset = 0;
+    offset < addresses.length;
+    offset += NAME_INFO_BATCH_SIZE
+  ) {
+    try {
+      const response = await getAddressNameInfos({
+        addresses: addresses.slice(offset, offset + NAME_INFO_BATCH_SIZE),
+        networkId: network.netId,
+      })
+      const batch = parseAddressNameInfos(response)
+      Object.assign(result, batch)
+      onBatch(batch)
+    } catch (error) {
+      // Publish successful batches even when another batch needs an SWR retry.
+      firstError =
+        firstError || error || new Error('Failed to fetch name information')
+    }
+  }
+  if (firstError) throw firstError
+  return result
+}
+
+const useNameInfoStore = create(set => ({
+  nameInfosByNetwork: {},
+  mergeNameInfos: (networkKey, infos) =>
+    set(state => ({
+      nameInfosByNetwork: {
+        ...state.nameInfosByNetwork,
+        [networkKey]: {...state.nameInfosByNetwork[networkKey], ...infos},
+      },
+    })),
 }))
 
 // Reading metadata never starts a request or subscribes to unrelated addresses.
 export function useAddressNameInfo(network, address) {
-  const networkKey = getNetworkKey(network)
-  const addressKey = normalizeAddress(address)
+  const networkKey = getNameInfoNetworkKey(network)
+  const addressKey = getAddressNameInfoKey(address)
   return useNameInfoStore(state =>
-    networkKey ? state.contracts[networkKey]?.[addressKey] : undefined,
+    networkKey ? state.nameInfosByNetwork[networkKey]?.[addressKey] : undefined,
   )
 }
 
@@ -90,10 +90,10 @@ export function useFetchAddressNameInfos({
   network,
   autoFetch = true,
 }) {
-  const fetchNameInfos = useNameInfoStore(state => state.fetchNameInfos)
-  const networkKey = getNetworkKey(network)
+  const mergeNameInfos = useNameInfoStore(state => state.mergeNameInfos)
+  const networkKey = getNameInfoNetworkKey(network)
   const addressesKey = JSON.stringify(
-    [...new Set(addresses.map(normalizeAddress).filter(Boolean))].sort(),
+    [...new Set(addresses.map(getAddressNameInfoKey).filter(Boolean))].sort(),
   )
   const normalizedAddresses = useMemo(
     () => JSON.parse(addressesKey),
@@ -104,12 +104,16 @@ export function useFetchAddressNameInfos({
     autoFetch && normalizedAddresses.length > 0 && networkKey
       ? ['name-info', networkKey, addressesKey]
       : null,
-    () => fetchNameInfos({network, addresses: normalizedAddresses}),
+    () =>
+      fetchAddressNameInfos({
+        network,
+        addresses: normalizedAddresses,
+        onBatch: infos => mergeNameInfos(networkKey, infos),
+      }),
     {
       refreshInterval: 0,
+      // Optional metadata failures must not trigger the global error-page redirect.
       onError: () => {},
     },
   )
 }
-
-export default useNameInfoStore
