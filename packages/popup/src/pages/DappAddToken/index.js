@@ -54,7 +54,10 @@ function DappAddToken() {
           <div className="bg-bg rounded" id="tokens">
             <TokenItem
               index={1}
+              network={app?.currentNetwork}
+              autoFetchNameInfo={Boolean(app?.currentNetwork)}
               token={{
+                address: req?.params?.options?.address,
                 logoURI: isImgUrl
                   ? req?.params?.options?.image
                   : '/images/default-token-icon.svg',

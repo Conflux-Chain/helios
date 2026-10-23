@@ -6,8 +6,7 @@ import {
   useSingleAddressTokenBalanceWithNativeTokenSupport,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../hooks/useApi'
-import {useCheckImage} from '../hooks'
-import {DisplayBalance} from './'
+import {DisplayBalance, AddressDisplay} from './'
 
 const useTokenItemData = t => {
   const rst = [
@@ -16,7 +15,7 @@ const useTokenItemData = t => {
       tokenId: t,
     }),
   ]
-  if (t?.name) {
+  if (t && typeof t === 'object') {
     return [{...t}, t?.balance]
   }
   return rst
@@ -24,6 +23,8 @@ const useTokenItemData = t => {
 
 function TokenItem({
   token = {},
+  network,
+  autoFetchNameInfo = true,
   maxWidthStyle = 'max-w-[175px]',
   maxWidth = 175,
   rightIcon = null,
@@ -36,7 +37,7 @@ function TokenItem({
 
   // In order for cfx that exist locally to appear with other coins as much as possible
   const [nextTickState, setNextTickState] = useState(() => {})
-  const {logoURI, name, symbol, decimals} =
+  const {logoURI, name, symbol, decimals, address} =
     token === 'native' ? nextTickState ?? {} : state
 
   useEffect(() => {
@@ -44,7 +45,6 @@ function TokenItem({
       setTimeout(() => setNextTickState(state), 50)
     }
   }, [token, state])
-  const isImgUrl = useCheckImage(logoURI)
 
   return (
     <div
@@ -56,10 +56,16 @@ function TokenItem({
       aria-hidden="true"
       {...props}
     >
-      <img
-        className="w-8 h-8 rounded-full mr-2"
-        src={isImgUrl ? logoURI : '/images/default-token-icon.svg'}
-        alt="logo"
+      <AddressDisplay
+        network={network}
+        iconUrl={logoURI}
+        address={address}
+        kind="token"
+        iconClassName="w-8 h-8"
+        wrapperClassName="mr-2"
+        hideText
+        showStatusIcon={token !== 'native'}
+        autoFetch={autoFetchNameInfo && token !== 'native'}
       />
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center">
@@ -89,6 +95,8 @@ function TokenItem({
 }
 
 TokenItem.propTypes = {
+  network: PropTypes.object,
+  autoFetchNameInfo: PropTypes.bool,
   token: PropTypes.oneOfType([
     // add token list
     PropTypes.shape({eid: PropTypes.number, added: PropTypes.bool}),

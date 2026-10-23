@@ -8,6 +8,8 @@ function AccountDisplay({
   address,
   nickname,
   showAvatar = true,
+  wrapperClassName,
+  iconClassName,
   addressClassName,
   nicknameClassName,
 }) {
@@ -16,22 +18,36 @@ function AccountDisplay({
     : ''
 
   return (
-    <div className="flex items-center" id="accountDisplay">
+    <div
+      className={classNames('flex items-center', wrapperClassName)}
+      id="accountDisplay"
+    >
       {showAvatar && (
         <Avatar
-          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
+          className={classNames(
+            'w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2',
+            iconClassName,
+          )}
           diameter={30}
           address={address}
         />
       )}
       <div className="flex flex-col">
-        <span className={classNames('text-xs text-gray-40', nicknameClassName)}>
-          {nickname}
-        </span>
         <span
-          className={classNames('text-gray-80 font-medium', addressClassName)}
+          className={classNames(
+            'text-sm font-normal text-gray-80',
+            addressClassName,
+          )}
         >
           {displayAddress}
+        </span>
+        <span
+          className={classNames(
+            'text-xs font-normal text-gray-60',
+            nicknameClassName,
+          )}
+        >
+          {nickname}
         </span>
       </div>
     </div>
@@ -41,6 +57,8 @@ AccountDisplay.propTypes = {
   address: PropTypes.string,
   nickname: PropTypes.string,
   showAvatar: PropTypes.bool,
+  wrapperClassName: PropTypes.string,
+  iconClassName: PropTypes.string,
   addressClassName: PropTypes.string,
   nicknameClassName: PropTypes.string,
 }

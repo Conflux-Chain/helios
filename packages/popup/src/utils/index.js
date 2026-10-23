@@ -2,7 +2,11 @@ import BN from 'bn.js'
 import punycode from 'punycode/punycode'
 import {CNS, ENS} from '@fluent-wallet/did'
 import {stripHexPrefix} from '@fluent-wallet/utils'
-import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {
+  decode,
+  encode,
+  validateBase32Address,
+} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
 import {
   CFX_MAINNET_CHAINID,
@@ -273,6 +277,13 @@ export const formatIntoChecksumAddress = address => {
     return toChecksum(address)
   }
   return address
+}
+
+export function normalizeBase32Address(address) {
+  const isBase32 = typeof address === 'string' && address.includes(':')
+  if (!isBase32) return address
+  const {hexAddress, netId} = decode(address)
+  return encode(hexAddress, netId, false).toLowerCase()
 }
 
 export const setEffectiveCurrentAccount = async networkId => {

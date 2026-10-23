@@ -28,6 +28,7 @@ import {
   useValidate20Token,
 } from '../../../hooks/useApi'
 import useLoading from '../../../hooks/useLoading'
+import {useFetchAddressNameInfos} from '../../../hooks/useNameInfoStore'
 import {request, validateAddress} from '../../../utils'
 
 const {WALLET_WATCH_ASSET, WALLET_UNWATCH_ASSET} = RPC_METHODS
@@ -52,16 +53,17 @@ function AddToken({onClose, open}) {
   )
 
   const {
-    data: {
-      eid: addressId,
-      network: {netId},
-    },
+    data: {eid: addressId, network},
   } = useCurrentAddress()
 
-  const {data: networkTokens, mutate: mutateNetworkTokens} =
-    useCurrentNetworkTokens({
-      fuzzy: debouncedSearchContent || null,
-    })
+  const {netId} = network
+  const {
+    data: networkTokens,
+    tokenAddresses,
+    mutate: mutateNetworkTokens,
+  } = useCurrentNetworkTokens({
+    fuzzy: debouncedSearchContent || null,
+  })
 
   const {data: addressTokens, mutate: mutateAddressTokens} =
     useCurrentAddressTokens()
@@ -82,6 +84,16 @@ function AddToken({onClose, open}) {
 
   const tokenList =
     builtinTokens || (other20Token.valid && [[other20Token, false]]) || null
+
+  useFetchAddressNameInfos({
+    network,
+    addresses: builtinTokens
+      ? tokenAddresses
+      : other20Token.valid
+      ? [other20Token.address]
+      : [],
+    autoFetch: open,
+  })
 
   const onAddToken = async token => {
     let params
@@ -164,6 +176,7 @@ function AddToken({onClose, open}) {
               <TokenList>
                 {tokenList.map(([token, added], index) => (
                   <TokenItem
+                    autoFetchNameInfo={false}
                     key={index}
                     index={index}
                     token={token}

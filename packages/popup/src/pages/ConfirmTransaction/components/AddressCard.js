@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
+import {DownOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
 import {
   useCurrentAddress,
@@ -16,6 +16,7 @@ import {
   ProgressIcon,
   CopyButton,
   NsNameLabel,
+  AddressDisplay,
 } from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
@@ -114,8 +115,13 @@ const TransactionDirection = ({
           }
         />
         <span className="text-gray-80 flex items-center h-4" id="toAddress">
-          {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
-          {toAddress && shortenAddress(toAddress)}
+          <AddressDisplay
+            address={toAddress}
+            kind="contract"
+            iconClassName="w-4 h-4"
+            showIcon={isContract}
+            autoFetch={isContract}
+          />
           {isCreateContract && t('createContract')}
           {toAddress && (
             <CopyButton

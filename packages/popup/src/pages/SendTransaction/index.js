@@ -21,9 +21,9 @@ import {
 
 import {
   TitleNav,
-  AccountDisplay,
   CurrentNetworkDisplay,
   CompWithLabel,
+  AccountDisplay,
 } from '../../components'
 import {
   useCurrentTxParams,
@@ -301,7 +301,7 @@ function SendTransaction() {
         onGoBack={() => setTimeout(() => clearSendTransactionParams(), 500)}
       />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
-        <AccountDisplay nickname={nickname} address={address} />
+        <AccountDisplay address={address} nickname={nickname} />
         <CurrentNetworkDisplay containerClassName="rounded h-6 pl-2" />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">

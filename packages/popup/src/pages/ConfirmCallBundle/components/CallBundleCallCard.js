@@ -11,7 +11,7 @@ import Tooltip from '@fluent-wallet/component-tooltip'
 
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 
-import {CopyButton, DisplayBalance} from '../../../components'
+import {AddressDisplay, CopyButton, DisplayBalance} from '../../../components'
 import {
   bn16,
   formatIntoChecksumAddress,
@@ -22,6 +22,7 @@ import {MaxUint256} from '@fluent-wallet/consts'
 import {useTokenMetadata} from '../../../hooks/useTokenMetadata'
 
 import {decodeCallData} from '@fluent-wallet/contract-method-name'
+import {useAddressTypeInfo} from '../../../hooks/useApi'
 
 function CallBundleCallCard({
   call,
@@ -60,6 +61,10 @@ function CallBundleCallCard({
     token,
   })
 
+  const {type, eip7702Delegated} = useAddressTypeInfo(address)
+  const isContract =
+    !eip7702Delegated && (type === 'contract' || type === 'builtin')
+
   return (
     <div className="rounded bg-gray-4 ring-1 ring-inset ring-gray-10">
       <button
@@ -81,11 +86,14 @@ function CallBundleCallCard({
         <dl className="flex flex-col gap-4 px-4 pb-4 text-sm text-gray-80">
           <div className="flex items-center justify-between gap-2">
             <dt className="text-gray-40">{t('callBundleInteractingWith')}</dt>
-            <dd className="flex shrink-0 items-center gap-1">
-              <FileOutlined className="h-4 w-4 text-gray-60" />
-              <span className="text-gray-80" title={address}>
-                {shortenAddress(address)}
-              </span>
+            <dd className="flex shrink-0 items-center gap-1" title={address}>
+              <AddressDisplay
+                address={address}
+                kind="contract"
+                iconClassName="w-4 h-4"
+                showIcon={isContract}
+                autoFetch={isContract}
+              />
               <CopyButton
                 text={address}
                 className="text-gray-60 hover:text-primary"
