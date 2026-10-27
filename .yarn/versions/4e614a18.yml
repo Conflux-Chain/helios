@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/nonce-manager": patch
+  "@fluent-wallet/wallet_prepare-sponsorship": patch
+  "@fluent-wallet/wallet_send-transaction": patch
+  "@fluent-wallet/wallet_send-user-operation": patch
+  "@fluent-wallet/wallet_submit-call-bundle": patch
+  browser-extension: patch
+  helios-background: patch
+
+declined:
+  - helios

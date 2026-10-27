@@ -52,24 +52,30 @@ describe('resolveTransactionNonces', () => {
     expect(nonces).toEqual(['0x8', '0x9'])
   })
 
-  test('rejects a custom nonce below the network pending nonce', () => {
-    expect(() =>
+  test('allows custom nonces to overlap pending transactions', () => {
+    expect(
       resolveTransactionNonces({
         networkPendingNonce: '0x5',
         customNonce: '0x4',
       }),
-    ).toThrow('below network pending nonce')
-  })
+    ).toEqual(['0x4'])
 
-  test('rejects an occupied nonce inside a custom bundle', () => {
-    expect(() =>
+    expect(
       resolveTransactionNonces({
         networkPendingNonce: '0x4',
-        occupiedNonces: ['0x7'],
-        customNonce: '0x6',
+        occupiedNonces: ['0x4'],
+        customNonce: '0x4',
+      }),
+    ).toEqual(['0x4'])
+
+    expect(
+      resolveTransactionNonces({
+        networkPendingNonce: '0x2',
+        occupiedNonces: ['0x0', '0x1'],
+        customNonce: '0x0',
         nonceCount: 2,
       }),
-    ).toThrow('Nonce 0x7 is already occupied')
+    ).toEqual(['0x0', '0x1'])
   })
 })
 
