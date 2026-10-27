@@ -31,13 +31,16 @@ export function hasEip7702AuthorizationNonceConflict({
 }
 
 /**
- * Returns consecutive nonces for a new transaction.
+ * Returns consecutive nonces for a transaction.
+ *
+ * Users can set a custom nonce to replace a pending transaction.
+ * Automatic selection only returns nonces that are not in use.
  *
  * @param {Object} options
- * @param {string} options.networkPendingNonce Network pending nonce.
- * @param {string[]} [options.occupiedNonces=[]] Locally occupied nonces.
+ * @param {string} options.networkPendingNonce First nonce to try when choosing automatically.
+ * @param {string[]} [options.occupiedNonces=[]] Nonces already in use locally.
  * @param {number} [options.nonceCount=1] Number of nonces to return.
- * @param {string} [options.customNonce] User-selected starting nonce.
+ * @param {string} [options.customNonce] Starting nonce chosen by the user.
  * @returns {string[]} Nonces formatted as hex quantities.
  */
 export function resolveTransactionNonces({
@@ -50,26 +53,15 @@ export function resolveTransactionNonces({
     throw new TypeError(`Invalid nonce count "${nonceCount}"`)
   }
 
-  const networkPending = toUnsignedBN(networkPendingNonce)
-  const occupied = new Set(occupiedNonces.map(toNonceKey))
-  const hasCustomNonce = customNonce !== undefined
-
-  let startNonce = toUnsignedBN(
-    hasCustomNonce ? customNonce : networkPendingNonce,
-  ).clone()
-
-  if (hasCustomNonce && startNonce.lt(networkPending)) {
-    throw new Error(
-      `Custom nonce ${toHexQuantity(
-        startNonce,
-      )} is below network pending nonce ${toHexQuantity(networkPending)}`,
-    )
+  if (customNonce !== undefined) {
+    return createNonceSequence(toUnsignedBN(customNonce), nonceCount)
   }
 
-  if (!hasCustomNonce) {
-    while (occupied.has(toNonceKey(startNonce))) {
-      startNonce.iaddn(1)
-    }
+  const occupied = new Set(occupiedNonces.map(toNonceKey))
+  const startNonce = toUnsignedBN(networkPendingNonce).clone()
+
+  while (occupied.has(toNonceKey(startNonce))) {
+    startNonce.iaddn(1)
   }
 
   const nonces = createNonceSequence(startNonce, nonceCount)
