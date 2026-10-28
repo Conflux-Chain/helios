@@ -24,6 +24,7 @@ import {useAddressTypeInfo} from '../../../hooks/useApi'
 import {formatPermitAmount, getPermitDisplayData} from '../../../utils/permit'
 import {VIEW_PERMIT_DATA} from '../../../constants/route'
 import ImageWithFallback from '../../../components/ImageWithFallback'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 
 const PermitTooltip = ({content, title, placement, children}) => (
   <Tooltip
@@ -73,7 +74,10 @@ const PermitTokenAmount = ({amount, amountBits, tokenAddress}) => {
           t('unlimited'),
         )
         return (
-          <Tooltip content={displayAmount} placement="bottomLeft">
+          <Tooltip
+            content={convertDataToValue(String(amount), token?.decimals)}
+            placement="bottomLeft"
+          >
             <span className="truncate">{displayAmount}</span>
           </Tooltip>
         )
