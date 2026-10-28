@@ -48,7 +48,7 @@ PermitTooltip.propTypes = {
 }
 
 const PermitRow = ({label, children, className}) => (
-  <div className={`flex justify-between ${className || ''}`}>
+  <div className={`flex justify-between gap-1 ${className || ''}`}>
     <span className="shrink-0 text-sm font-normal text-gray-40">{label}</span>
     <div className="flex min-w-0 flex-1 items-center justify-end gap-1 text-sm font-normal text-gray-80">
       {children}
@@ -78,7 +78,7 @@ const PermitTokenAmount = ({amount, amountBits, tokenAddress}) => {
             content={convertDataToValue(String(amount), token?.decimals)}
             placement="bottomLeft"
           >
-            <span className="truncate">{displayAmount}</span>
+            <span className="truncate w-0 flex-1">{displayAmount}</span>
           </Tooltip>
         )
       }}
@@ -162,7 +162,7 @@ export const Permit = ({
             </div>
 
             <PermitRow label={t('permitSpendingCap')}>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 w-full">
                 <div className="max-h-[144px] overflow-y-auto flex flex-col gap-4">
                   {visiblePermissions.map((item, index) => {
                     return (
