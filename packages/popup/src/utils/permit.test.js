@@ -383,8 +383,18 @@ describe('formatPermitAmount', () => {
     )
     expect(
       formatPermitAmount('1234567890000000000', 18, 256, 'Unlimited'),
-    ).toBe('1.23456789')
+    ).toBe('1.234567')
     expect(formatPermitAmount('42', 0, 160, 'Unlimited')).toBe('42')
+  })
+
+  it('shows positive amounts below display precision without rounding to zero', () => {
+    expect(formatPermitAmount('1', 18, 256, 'Unlimited')).toBe('<0.000001')
+    expect(formatPermitAmount('999999999999', 18, 256, 'Unlimited')).toBe(
+      '<0.000001',
+    )
+    expect(formatPermitAmount('1000000000000', 18, 256, 'Unlimited')).toBe(
+      '0.000001',
+    )
   })
 
   it('uses zero decimals when unavailable and rejects invalid precision', () => {

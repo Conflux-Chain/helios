@@ -1,5 +1,5 @@
 import BN from 'bn.js'
-import {convertDecimal, toThousands} from '@fluent-wallet/data-format'
+import {formatBalance} from '@fluent-wallet/data-format'
 
 // Match both fixed-size and dynamic EIP-712 array type names.
 export const EndsWithArrayReg = /\[(?:\d+)?\]$/
@@ -249,11 +249,8 @@ export const formatPermitAmount = (
 
   const tokenDecimals = Number(decimals ?? 0)
   if (!Number.isInteger(tokenDecimals) || tokenDecimals < 0) return '-'
-  const displayAmount = tokenDecimals
-    ? convertDecimal(decimalAmount, 'divide', tokenDecimals)
-    : decimalAmount
 
-  return toThousands(displayAmount) || displayAmount
+  return formatBalance(decimalAmount, tokenDecimals)
 }
 
 /**

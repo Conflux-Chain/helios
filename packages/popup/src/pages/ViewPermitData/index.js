@@ -43,13 +43,7 @@ const renderValue = ({type, value, display}) => {
     type.startsWith('uint') &&
     display.tokenAddress
   ) {
-    return (
-      <PermitAmount
-        type={type}
-        amount={value}
-        tokenAddress={display.tokenAddress}
-      />
-    )
+    return <PermitAmount amount={value} tokenAddress={display.tokenAddress} />
   }
   return renderRawValue(value)
 }
