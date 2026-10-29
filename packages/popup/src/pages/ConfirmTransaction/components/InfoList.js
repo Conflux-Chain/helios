@@ -2,12 +2,16 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {convertDataToValue, convertDecimal} from '@fluent-wallet/data-format'
-import {useCurrentDapp} from '../../../hooks/useApi'
-import {useDappIcon} from '../../../hooks'
+import {useCurrentAddress, useCurrentDapp} from '../../../hooks/useApi'
+import {useDappIcon, useServiceNames} from '../../../hooks'
 import {
   DisplayBalance,
   WrapIcon,
   CurrentNetworkDisplay,
+  AccountDisplay,
+  AddressDisplay,
+  CopyButton,
+  NsNameLabel,
 } from '../../../components'
 import {bn16} from '../../../utils'
 import {MaxUint256} from '@fluent-wallet/consts'
@@ -28,8 +32,26 @@ function InfoList({
   allowance,
   method,
   pendingAuthReq,
+  currentAccount,
+  accountNickname,
+  toAddress,
+  isEOAAddress,
 }) {
   const {t} = useTranslation()
+
+  const {
+    data: {
+      network: {eid: networkId, type: networkType, netId},
+    },
+  } = useCurrentAddress()
+  const {data: nsNames, nsNamesError} = useServiceNames({
+    type: networkType,
+    netId,
+    networkId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    addressArr: [currentAccount, toAddress].filter(Boolean),
+  })
+  const nsNamesLoading = !nsNamesError && !nsNames
 
   const data = useCurrentDapp()
 
@@ -53,12 +75,61 @@ function InfoList({
   return (
     <div className="info-list-container flex flex-col">
       <div className="flex justify-between mb-4">
+        <span className="text-gray-40">{t('currentAccount')}</span>
+        <AccountDisplay
+          address={currentAccount}
+          nickname={
+            nsNamesLoading === false ? (
+              nsNames?.[currentAccount] ? (
+                <NsNameLabel nsName={nsNames?.[currentAccount]} />
+              ) : (
+                <span className="mb-1"> {accountNickname}</span>
+              )
+            ) : (
+              ''
+            )
+          }
+          showAvatar={false}
+          nicknameClassName="text-right"
+        />
+      </div>
+      <div className="flex justify-between mb-4">
         <span className="text-gray-40">{t('network')}</span>
         <CurrentNetworkDisplay
           contentClassName="mr-1"
           currentNetwork={currentNetwork}
         />
       </div>
+      {/* show interactingWith when toAddress is contract or tx is create contract */}
+      {(!toAddress || !isEOAAddress) && (
+        <div className="flex justify-between mb-4">
+          <span className="text-gray-40">{t('interactingWith')}</span>
+          <div className="flex gap-1">
+            {!toAddress && t('createContract')}
+            {toAddress && (
+              <>
+                <AddressDisplay
+                  address={toAddress}
+                  kind="contract"
+                  iconClassName="w-4 h-4"
+                  nickname={
+                    nsNamesLoading === false && nsNames?.[toAddress] ? (
+                      <NsNameLabel nsName={nsNames?.[toAddress]} />
+                    ) : (
+                      ''
+                    )
+                  }
+                />
+                <CopyButton
+                  text={toAddress}
+                  className="text-gray-60 group-hover:text-primary"
+                  wrapperClassName="mx-1 !w-4 !h-4 shadow-none !bg-transparent hover:!bg-primary-10 group"
+                />
+              </>
+            )}
+          </div>
+        </div>
+      )}
       {isApproveToken && (
         <div className="flex justify-between mb-4">
           <span className="text-gray-40">{t('allowLimit')}</span>
@@ -138,6 +209,10 @@ InfoList.propTypes = {
   pendingAuthReq: PropTypes.array,
   canEditAllowance: PropTypes.bool,
   onEditAllowance: PropTypes.func.isRequired,
+  currentAccount: PropTypes.string,
+  accountNickname: PropTypes.string,
+  toAddress: PropTypes.string,
+  isEOAAddress: PropTypes.bool,
 }
 
 export default InfoList

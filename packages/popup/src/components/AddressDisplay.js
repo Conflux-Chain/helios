@@ -13,7 +13,6 @@ import {FileOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentAddress} from '../hooks/useApi'
 
 function TokenDisplay({
-  displayAddress,
   iconUrl,
   showIcon,
   symbol,
@@ -28,7 +27,7 @@ function TokenDisplay({
   showStatusIcon,
 }) {
   const isImgUrl = useCheckImage(showIcon ? iconUrl ?? '' : '')
-  const displayText = label ?? symbol ?? name ?? displayAddress
+  const displayText = label ?? symbol ?? name
   return (
     <div className={classNames('flex items-center gap-1', wrapperClassName)}>
       {showIcon && (
@@ -56,7 +55,6 @@ function TokenDisplay({
   )
 }
 TokenDisplay.propTypes = {
-  displayAddress: PropTypes.string,
   // custom label
   label: PropTypes.string,
   // token name
@@ -78,8 +76,10 @@ function ContractDisplay({
   displayAddress,
   showIcon,
   label,
+  nickname,
   hideText,
   labelClassName,
+  nicknameClassName,
   iconClassName,
   wrapperClassName,
   isNotable,
@@ -88,7 +88,7 @@ function ContractDisplay({
 }) {
   const displayText = label ?? displayAddress
   return (
-    <div className={classNames('flex items-center gap-1', wrapperClassName)}>
+    <div className={classNames('flex gap-1', wrapperClassName)}>
       {showIcon && (
         <VerificationBadge
           kind="contract"
@@ -100,9 +100,18 @@ function ContractDisplay({
         </VerificationBadge>
       )}
       {!hideText && (
-        <span className={classNames('text-gray-80', labelClassName)}>
-          {displayText}
-        </span>
+        <div className="flex flex-col">
+          <span className={classNames('text-gray-80', labelClassName)}>
+            {displayText}
+          </span>
+          {nickname && (
+            <span
+              className={classNames('text-xs text-gray-60', nicknameClassName)}
+            >
+              {nickname}
+            </span>
+          )}
+        </div>
       )}
     </div>
   )
@@ -111,11 +120,13 @@ ContractDisplay.propTypes = {
   displayAddress: PropTypes.string,
   // custom label
   label: PropTypes.string,
+  nickname: PropTypes.string,
   showIcon: PropTypes.bool,
   hideText: PropTypes.bool,
   isNotable: PropTypes.bool,
   isVerified: PropTypes.bool,
   labelClassName: PropTypes.string,
+  nicknameClassName: PropTypes.string,
   iconClassName: PropTypes.string,
   wrapperClassName: PropTypes.string,
   showStatusIcon: PropTypes.bool,
@@ -126,13 +137,17 @@ function AddressDisplay({
   network,
   address,
   addressFormat = 'short',
+  name,
+  symbol,
   label,
+  nickname,
   iconUrl,
   showIcon = true,
   hideText = false,
   showStatusIcon = true,
   autoFetch = true,
   labelClassName,
+  nicknameClassName,
   iconClassName,
   wrapperClassName,
 }) {
@@ -148,28 +163,14 @@ function AddressDisplay({
       autoFetch && (kind === 'token' || (kind === 'contract' && showIcon)),
   })
 
-  let displayAddress = address || ''
-  if (address) {
-    try {
-      const formattedAddress = formatIntoChecksumAddress(address)
-      displayAddress =
-        addressFormat === 'short'
-          ? shortenAddress(formattedAddress)
-          : formattedAddress
-    } catch {
-      // Keep malformed addresses visible so the request can still be inspected.
-    }
-  }
-
   if (kind === 'token') {
     const token = nameInfo?.token ?? {}
     return (
       <TokenDisplay
-        displayAddress={displayAddress}
         iconUrl={iconUrl ?? token?.iconUrl}
         showIcon={showIcon}
-        name={token?.name}
-        symbol={token?.symbol}
+        name={name ?? token?.name}
+        symbol={symbol ?? token?.symbol}
         label={label}
         hideText={hideText}
         labelClassName={labelClassName}
@@ -182,11 +183,25 @@ function AddressDisplay({
     )
   }
 
+  let displayAddress = address || ''
+  if (address) {
+    try {
+      const formattedAddress = formatIntoChecksumAddress(address)
+      displayAddress =
+        addressFormat === 'short'
+          ? shortenAddress(formattedAddress)
+          : formattedAddress
+    } catch {
+      // Keep malformed addresses visible so the request can still be inspected.
+    }
+  }
   return (
     <ContractDisplay
       displayAddress={displayAddress}
       showIcon={showIcon}
       label={label}
+      nickname={nickname}
+      nicknameClassName={nicknameClassName}
       hideText={hideText}
       labelClassName={labelClassName}
       iconClassName={iconClassName}
@@ -206,11 +221,15 @@ AddressDisplay.propTypes = {
   }),
   address: PropTypes.string,
   label: PropTypes.string,
+  nickname: PropTypes.string,
   labelClassName: PropTypes.string,
+  nicknameClassName: PropTypes.string,
   // short | full
   addressFormat: PropTypes.string,
   // Token image override; contracts use the built-in icon.
   iconUrl: PropTypes.string,
+  name: PropTypes.string,
+  symbol: PropTypes.string,
   showIcon: PropTypes.bool,
   iconClassName: PropTypes.string,
   hideText: PropTypes.bool,
