@@ -234,6 +234,8 @@ const zh = {
     action: '行为',
     balance: '余额',
     createContract: '部署合约',
+    currentAccount: '当前账号',
+    interactingWith: '交互合约',
 
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: '编辑权限',

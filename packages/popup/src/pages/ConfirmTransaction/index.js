@@ -39,12 +39,7 @@ import {
   isGasSponsorshipConfigured,
   transformToTitleCase,
 } from '../../utils'
-import {
-  AddressCard,
-  ConfirmGasFee,
-  Eip7702SwitchInfoDrawer,
-  InfoList,
-} from './components'
+import {ConfirmGasFee, Eip7702SwitchInfoDrawer, InfoList} from './components'
 import Eip7702DelegationDrawer from '../../components/Eip7702DelegationDrawer'
 import {
   TitleNav,
@@ -64,6 +59,7 @@ import EditAllowance from '../EditAllowance'
 import EditGasFee from '../EditGasFee'
 
 import {useTransactionEstimate} from '../../hooks/useTransactionEstimate'
+import TransactionHeader from './components/TransactionHeader'
 
 const {HOME} = ROUTES
 
@@ -180,7 +176,6 @@ function ConfirmTransaction() {
     isSendToken,
     displayToken,
     displayValue,
-    displayFromAddress,
     displayAccount,
     displayToAddress,
   } = useDecodeDisplay({
@@ -251,12 +246,6 @@ function ConfirmTransaction() {
       originParams.type === ETH_TX_TYPES.EIP7702
     : undefined
 
-  const addressCardFromAddress = isInternalEip7702Tx
-    ? originParams?.from
-    : displayFromAddress
-  const addressCardToAddress = isInternalEip7702Tx
-    ? eip7702Display.delegateAddress
-    : displayToAddress
   // Use the current approval data when estimating the transaction.
   const transactionData = useViewData(originParams, isApproveToken, decodeData)
   const transaction = {...originParams, data: transactionData}
@@ -773,20 +762,30 @@ function ConfirmTransaction() {
           }}
         />
       </header>
-      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
+      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6 overflow-y-auto">
         <div className="flex flex-col px-3 overflow-y-auto">
-          <AddressCard
+          <TransactionHeader
+            // shared
+            fromAddress={currentTx?.from}
             nickname={displayAccount?.nickname}
             token={displayToken}
-            fromAddress={addressCardFromAddress}
-            toAddress={addressCardToAddress}
-            value={sendDisplayValue}
-            isSendToken={isSendToken}
+            // token approve
             isApproveToken={isApproveToken}
+            spenderAddress={displayToAddress}
+            allowance={displayAllowance}
+            canEditAllowance={canEditAllowance}
+            onEditAllowance={() => setView('allowance')}
+            // token transfer
+            isSendToken={isSendToken}
+            sendAmount={sendDisplayValue}
+            toAddress={displayToAddress}
+            // internal 7702
+            isInternalEip7702Tx={isInternalEip7702Tx}
+            delegateAddress={eip7702Display.delegateAddress}
             title={
               eip7702Display.titleKey ? t(eip7702Display.titleKey) : undefined
             }
-            toAddressLabel={
+            delegateAddressLabel={
               eip7702Display.toAddressLabelKey
                 ? t(eip7702Display.toAddressLabelKey)
                 : undefined
@@ -807,6 +806,10 @@ function ConfirmTransaction() {
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
+            toAddress={currentTx.to}
+            isEOAAddress={isEOAAddress}
+            currentAccount={currentTx.from}
+            accountNickname={displayAccount?.nickname}
           />
           <ConfirmGasFee
             sponsoredUserOperation={sponsoredUserOperation}

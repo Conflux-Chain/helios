@@ -341,8 +341,7 @@ export const useDecodeDisplay = ({
   let displayToken = {},
     displayValue = '',
     displayAccount,
-    displayToAddress,
-    displayFromAddress
+    displayToAddress
   const {from, to, value} = tx
   const toAddress = useCurrentTxStore(state => state.toAddress)
   const sendTokenId = useCurrentTxStore(state => state.sendTokenId)
@@ -392,13 +391,11 @@ export const useDecodeDisplay = ({
     isDapp ? null : sendTokenId,
   )
   if (!isDapp) {
-    displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
     if (isDappNativeTransfer) {
       displayToken = nativeToken
-      displayFromAddress = from
       displayToAddress = to
       displayValue = convertDataToValue(
         !!value && value !== '0x' ? value : '0x0',
@@ -407,12 +404,6 @@ export const useDecodeDisplay = ({
     } else {
       if (token?.symbol) displayToken = token
       if (isDappTokenTransfer) {
-        displayFromAddress =
-          methodName === 'transferFrom'
-            ? args?.[0]
-            : methodName === 'transfer'
-            ? address
-            : ''
         displayToAddress =
           methodName === 'transferFrom'
             ? args?.[1]
@@ -429,7 +420,6 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else if (isApproveToken) {
-        displayFromAddress = from
         displayToAddress = decodeData?.args?.[0]
         displayValue = convertDecimal(
           decodeData?.args[1].toString(10),
@@ -437,7 +427,6 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else {
-        displayFromAddress = from
         displayToAddress = to
       }
     }
@@ -445,7 +434,6 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
-    displayFromAddress,
     displayToAddress,
     displayAccount,
     displayValue,
