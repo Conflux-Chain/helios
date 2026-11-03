@@ -15,6 +15,7 @@ import {
   map,
   oneOrMore,
 } from '@fluent-wallet/spec'
+import {decodeVerifyingPaymasterData} from '@fluent-wallet/user-operation'
 
 export const NAME = 'wallet_prepareSponsorship'
 
@@ -253,9 +254,12 @@ export const main = async ({
     )
   }
 
+  const {validUntil} = decodeVerifyingPaymasterData(signedPaymasterData)
+
   return {
     supported: true,
     available: true,
+    validUntil,
     reason: null,
     maxGasCost: prepared.maxGasCost,
     requiredDelegationAction,
