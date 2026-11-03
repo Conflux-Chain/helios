@@ -120,7 +120,7 @@ export const useFontSize = (
   }, [targetRef, hiddenRef, maxWidth, value, initialFontSize])
 }
 
-const defaultSendTransactionParams = {
+const createDefaultSendTransactionParams = () => ({
   toAddress: '',
   sendAmount: '',
   /** @type {import('../utils/gas').TxOptions} */
@@ -129,7 +129,9 @@ const defaultSendTransactionParams = {
   sendTokenId: 'native',
   // Base-unit decimal string. undefined uses the original approval amount.
   customAllowance: undefined,
-  sponsorshipDeclined: false,
+  sponsorshipEnabled: true,
+  // Isolates each draft's sponsorship cache; toggling keeps the same ID.
+  sponsorshipSessionId: crypto.randomUUID(),
 
   tx: {},
   txContext: {},
@@ -137,16 +139,16 @@ const defaultSendTransactionParams = {
   syncTxWithForm: true,
   // MAX is user intent; the final amount depends on the resolved fee.
   isMaxSelected: false,
-}
+})
 
 export const useCurrentTxStore = create(set => ({
-  ...defaultSendTransactionParams,
+  ...createDefaultSendTransactionParams(),
 
   setTx: tx => set({tx}),
   setSyncTxWithForm: syncTxWithForm => set({syncTxWithForm}),
   setPresetTx: (tx, txContext = {}) =>
     set({
-      ...defaultSendTransactionParams,
+      ...createDefaultSendTransactionParams(),
       tx,
       txContext,
       syncTxWithForm: false,
@@ -162,9 +164,9 @@ export const useCurrentTxStore = create(set => ({
 
       return {customAllowance}
     }),
-  setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
+  setSponsorshipEnabled: sponsorshipEnabled => set({sponsorshipEnabled}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
-  clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
+  clearSendTransactionParams: () => set(createDefaultSendTransactionParams()),
 }))
 
 // TODO: combine estimate here

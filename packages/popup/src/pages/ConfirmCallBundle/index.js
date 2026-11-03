@@ -21,7 +21,7 @@ import {useEstimateError} from '../../hooks'
 import {getGasLimitError} from '../../hooks/useGasFeeValidation'
 import useLoading from '../../hooks/useLoading'
 import PageLoading from '../../hooks/useLoading/PageLoading'
-import {bn16, request} from '../../utils'
+import {bn16, isGasSponsorshipConfigured, request} from '../../utils'
 import CallBundleCallCard from './components/CallBundleCallCard'
 import CallBundleRequestSummary from './components/CallBundleRequestSummary'
 
@@ -196,18 +196,35 @@ function CallBundleConfirmation({
   )
 
   const [pendingDelegationAction, setPendingDelegationAction] = useState(null)
-  const [sponsorshipDeclined, setSponsorshipDeclined] = useState(false)
+  const [sponsorshipEnabled, setSponsorshipEnabled] = useState(true)
 
   const isConfirmationVisible = view.type === 'confirm'
   const isEditingGas = view.type === 'gas'
   const isViewingData = view.type === 'data'
   const isEditingAllowance = view.type === 'allowance'
 
+  const canPrepareSponsorship =
+    allowSponsorship &&
+    isGasSponsorshipConfigured({
+      chainId: currentNetwork.chainId,
+      networkType: currentNetwork.type,
+    })
+
   const sponsorship = useSponsorshipPreparation({
     accountId: currentAccount.eid,
     networkId: currentNetwork.eid,
-    calls: allowSponsorship && !sponsorshipDeclined ? confirmationCalls : null,
+    calls: canPrepareSponsorship ? confirmationCalls : null,
+    sessionId: `call-bundle:${authReq.eid}`,
+    enabled: sponsorshipEnabled,
   })
+
+  const sponsorshipControl = sponsorship.showSwitch
+    ? {
+        enabled: sponsorshipEnabled,
+        onChange: setSponsorshipEnabled,
+      }
+    : undefined
+
   const balances = useBalance(
     sponsorship.available ? from : null,
     currentNetwork.eid,
@@ -396,7 +413,7 @@ function CallBundleConfirmation({
     setPendingDelegationAction(null)
 
     if (sponsorship.available && confirmationCalls.length === 1) {
-      setSponsorshipDeclined(true)
+      setSponsorshipEnabled(false)
       setTxOptions(null)
       return
     }
@@ -541,6 +558,7 @@ function CallBundleConfirmation({
         <div className="mt-4">
           <CallBundleGasFee
             sponsorship={sponsorship}
+            sponsorshipControl={sponsorshipControl}
             sponsoredBalanceCheck={sponsoredBalanceCheck}
             transactionEstimate={transactionEstimate}
             network={currentNetwork}

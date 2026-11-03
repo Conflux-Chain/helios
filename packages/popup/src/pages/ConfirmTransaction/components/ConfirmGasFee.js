@@ -11,13 +11,14 @@ function ConfirmGasFee({
   feePerGas,
   editLabel,
   onEdit,
+  sponsorshipControl,
 }) {
   const {
     data: {network},
   } = useCurrentAddress()
 
   if (sponsoredUserOperation.loading) {
-    return <GasFeePlaceholder />
+    return <GasFeePlaceholder sponsorshipControl={sponsorshipControl} />
   }
 
   if (sponsoredUserOperation.isActive) {
@@ -25,6 +26,7 @@ function ConfirmGasFee({
       <SponsoredGasFee
         maxGasCost={sponsoredUserOperation.maxGasCost}
         nativeToken={nativeToken}
+        sponsorshipControl={sponsorshipControl}
       />
     )
   }
@@ -36,6 +38,7 @@ function ConfirmGasFee({
       feePerGas={feePerGas}
       editLabel={editLabel}
       onEdit={onEdit}
+      sponsorshipControl={sponsorshipControl}
     />
   )
 }
@@ -51,6 +54,7 @@ ConfirmGasFee.propTypes = {
   feePerGas: PropTypes.string,
   editLabel: PropTypes.string,
   onEdit: PropTypes.func.isRequired,
+  sponsorshipControl: PropTypes.object,
 }
 
 export default ConfirmGasFee
