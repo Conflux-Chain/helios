@@ -6,7 +6,7 @@ import DisplayBalance from './DisplayBalance'
 import GasFeeCard from './GasFeeCard'
 import {useCheckImage} from '../hooks'
 
-function SponsoredGasFee({maxGasCost, nativeToken}) {
+function SponsoredGasFee({maxGasCost, nativeToken, sponsorshipControl}) {
   const {t} = useTranslation()
 
   const nativeTokenIcon =
@@ -41,6 +41,7 @@ function SponsoredGasFee({maxGasCost, nativeToken}) {
       titleClassName="mx-1 mb-4"
       contentClassName="min-h-[84px] items-start gap-2 border p-3"
       statusTagClassName="-right-px -top-px"
+      sponsorshipControl={sponsorshipControl}
     >
       <DisplayBalance
         id="realPayedFee"
@@ -66,6 +67,7 @@ function SponsoredGasFee({maxGasCost, nativeToken}) {
 SponsoredGasFee.propTypes = {
   maxGasCost: PropTypes.string,
   nativeToken: PropTypes.object,
+  sponsorshipControl: PropTypes.object,
 }
 
 export default SponsoredGasFee

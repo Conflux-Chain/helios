@@ -23,6 +23,7 @@ function GasFee({
   sponsored = false,
   editDisabled,
   editLabel,
+  sponsorshipControl,
 }) {
   const {t} = useTranslation()
   const {symbol, decimals} = network.ticker
@@ -90,6 +91,7 @@ function GasFee({
       statusTag={statusTag}
       titleClassName={titleClassName}
       contentClassName={contentClassName}
+      sponsorshipControl={sponsorshipControl}
     >
       {error ? (
         <span className="mb-0.5 text-lg text-gray-40">—</span>
@@ -159,6 +161,7 @@ GasFee.propTypes = {
   sponsored: PropTypes.bool,
   editDisabled: PropTypes.bool,
   editLabel: PropTypes.string,
+  sponsorshipControl: PropTypes.object,
 }
 
 export default GasFee

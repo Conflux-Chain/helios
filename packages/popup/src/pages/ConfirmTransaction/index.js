@@ -137,7 +137,8 @@ function ConfirmTransaction() {
     clearSendTransactionParams,
     tx: txParams,
     txContext,
-    setSponsorshipDeclined,
+    sponsorshipEnabled,
+    setSponsorshipEnabled,
   } = useCurrentTxParams()
 
   const {setLoading} = useLoading()
@@ -489,6 +490,19 @@ function ConfirmTransaction() {
     !estimateForSend.error &&
     !estimateForSend.loading
 
+  const handleSponsorshipChange = enabled => {
+    setSponsorshipEnabled(enabled)
+    setBalanceCheckError('')
+    setPendingDelegationAction(null)
+  }
+
+  const sponsorshipControl = sponsoredUserOperation.showSwitch
+    ? {
+        enabled: sponsorshipEnabled,
+        onChange: handleSponsorshipChange,
+      }
+    : undefined
+
   const confirmDisabled =
     view !== 'confirm' ||
     !isFeeTypeReady ||
@@ -556,7 +570,7 @@ function ConfirmTransaction() {
   const submitSponsoredUserOperation = async ({
     approvedDelegationAction,
   } = {}) => {
-    if (confirmDisabled) return
+    if (confirmDisabled || !isSponsoredSubmission) return
 
     beginSubmission()
 
@@ -579,7 +593,6 @@ function ConfirmTransaction() {
       if (needsDelegationConfirmation) {
         resetSubmissionStatus()
         setSendError({})
-        setSponsorshipDeclined(false)
         setPendingDelegationAction(requiredDelegationAction)
         return
       }
@@ -625,7 +638,9 @@ function ConfirmTransaction() {
   }
 
   const confirmPendingDelegation = () => {
-    if (!pendingDelegationAction) return
+    if (confirmDisabled || !isSponsoredSubmission || !pendingDelegationAction) {
+      return
+    }
 
     const approvedDelegationAction = pendingDelegationAction
     setPendingDelegationAction(null)
@@ -635,7 +650,7 @@ function ConfirmTransaction() {
 
   const declinePendingDelegation = () => {
     setPendingDelegationAction(null)
-    setSponsorshipDeclined(true)
+    setSponsorshipEnabled(false)
   }
 
   const onCloseTransactionResult = () => {
@@ -810,6 +825,7 @@ function ConfirmTransaction() {
           />
           <ConfirmGasFee
             sponsoredUserOperation={sponsoredUserOperation}
+            sponsorshipControl={sponsorshipControl}
             nativeToken={nativeToken}
             estimateRst={estimateForSend}
             feePerGas={feePerGas}
@@ -908,6 +924,7 @@ function ConfirmTransaction() {
           {...sponsorshipDrawerProps}
           showClose
           open
+          confirmDisabled={confirmDisabled}
           onConfirm={confirmPendingDelegation}
           onClose={declinePendingDelegation}
         />
