@@ -1,10 +1,18 @@
-function GasFeePlaceholder() {
+import PropTypes from 'prop-types'
+import GasFeeCard from './GasFeeCard'
+
+function GasFeePlaceholder({sponsorshipControl}) {
   return (
-    <div className="gas-fee-container flex flex-col">
-      <div className="mb-2 h-4 w-16 rounded bg-gray-4" />
-      <div className="h-[88px] rounded border border-gray-10 bg-gray-4" />
-    </div>
+    <GasFeeCard
+      title={<div className="h-4 w-16 rounded bg-gray-4" />}
+      contentClassName="h-[88px] border"
+      sponsorshipControl={sponsorshipControl}
+    />
   )
+}
+
+GasFeePlaceholder.propTypes = {
+  sponsorshipControl: PropTypes.object,
 }
 
 export default GasFeePlaceholder

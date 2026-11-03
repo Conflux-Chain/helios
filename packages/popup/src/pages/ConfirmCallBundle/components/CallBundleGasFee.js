@@ -12,6 +12,7 @@ function CallBundleGasFee({
   network,
   gasLevel,
   onEdit,
+  sponsorshipControl,
 }) {
   const {t} = useTranslation()
   const isLowGasFee = useLowGasFee({
@@ -21,20 +22,21 @@ function CallBundleGasFee({
   })
 
   if (sponsorship.loading) {
-    return <GasFeePlaceholder />
+    return <GasFeePlaceholder sponsorshipControl={sponsorshipControl} />
   }
 
   if (sponsorship.available) {
     const {loading} = sponsoredBalanceCheck
 
     if (loading) {
-      return <GasFeePlaceholder />
+      return <GasFeePlaceholder sponsorshipControl={sponsorshipControl} />
     }
 
     return (
       <SponsoredGasFee
         maxGasCost={sponsorship.maxGasCost}
         nativeToken={network.ticker}
+        sponsorshipControl={sponsorshipControl}
       />
     )
   }
@@ -51,6 +53,7 @@ function CallBundleGasFee({
         editLabel={t(gasLevel)}
         editDisabled={!transaction}
         onEdit={onEdit}
+        sponsorshipControl={sponsorshipControl}
       />
       {isLowGasFee && (
         <p className="mt-2 text-xs text-warning">{t('lowGasPriceWarning')}</p>
@@ -74,6 +77,7 @@ CallBundleGasFee.propTypes = {
   network: PropTypes.object.isRequired,
   gasLevel: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
+  sponsorshipControl: PropTypes.object,
   sponsoredBalanceCheck: PropTypes.shape({
     loading: PropTypes.bool,
     isBalanceEnough: PropTypes.bool,

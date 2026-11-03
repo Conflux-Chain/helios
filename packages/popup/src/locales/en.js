@@ -172,6 +172,7 @@ const en = {
     sendToken: 'Send Token',
     toAddress: 'To Address',
     gasFee: 'Gas fee',
+    gasSponsorship: 'Gas Sponsorship',
     lowGasPriceWarning: 'Low fee may take longer.',
     edit: 'Edit',
     sponsored: 'Sponsored',

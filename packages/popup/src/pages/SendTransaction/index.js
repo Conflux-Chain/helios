@@ -93,7 +93,6 @@ function SendTransaction() {
     setSendAmount,
     setSendTokenId,
     setIsMaxSelected,
-    setSponsorshipDeclined,
     setSyncTxWithForm,
     tx,
     txOptions,
@@ -386,7 +385,6 @@ function SendTransaction() {
               disabled={sendDisabled}
               onClick={() => {
                 if (loading) return
-                setSponsorshipDeclined(false)
                 history.push(CONFIRM_TRANSACTION)
               }}
               className="flex-1"
