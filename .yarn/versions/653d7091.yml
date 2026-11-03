@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_prepare-sponsorship": patch
-  browser-extension: patch
-  helios-background: patch
-  helios-popup: patch
-
-declined:
-  - helios
