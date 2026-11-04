@@ -212,7 +212,6 @@ async function estimateGasAndStorage({transaction, network, request}) {
     simulationTx.type === ETH_TX_TYPES.EIP7702 ||
     !!simulationTx.authorizationList
 
-  // Plain transfers use 21,000 Gas and no Core storage collateral.
   const isPlainTransfer =
     to &&
     (!simulationTx.data || simulationTx.data === '0x') &&
@@ -220,20 +219,19 @@ async function estimateGasAndStorage({transaction, network, request}) {
     !simulationTx.accessList?.length &&
     (isCfx ? toAddressType === 'user' : toAddressType !== 'contract')
 
+  // Core plain transfers use 21,000 Gas and no storage collateral.
+  const isPlainCoreTransfer = isCfx && isPlainTransfer
+
   let limitEstimate
 
-  if (isPlainTransfer) {
+  if (isPlainCoreTransfer) {
     limitEstimate = {
       gasUsed: '0x5208',
       gasLimit: '0x5208',
       estimatedGasLimit: '0x5208',
       nonce,
-      ...(isCfx
-        ? {
-            storageCollateralized: '0x0',
-            estimatedStorageLimit: '0x0',
-          }
-        : {}),
+      storageCollateralized: '0x0',
+      estimatedStorageLimit: '0x0',
     }
   } else if (isCfx) {
     limitEstimate = await cfxEstimateGasAndCollateral(simulationTx, {
@@ -244,7 +242,7 @@ async function estimateGasAndStorage({transaction, network, request}) {
     limitEstimate = await ethEstimateGas(simulationTx, {
       request,
       chainId: network.chainId,
-      gasBuffer: network.gasBuffer || 1,
+      gasBuffer: isPlainTransfer ? 1 : network.gasBuffer || 1,
       retryOnNonceTooOld: !hasExplicitNonce,
     })
   }

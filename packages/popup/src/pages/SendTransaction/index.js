@@ -155,8 +155,10 @@ function SendTransaction() {
     : '0x0'
   const hasPositiveSendValue = bn16(sendValue).gt(bn16('0x0'))
   const hasTransferBalance = bn16(sendTokenBalance).gte(bn16(sendValue))
+  // Confirm resolves sponsorship and reserves the sender's fee for MAX.
   const canDeferGasBalanceValidation =
-    sponsorshipConfigured && hasTransferBalance
+    (sponsorshipConfigured || (isMaxSelected && isNativeToken)) &&
+    hasTransferBalance
 
   const uses1559Fees = useUses1559Fees(tx?.type)
   const {
@@ -172,7 +174,6 @@ function SendTransaction() {
   })
 
   const estimateRst = {...estimate, loading, error}
-  const {nativeMaxDrip} = estimate || {}
 
   const errorMessage = useEstimateError(
     estimateRst,
@@ -200,12 +201,7 @@ function SendTransaction() {
       })
   }, [netId, toAddress, type])
 
-  const isNativeMaxUnavailable =
-    !sponsorshipConfigured && isNativeToken && (loading || !nativeMaxDrip)
-  const maxDisabled =
-    !isBalanceReady ||
-    !bn16(sendTokenBalance).gt(bn16('0x0')) ||
-    isNativeMaxUnavailable
+  const maxDisabled = !isBalanceReady || !bn16(sendTokenBalance).gt(bn16('0x0'))
 
   const onChangeToken = token => {
     setSendTokenId(token)
@@ -220,12 +216,9 @@ function SendTransaction() {
   const onClickMax = () => {
     if (maxDisabled) return
 
-    // Keep the full native balance until sponsorship is checked.
-    const maxAmount =
-      isNativeToken && !sponsorshipConfigured ? nativeMaxDrip : sendTokenBalance
-
+    // Confirm determines the final amount after checking sponsorship and fees.
     setIsMaxSelected(true)
-    setSendAmount(convertDataToValue(maxAmount, decimals))
+    setSendAmount(convertDataToValue(sendTokenBalance, decimals))
   }
 
   const onChangeAddress = address => {

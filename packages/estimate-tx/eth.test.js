@@ -57,17 +57,22 @@ function estimateTransaction(tx, request, options = {}) {
 
 describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
   test('combines delegation and execution estimates', async () => {
-    const request = createRequest(['0x11558', '0x5c5d'])
+    const request = createRequest(['0x11558', '0x3a98', '0x5c5d'])
+    const tx = {
+      ...BASE_TX,
+      value: '0x1',
+      accessList: [{address: TARGET, storageKeys: []}],
+    }
 
-    const result = await estimateTransaction(BASE_TX, request)
+    const result = await estimateTransaction(tx, request)
 
     expect(result).toMatchObject({
-      gasUsed: '0x11fad',
-      gasLimit: '0x11fad',
+      gasUsed: '0x1371d',
+      gasLimit: '0x1371d',
       nonce: '0x5',
     })
 
-    const [authorizationRequest, executionRequest] =
+    const [authorizationRequest, plainRequest, executionRequest] =
       getGasEstimateRequests(request)
 
     expect(authorizationRequest.params).toHaveLength(2)
@@ -90,11 +95,22 @@ describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
         },
       ],
     })
+    expect(authorizationRequest.params[0]).not.toHaveProperty('accessList')
+
+    expect(plainRequest.params[0]).toEqual({
+      from: FROM,
+      to: NULL_HEX_ADDRESS,
+      value: '0x0',
+      data: '0x',
+      nonce: '0x5',
+      chainId: CHAIN_ID,
+    })
 
     expect(executionRequest.params[0]).toMatchObject({
       from: FROM,
       to: FROM,
-      value: '0x0',
+      value: tx.value,
+      accessList: tx.accessList,
       data: CALL_DATA,
       nonce: '0x5',
       chainId: CHAIN_ID,
@@ -110,20 +126,22 @@ describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
 
   test('propagates an execution state override failure', async () => {
     const stateOverrideError = new Error('state override is not supported')
-    const request = createRequest(['0x11558', stateOverrideError])
+    const request = createRequest(['0x11558', '0x3a98', stateOverrideError])
 
     await expect(estimateTransaction(BASE_TX, request)).rejects.toBe(
       stateOverrideError,
     )
 
-    expect(getGasEstimateRequests(request)).toHaveLength(2)
+    expect(getGasEstimateRequests(request)).toHaveLength(3)
   })
 
-  test('retries both estimates with the same updated nonce', async () => {
+  test('retries all estimates with the same updated nonce', async () => {
     const request = createRequest([
       '0x11558',
+      '0x3a98',
       new Error('nonce is too old'),
       '0x11558',
+      '0x3a98',
       '0x5c5d',
     ])
 
@@ -133,9 +151,9 @@ describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
     const gasEstimateRequests = getGasEstimateRequests(request)
 
     expect(result.nonce).toBe('0x6')
-    expect(gasEstimateRequests).toHaveLength(4)
+    expect(gasEstimateRequests).toHaveLength(6)
 
-    expect(gasEstimateRequests[2].params[0]).toMatchObject({
+    expect(gasEstimateRequests[3].params[0]).toMatchObject({
       nonce: '0x6',
       authorizationList: [
         expect.objectContaining({
@@ -143,11 +161,12 @@ describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
         }),
       ],
     })
-    expect(gasEstimateRequests[3].params[0].nonce).toBe('0x6')
+    expect(gasEstimateRequests[4].params[0].nonce).toBe('0x6')
+    expect(gasEstimateRequests[5].params[0].nonce).toBe('0x6')
   })
 
   test('uses the last authorization target for a multi-authorization self-call', async () => {
-    const request = createRequest(['0x11558', '0x5c5d'])
+    const request = createRequest(['0x11558', '0x3a98', '0x5c5d'])
 
     await estimateTransaction(
       {
@@ -157,7 +176,7 @@ describe('ethEstimateGas EIP-7702 data-to-self estimation', () => {
       request,
     )
 
-    const [authorizationRequest, executionRequest] =
+    const [authorizationRequest, , executionRequest] =
       getGasEstimateRequests(request)
 
     expect(authorizationRequest.params[0].authorizationList).toEqual([
