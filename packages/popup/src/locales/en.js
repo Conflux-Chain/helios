@@ -621,9 +621,9 @@ const en = {
     // estimate changes
     estimateChanges: 'Estimated changes',
     estimateChangesTooltip:
-      'Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee. ',
+      'Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee.',
     unableEstimateChanges:
-      'Unable to estimate asset changes.Review transaction details before confirming.',
+      'Unable to estimate asset changes. Review transaction details before confirming.',
     youSend: 'You send',
     youReceive: 'You receive',
   },
