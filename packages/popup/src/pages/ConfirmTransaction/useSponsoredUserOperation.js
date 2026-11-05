@@ -5,14 +5,12 @@ function useSponsoredUserOperation({accountId, networkId, calls}) {
   const sponsorshipEnabled = useCurrentTxStore(
     state => state.sponsorshipEnabled,
   )
-  const sponsorshipSessionId = useCurrentTxStore(
-    state => state.sponsorshipSessionId,
-  )
+  const sessionId = useCurrentTxStore(state => state.sessionId)
   const {refresh, ...preparation} = useSponsorshipPreparation({
     accountId,
     networkId,
     calls,
-    sessionId: sponsorshipSessionId,
+    sessionId,
     enabled: sponsorshipEnabled,
   })
 

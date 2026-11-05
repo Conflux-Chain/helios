@@ -3,10 +3,7 @@ import ApproveTransactionHeader from './ApproveTransactionHeader'
 import TransferTransactionHeader from './TransferTransactionHeader'
 import EIP7702TransactionHeader from './EIP7702TransactionHeader'
 import {useTranslation} from 'react-i18next'
-
-function EstimateChanges() {
-  return null
-}
+import EstimateChanges from '../../../components/EstimateChanges'
 
 function TransactionHeader({
   isApproveToken,
@@ -23,6 +20,10 @@ function TransactionHeader({
   delegateAddress,
   title,
   delegateAddressLabel,
+
+  tx,
+  sessionId,
+  showEstimateAssetChanges = true,
 
   token,
   nickname,
@@ -74,7 +75,9 @@ function TransactionHeader({
         <img alt="icon" className="w-3 h-3 mr-1" src="/images/sign-icon.svg" />
         <span>{t('signTransaction')}</span>
       </div>
-      <EstimateChanges />
+      {showEstimateAssetChanges && (
+        <EstimateChanges tx={tx} sessionId={sessionId} />
+      )}
     </div>
   )
 }
@@ -101,6 +104,11 @@ TransactionHeader.propTypes = {
   delegateAddress: PropTypes.string,
   title: PropTypes.string,
   delegateAddressLabel: PropTypes.string,
+
+  // unknown transaction
+  tx: PropTypes.object,
+  sessionId: PropTypes.string,
+  showEstimateAssetChanges: PropTypes.bool,
 }
 
 export default TransactionHeader

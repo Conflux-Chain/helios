@@ -11,6 +11,15 @@ export const FUNGIBLE_TOKEN_ABI = [
   'function transferFrom(address holder, address recipient, uint256 amount) returns (bool)',
 ]
 
+export const FUNGIBLE_TOKEN_EVENT_ABI = [
+  'event Transfer(address indexed from, address indexed to, uint256 value)',
+]
+
+export const WRAPPED_NATIVE_TOKEN_EVENT_ABI = [
+  'event Deposit(address indexed dst, uint256 wad)',
+  'event Withdrawal(address indexed src, uint256 wad)',
+]
+
 export const TOKEN_CALL_ABI = [
   ...FUNGIBLE_TOKEN_ABI,
   'function setApprovalForAll(address operator, bool approved)',

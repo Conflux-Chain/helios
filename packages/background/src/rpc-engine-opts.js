@@ -113,6 +113,7 @@ import * as cfxEstimate1559Fee from '@fluent-wallet/cfx_estimate-1559-fee'
 import * as ethAccounts from '@fluent-wallet/eth_accounts'
 import * as ethBlockNumber from '@fluent-wallet/eth_block-number'
 import * as ethCall from '@fluent-wallet/eth_call'
+import * as debugTraceCall from '@fluent-wallet/debug_trace-call'
 import * as ethChainId from '@fluent-wallet/eth_chain-id'
 import * as ethEstimateGas from '@fluent-wallet/eth_estimate-gas'
 import * as ethGasPrice from '@fluent-wallet/eth_gas-price'
@@ -196,6 +197,7 @@ import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
 import * as unwalletWatchAsset from '@fluent-wallet/wallet_unwatch-asset'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 import * as walletAfterUnlock from '@fluent-wallet/wallet_after-unlock'
+import * as walletEstimateAssetChanges from '@fluent-wallet/wallet_estimate-asset-changes'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -402,7 +404,9 @@ export const rpcEngineOpts = {
     walletUpsertMemo,
     walletDeleteMemo,
     walletGetBlockTime,
+    walletEstimateAssetChanges,
 
     walletAfterUnlock,
+    debugTraceCall,
   ],
 }
