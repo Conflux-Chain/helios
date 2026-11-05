@@ -183,6 +183,8 @@ function CallBundleConfirmation({
     requiredDelegationAction: transactionDelegationAction,
   } = authReq.req.params
 
+  const sessionId = `call-bundle:${authReq.eid}`
+
   const {currentAccount, currentNetwork, site} = authReq.app
 
   const [expandedCallIndexes, setExpandedCallIndexes] = useState([])
@@ -214,7 +216,7 @@ function CallBundleConfirmation({
     accountId: currentAccount.eid,
     networkId: currentNetwork.eid,
     calls: canPrepareSponsorship ? confirmationCalls : null,
-    sessionId: `call-bundle:${authReq.eid}`,
+    sessionId,
     enabled: sponsorshipEnabled,
   })
 
@@ -497,7 +499,11 @@ function CallBundleConfirmation({
             : 'hidden'
         }
       >
-        <CallBundleRequestSummary callCount={confirmationCalls.length} />
+        <CallBundleRequestSummary
+          callCount={confirmationCalls.length}
+          tx={canConfirm ? transactionEstimate.transaction : undefined}
+          sessionId={sessionId}
+        />
 
         <ol className="mt-4 flex flex-col gap-4">
           {confirmationCalls.map((call, callIndex) => (
