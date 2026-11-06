@@ -617,6 +617,15 @@ const en = {
     contractUnverifiedTitle: 'Unverified contract',
     contractUnverifiedDesc:
       'This contract is not verified on ConfluxScan. Please assess the risk yourself before confirming.',
+
+    // estimate changes
+    estimateChanges: 'Estimated changes',
+    estimateChangesTooltip:
+      'Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee.',
+    unableEstimateChanges:
+      'Unable to estimate asset changes. Review transaction details before confirming.',
+    youSend: 'You send',
+    youReceive: 'You receive',
   },
 }
 

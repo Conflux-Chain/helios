@@ -2,12 +2,13 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Tooltip from '@fluent-wallet/component-tooltip'
+import EstimateChanges from '../../../components/EstimateChanges'
 
-function CallBundleRequestSummary({callCount}) {
+function CallBundleRequestSummary({callCount, tx, sessionId}) {
   const {t} = useTranslation()
 
   return (
-    <section className="relative flex min-h-[81px] flex-col items-center gap-[7px] px-3 py-4">
+    <section className="relative flex min-h-[81px] flex-col items-center gap-[7px] px-3 pt-4 pb-6">
       <img
         src="/images/signature-request-bg.svg"
         alt=""
@@ -37,12 +38,15 @@ function CallBundleRequestSummary({callCount}) {
           </button>
         </Tooltip>
       </div>
+      <EstimateChanges tx={tx} sessionId={sessionId} />
     </section>
   )
 }
 
 CallBundleRequestSummary.propTypes = {
   callCount: PropTypes.number.isRequired,
+  sessionId: PropTypes.string,
+  tx: PropTypes.object,
 }
 
 export default CallBundleRequestSummary

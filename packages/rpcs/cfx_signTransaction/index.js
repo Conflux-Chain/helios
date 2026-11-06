@@ -1,58 +1,15 @@
-import {
-  base32Address,
-  base32UserAddress,
-  Bytes,
-  cat,
-  chainId,
-  boolean,
-  epochRef,
-  zeroOrOne,
-  map,
-  Uint,
-  catn,
-  Hash32,
-} from '@fluent-wallet/spec'
+import * as spec from '@fluent-wallet/spec'
+import genCfxTxSchema from '@fluent-wallet/cfx-transaction-schema'
 import {BigNumber} from '@ethersproject/bignumber'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {parseUnits} from '@ethersproject/units'
 
+const {cat, boolean, epochRef, zeroOrOne, map} = spec
+
 export const NAME = 'cfx_signTransaction'
 
-export const txSchema = [
-  map,
-  {closed: true},
-  ['from', base32UserAddress],
-  ['to', {optional: true}, base32Address],
-  ['value', {optional: true}, Uint],
-  ['nonce', {optional: true}, Uint],
-  ['data', {optional: true}, Bytes],
-  ['gas', {optional: true}, Uint],
-  ['gasLimit', {doc: 'gas limit, same as the "gas" key', optional: true}, Uint],
-  ['gasPrice', {optional: true}, Uint],
-  ['storageLimit', {optional: true}, Uint],
-  ['chainId', {optional: true}, chainId],
-  ['epochHeight', {optional: true}, Uint],
-  ['type', {optional: true}, Uint],
-  ['maxPriorityFeePerGas', {optional: true}, Uint],
-  ['maxFeePerGas', {optional: true}, Uint],
-  [
-    'accessList',
-    {optional: true},
-    [
-      catn,
-      [
-        'AccessListEntry',
-        [
-          map,
-          {closed: true},
-          ['address', {optional: true}, base32Address],
-          ['storageKeys', {optional: true}, [catn, ['32BtyeHexValue', Hash32]]],
-        ],
-      ],
-    ],
-  ],
-]
+export const {TransactionUnsigned: txSchema} = genCfxTxSchema(spec)
 
 export const schemas = {
   input: [

@@ -245,6 +245,8 @@ const uk = {
     action: 'Дія',
     balance: 'Баланс',
     createContract: 'Розгорнути контракт',
+    currentAccount: 'Мій обліковий запис',
+    interactingWith: 'Взаємодія з',
 
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Дозвіл на редагування',
@@ -623,6 +625,15 @@ const uk = {
     contractUnverifiedTitle: 'Неверифікований контракт',
     contractUnverifiedDesc:
       'Цей контракт не пройшов верифікацію на ConfluxScan. Будь ласка, самостійно оцініть ризики перед підтвердженням.',
+
+    // estimate changes
+    estimateChanges: 'Очікувані зміни',
+    estimateChangesTooltip:
+      'Очікувані зміни показують, як можуть змінитися ваші активи, якщо ви підтвердите цю транзакцію. Це лише прогноз, а не гарантія.',
+    unableEstimateChanges:
+      'Не вдалося оцінити зміни активів. Перевірте деталі транзакції перед підтвердженням.',
+    youSend: 'Ви надсилаєте',
+    youReceive: 'Ви отримуєте',
   },
 }
 
