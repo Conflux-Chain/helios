@@ -55,7 +55,7 @@ function AccountDisplay({
 }
 AccountDisplay.propTypes = {
   address: PropTypes.string,
-  nickname: PropTypes.string,
+  nickname: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   showAvatar: PropTypes.bool,
   wrapperClassName: PropTypes.string,
   iconClassName: PropTypes.string,
