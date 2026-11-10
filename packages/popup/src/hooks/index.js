@@ -131,7 +131,7 @@ const createDefaultSendTransactionParams = () => ({
   customAllowance: undefined,
   sponsorshipEnabled: true,
   // Isolates each draft's sponsorship cache; toggling keeps the same ID.
-  sponsorshipSessionId: crypto.randomUUID(),
+  sessionId: crypto.randomUUID(),
 
   tx: {},
   txContext: {},

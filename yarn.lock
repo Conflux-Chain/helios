@@ -3707,6 +3707,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx-transaction-schema@workspace:packages/cfx-transaction-schema":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx-transaction-schema@workspace:packages/cfx-transaction-schema"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
@@ -4124,6 +4130,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
   dependencies:
+    "@fluent-wallet/cfx-transaction-schema": "workspace:packages/cfx-transaction-schema"
     "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/signature": "workspace:packages/signature"
   languageName: unknown
@@ -4415,6 +4422,16 @@ __metadata:
   dependencies:
     "@ethersproject/bignumber": "npm:5.6.2"
     "@fluent-wallet/consts": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/debug_trace-call@workspace:packages/rpcs/debug_traceCall":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/debug_trace-call@workspace:packages/rpcs/debug_traceCall"
+  dependencies:
+    "@fluent-wallet/cfx-transaction-schema": "workspace:packages/cfx-transaction-schema"
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/spec": "npm:1.0.23"
   languageName: unknown
   linkType: soft
 
@@ -5344,6 +5361,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_enrich-txs@workspace:packages/rpcs/wallet_enrichTxs"
   dependencies:
+    "@fluent-wallet/spec": "npm:1.0.23"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_estimate-asset-changes@workspace:*, @fluent-wallet/wallet_estimate-asset-changes@workspace:packages/rpcs/wallet_estimateAssetChanges":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_estimate-asset-changes@workspace:packages/rpcs/wallet_estimateAssetChanges"
+  dependencies:
+    "@ethersproject/abi": "npm:5.6.3"
+    "@ethersproject/bignumber": "npm:5.6.2"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/debug_trace-call": "workspace:packages/rpcs/debug_traceCall"
     "@fluent-wallet/spec": "npm:1.0.23"
   languageName: unknown
   linkType: soft
@@ -18607,6 +18637,7 @@ __metadata:
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/db": "npm:1.0.93"
+    "@fluent-wallet/debug_trace-call": "workspace:packages/rpcs/debug_traceCall"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
@@ -18659,6 +18690,7 @@ __metadata:
     "@fluent-wallet/wallet_enrich-conflux-tx": "workspace:*"
     "@fluent-wallet/wallet_enrich-ethereum-tx": "workspace:*"
     "@fluent-wallet/wallet_enrich-txs": "workspace:*"
+    "@fluent-wallet/wallet_estimate-asset-changes": "workspace:*"
     "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
     "@fluent-wallet/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
     "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"

@@ -5,6 +5,7 @@
   "packageManager": "yarn@3.0.1",
   "version": "1.0.29",
   "dependencies": {
+    "@fluent-wallet/cfx-transaction-schema": "workspace:packages/cfx-transaction-schema",
     "@fluent-wallet/ledger": "workspace:packages/ledger",
     "@fluent-wallet/signature": "workspace:packages/signature"
   }
