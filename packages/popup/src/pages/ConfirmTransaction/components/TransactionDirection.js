@@ -63,7 +63,7 @@ const TransactionDirection = ({
     },
   } = useCurrentAddress()
 
-  const {data: nsNames, nsNamesError} = useServiceNames({
+  const {data: nsNames, error: nsNamesError} = useServiceNames({
     type,
     netId,
     networkId,

@@ -1,35 +1,23 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {EditOutlined} from '@fluent-wallet/component-icons'
-import {convertDataToValue, convertDecimal} from '@fluent-wallet/data-format'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {useCurrentAddress, useCurrentDapp} from '../../../hooks/useApi'
 import {useDappIcon, useServiceNames} from '../../../hooks'
 import {
-  DisplayBalance,
-  WrapIcon,
   CurrentNetworkDisplay,
   AccountDisplay,
   AddressDisplay,
   CopyButton,
   NsNameLabel,
 } from '../../../components'
-import {bn16} from '../../../utils'
-import {MaxUint256} from '@fluent-wallet/consts'
-import {BN} from 'bn.js'
-import {useMemo} from 'react'
 
 function InfoList({
   isDapp,
-  isApproveToken,
-  canEditAllowance = false,
-  onEditAllowance,
 
   isSign,
-  token,
   value,
   decimals,
   symbol,
-  allowance,
   method,
   pendingAuthReq,
   currentAccount,
@@ -44,7 +32,7 @@ function InfoList({
       network: {eid: networkId, type: networkType, netId},
     },
   } = useCurrentAddress()
-  const {data: nsNames, nsNamesError} = useServiceNames({
+  const {data: nsNames, error: nsNamesError} = useServiceNames({
     type: networkType,
     netId,
     networkId,
@@ -60,17 +48,6 @@ function InfoList({
   const currentNetwork = isDapp ? app?.currentNetwork : {}
 
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
-
-  const isUnlimited = useMemo(() => {
-    if (!isApproveToken) return false
-    try {
-      return bn16(MaxUint256).eq(
-        new BN(convertDecimal(allowance, 'multiply', token?.decimals)),
-      )
-    } catch {
-      return false
-    }
-  }, [isApproveToken, allowance, token?.decimals])
 
   return (
     <div className="info-list-container flex flex-col">
@@ -130,31 +107,6 @@ function InfoList({
           </div>
         </div>
       )}
-      {isApproveToken && (
-        <div className="flex justify-between mb-4">
-          <span className="text-gray-40">{t('allowLimit')}</span>
-          <span className="flex items-center">
-            <DisplayBalance
-              id="allowance"
-              balance={allowance}
-              isUnlimited={isUnlimited}
-              mode="allowance"
-              maxWidth={160}
-              maxWidthStyle="max-w-[160px]"
-              symbol={token?.symbol}
-            />
-            {canEditAllowance && (
-              <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-10 group">
-                <EditOutlined
-                  className="w-4 h-4 cursor-pointer group-hover:text-primary"
-                  id="editAllowance"
-                  onClick={onEditAllowance}
-                />
-              </WrapIcon>
-            )}
-          </span>
-        </div>
-      )}
       {isSign && (
         <>
           {!!method && (
@@ -197,18 +149,13 @@ function InfoList({
 }
 
 InfoList.propTypes = {
-  isApproveToken: PropTypes.bool,
   isSign: PropTypes.bool,
-  token: PropTypes.object,
   value: PropTypes.string,
   decimals: PropTypes.number,
   symbol: PropTypes.string,
   isDapp: PropTypes.bool,
-  allowance: PropTypes.string,
   method: PropTypes.string,
   pendingAuthReq: PropTypes.array,
-  canEditAllowance: PropTypes.bool,
-  onEditAllowance: PropTypes.func.isRequired,
   currentAccount: PropTypes.string,
   accountNickname: PropTypes.string,
   toAddress: PropTypes.string,

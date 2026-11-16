@@ -816,16 +816,11 @@ function ConfirmTransaction() {
             }
           />
           <InfoList
-            token={displayToken}
-            isApproveToken={isApproveToken}
-            canEditAllowance={canEditAllowance}
-            onEditAllowance={() => setView('allowance')}
             isDapp={isDapp}
             isSign={isSign}
             method={
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
-            allowance={displayAllowance}
             value={sendTransactionParams.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
