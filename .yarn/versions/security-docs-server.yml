@@ -1,0 +1,7 @@
+releases:
+  "doc": patch
+
+declined:
+  - "helios"
+
+# Includes the subsequent SVG/CSS toolchain update in the same docs patch release.
