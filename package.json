@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=15"
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "resolutions": {
     "@fluent-wallet/hw-app-conflux/js-conflux-sdk": "2.0.7",
@@ -98,8 +98,8 @@
     "@types/js-string-escape": "^1",
     "@types/serve-static": "^1",
     "@types/webpack-bundle-analyzer": "^4",
-    "@vitejs/plugin-react": "4.3.1",
-    "@vitest/coverage-v8": "2.1.8",
+    "@vitejs/plugin-react": "4.3.4",
+    "@vitest/coverage-v8": "4.1.12",
     "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.2",
     "@yqrashawn/snowpack": "3.8.6-fix-6",
     "autoprefixer": "10.4.20",
@@ -162,7 +162,8 @@
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^26.0.0",
     "tailwindcss": "^3.1.1",
-    "vitest": "2.1.8",
+    "vite": "6.4.6",
+    "vitest": "4.1.12",
     "wait-for-expect": "3.0.2",
     "webpack": "5.93.0",
     "webpack-bundle-analyzer": "4.10.2",
