@@ -46,7 +46,8 @@
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "@babel/core@npm:7.12.9": "7.29.13"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
@@ -75,7 +76,7 @@
     "removeEmptyFile": "find ./dist -name \"manifest.js\" -type f -delete"
   },
   "devDependencies": {
-    "@babel/core": "7.17.9",
+    "@babel/core": "7.29.13",
     "@babel/eslint-parser": "7.17.0",
     "@babel/plugin-syntax-import-meta": "7.10.4",
     "@babel/preset-env": "7.16.11",
