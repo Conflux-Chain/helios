@@ -8,10 +8,21 @@ import {
   trimZero,
   formatAmount,
   formatBalance,
+  formatHexToDecimal,
+  formatDecimalToHex,
   CFX_DECIMALS,
 } from './'
 
 describe('@fluent-wallet/data-format', () => {
+  it('round-trips token amounts above the safe integer limit without losing wei', () => {
+    const maxUint256 = (2n ** 256n - 1n).toString(10)
+    const hex = `0x${'ff'.repeat(32)}`
+    expect(formatHexToDecimal(hex)).toBe(maxUint256)
+    expect(formatDecimalToHex(maxUint256)).toBe(hex)
+    expect(fromCfxToDrip('1.000000000000000001')).toBe('1000000000000000001')
+    expect(fromDripToCfx('1000000000000000001')).toBe('1.000000000000000001')
+  })
+
   it('convertDecimal', async () => {
     expect(convertDecimal('1000000000000000000', 'divide', CFX_DECIMALS)).toBe(
       '1',

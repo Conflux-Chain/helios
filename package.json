@@ -20,7 +20,7 @@
     "axios@npm:1.11.0": "1.21.1",
     "wait-on@npm:6.0.1/axios": "0.35.0",
     "request@npm:2.88.2/form-data": "2.5.6",
-    "bn.js": "5.2.0",
+    "bn.js": "5.2.5",
     "tslib": "^2.3.1",
     "ethereumjs-vm": "4.2.0",
     "react": "17.0.2",
