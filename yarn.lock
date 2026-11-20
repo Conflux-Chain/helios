@@ -5119,6 +5119,7 @@ __metadata:
     "@ethersproject/wallet": "npm:5.6.2"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/utils": "workspace:packages/utils"
+    "@noble/curves": "npm:1.9.7"
     cip-23: "npm:0.2.0"
     eth-sig-util: "npm:3.0.1"
     js-conflux-sdk: "npm:2.4.10"
@@ -6026,7 +6027,6 @@ __metadata:
   resolution: "@fluent-wallet/wallet_send-user-operation@workspace:packages/rpcs/wallet_sendUserOperation"
   dependencies:
     "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/signing-key": "npm:^5.7.0"
     "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/nonce-manager": "workspace:*"
@@ -6976,6 +6976,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:1.9.7, @noble/curves@npm:~1.9.0":
+  version: 1.9.7
+  resolution: "@noble/curves@npm:1.9.7"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10/3cfe2735ea94972988ca9e217e0ebb2044372a7160b2079bf885da789492a6291fc8bf76ca3d8bf8dee477847ee2d6fac267d1e6c4f555054059f5e8c4865d44
+  languageName: node
+  linkType: hard
+
 "@noble/curves@npm:^1.6.0, @noble/curves@npm:~1.7.0":
   version: 1.7.0
   resolution: "@noble/curves@npm:1.7.0"
@@ -6991,15 +7000,6 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:2.2.0"
   checksum: 10/f9545e55bb8b6cdf2618c936870b9229339c90b25f129fc368b4b534e723f274e5c0daf8abca2f891bcf0a59c3b49c5ac5205899aec07f5251f545ec616e3aa9
-  languageName: node
-  linkType: hard
-
-"@noble/curves@npm:~1.9.0":
-  version: 1.9.7
-  resolution: "@noble/curves@npm:1.9.7"
-  dependencies:
-    "@noble/hashes": "npm:1.8.0"
-  checksum: 10/3cfe2735ea94972988ca9e217e0ebb2044372a7160b2079bf885da789492a6291fc8bf76ca3d8bf8dee477847ee2d6fac267d1e6c4f555054059f5e8c4865d44
   languageName: node
   linkType: hard
 

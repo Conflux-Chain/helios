@@ -14,10 +14,8 @@ import {
   hexToBytes,
 } from '@ethereumjs/util'
 import {createTx, createTxFromRLP} from '@ethereumjs/tx'
-import {
-  SigningKey,
-  recoverPublicKey as ethRecoverPublicKey,
-} from '@ethersproject/signing-key'
+import {recoverPublicKey as ethRecoverPublicKey} from '@ethersproject/signing-key'
+import {signDigest} from './sign-digest.js'
 import {
   Transaction as CfxTransaction,
   PersonalMessage as CfxPersonalMessage,
@@ -38,7 +36,7 @@ import {getMessage as cip23GetMessage, getStructHash} from 'cip-23'
 import {keccak256} from '@ethersproject/keccak256'
 import ethSigUtil from 'eth-sig-util'
 
-export {prepareEip7702AuthorizationRequests}
+export {prepareEip7702AuthorizationRequests, signDigest}
 
 export const hashPersonalMessage = (type, message) =>
   type === 'cfx'
@@ -95,7 +93,7 @@ export async function signTypedData_v4(type, privateKey, typedData) {
 
   const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
-  const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
+  const signature = signDigest(addHexPrefix(privateKey), digest)
   return joinSignature(signature)
 }
 
@@ -164,7 +162,7 @@ export async function getLedgerTypedDataPayload(type, typedData) {
 }
 
 export const ethEcdsaSign = (hash, pk) =>
-  new SigningKey(addHexPrefix(pk)).sign(addHexPrefix(hash))
+  signDigest(addHexPrefix(pk), addHexPrefix(hash))
 export const cfxEcdsaSign = (hash, pk) =>
   CfxMessage.sign(toBuffer(addHexPrefix(pk)), toBuffer(hash))
 
@@ -201,9 +199,7 @@ export const hashEip7702Authorization = ({chainId, contractAddress, nonce}) => {
 
 export const signEip7702Authorization = (authorization, privateKey) => {
   const authorizationHash = hashEip7702Authorization(authorization)
-  const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(
-    authorizationHash,
-  )
+  const signature = signDigest(addHexPrefix(privateKey), authorizationHash)
 
   return {
     r: signature.r.toLowerCase(),
@@ -275,9 +271,7 @@ export const decodeEthRawTransaction = (rawTx, chainId) => {
 
 export const ethSignTransaction = (tx, pk) => {
   pk = addHexPrefix(pk)
-  const signature = new SigningKey(pk).signDigest(
-    keccak256(serializeETHTransaction(tx)),
-  )
+  const signature = signDigest(pk, keccak256(serializeETHTransaction(tx)))
   return serializeETHTransaction(tx, signature)
 }
 
