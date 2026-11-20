@@ -6,7 +6,6 @@
   "private": true,
   "dependencies": {
     "@ethersproject/bytes": "^5.7.0",
-    "@ethersproject/signing-key": "^5.7.0",
     "@fluent-wallet/bundler-client": "workspace:packages/bundler-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/nonce-manager": "workspace:*",

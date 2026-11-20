@@ -1,5 +1,4 @@
 import {joinSignature} from '@ethersproject/bytes'
-import {SigningKey} from '@ethersproject/signing-key'
 import {
   EIP7702_NETWORK_CONFIGS,
   USER_OPERATION_ERROR_CODES,
@@ -10,7 +9,7 @@ import {
   withEthereumNonceLock,
   withUserOperationNonceLock,
 } from '@fluent-wallet/nonce-manager'
-import {signEip7702Authorization} from '@fluent-wallet/signature'
+import {signDigest, signEip7702Authorization} from '@fluent-wallet/signature'
 
 import {
   Bytes,
@@ -279,7 +278,7 @@ async function getEip7702AuthorizationNonce({
 }
 
 function signUserOperationHash(userOperationHash, privateKey) {
-  return joinSignature(new SigningKey(privateKey).signDigest(userOperationHash))
+  return joinSignature(signDigest(privateKey, userOperationHash))
 }
 
 function signUserOperationAuthorization(authorization, privateKey) {
