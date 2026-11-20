@@ -46,7 +46,12 @@
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "tar@npm:^6.0.2": "7.5.23",
+    "tar@npm:^6.1.11": "7.5.23",
+    "tar@npm:^6.1.0": "7.5.23",
+    "tar@npm:^6.2.1": "7.5.23",
+    "solc@npm:0.8.26/tmp": "0.2.7"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
