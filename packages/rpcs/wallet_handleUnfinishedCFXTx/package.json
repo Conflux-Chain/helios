@@ -11,6 +11,6 @@
     "@fluent-wallet/spec": "1.0.23",
     "@fluent-wallet/transducers": "workspace:*",
     "@fluent-wallet/webextension": "workspace:*",
-    "@thi.ng/rstream": "6.0.21"
+    "@thi.ng/rstream": "7.2.46"
   }
 }
