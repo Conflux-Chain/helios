@@ -96,3 +96,4 @@ export const WALLET_QUERY_RECENT_TRADING_ADDRESS =
   'walletdb_queryRecentInterestingAddress'
 
 export const WALLET_NETWORK1559COMPATIBLE = 'wallet_network1559Compatible'
+export const WALLET_ESTIMATE_ASSET_CHANGES = 'wallet_estimateAssetChanges'

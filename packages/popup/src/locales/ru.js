@@ -246,6 +246,8 @@ const ru = {
     action: 'Действие',
     balance: 'Баланс',
     createContract: 'Развернуть контракт',
+    currentAccount: 'Мой аккаунт',
+    interactingWith: 'Взаимодействие с',
 
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Разрешение на редактирование',
@@ -629,6 +631,15 @@ const ru = {
     contractUnverifiedTitle: 'Неверифицированный контракт',
     contractUnverifiedDesc:
       'Этот контракт не прошёл верификацию на ConfluxScan. Пожалуйста, самостоятельно оцените риски перед подтверждением.',
+
+    // estimate changes
+    estimateChanges: 'Ожидаемые изменения',
+    estimateChangesTooltip:
+      'Ожидаемые изменения показывают, как могут измениться ваши активы, если вы подтвердите эту транзакцию. Это лишь прогноз, а не гарантия.',
+    unableEstimateChanges:
+      'Не удалось оценить изменения активов. Проверьте детали транзакции перед подтверждением.',
+    youSend: 'Вы отправляете',
+    youReceive: 'Вы получаете',
   },
 }
 

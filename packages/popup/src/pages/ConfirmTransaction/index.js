@@ -124,6 +124,7 @@ function ConfirmTransaction() {
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
   const {
+    sessionId,
     txOptions,
     setTxOptions,
     customAllowance,
@@ -804,6 +805,14 @@ function ConfirmTransaction() {
               eip7702Display.toAddressLabelKey
                 ? t(eip7702Display.toAddressLabelKey)
                 : undefined
+            }
+            // unknown transaction
+            tx={sendTransactionParams}
+            sessionId={sessionId}
+            showEstimateAssetChanges={
+              !confirmDisabled &&
+              !sponsoredUserOperation.loading &&
+              !isSponsoredSubmission
             }
           />
           <InfoList

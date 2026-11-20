@@ -1,0 +1,15 @@
+{
+  "name": "@fluent-wallet/wallet_estimate-asset-changes",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@ethersproject/abi": "5.6.3",
+    "@ethersproject/bignumber": "5.6.2",
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
+    "@fluent-wallet/debug_trace-call": "workspace:packages/rpcs/debug_traceCall",
+    "@fluent-wallet/spec": "1.0.23"
+  }
+}

@@ -251,6 +251,8 @@ const fr = {
     action: 'Action',
     balance: 'Balance',
     createContract: 'Déployer le Contrat',
+    currentAccount: 'Mon compte',
+    interactingWith: 'Interaction avec',
 
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Éditer la restriction',
@@ -639,6 +641,15 @@ const fr = {
     contractUnverifiedTitle: 'Contrat non vérifié',
     contractUnverifiedDesc:
       'Ce contrat n’est pas vérifié sur ConfluxScan. Veuillez évaluer vous-même les risques avant de confirmer.',
+
+    // estimate changes
+    estimateChanges: 'Changements estimés',
+    estimateChangesTooltip:
+      'Les changements estimés indiquent les variations possibles de vos actifs si vous confirmez cette transaction. Il s’agit d’une prévision, sans garantie.',
+    unableEstimateChanges:
+      'Impossible d’estimer les changements de vos actifs. Vérifiez les détails de la transaction avant de confirmer.',
+    youSend: 'Vous envoyez',
+    youReceive: 'Vous recevez',
   },
 }
 

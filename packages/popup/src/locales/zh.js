@@ -593,6 +593,14 @@ const zh = {
     contractVerifiedDesc: '该合约已在 ConfluxScan 完成合约验证。',
     contractUnverifiedTitle: '未验证合约',
     contractUnverifiedDesc: '该合约未被 ConfluxScan 认证，请自行确认风险。',
+
+    // estimate changes
+    estimateChanges: '预估变化',
+    estimateChangesTooltip:
+      '预估变化表示若你确认这笔交易，资产可能会发生的变动。这仅为预测，不构成保证。',
+    unableEstimateChanges: '无法预估资产变化，请您在确认交易前核实交易数据。',
+    youSend: '你将发送',
+    youReceive: '你将收到',
   },
 }
 
