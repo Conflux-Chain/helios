@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "@xcfx/node": "0.3.2",
-    "hardhat": "2.22.10"
+    "hardhat": "2.29.2"
   }
 }
