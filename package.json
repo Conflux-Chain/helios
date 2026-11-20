@@ -46,7 +46,11 @@
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "@npmcli/run-script@npm:^1.8.2": "2.0.0",
+    "@cfxjs/fullnode@npm:3.2.0/got": "11.8.6",
+    "latest-version@npm:5.1.0/package-json": "7.0.0",
+    "http-proxy-agent@npm:4.0.1/@tootallnate/once": "2.0.1"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
