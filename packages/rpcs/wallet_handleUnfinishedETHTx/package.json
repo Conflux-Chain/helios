@@ -9,6 +9,6 @@
     "@fluent-wallet/compose": "workspace:*",
     "@fluent-wallet/ethereum-tx-error": "workspace:*",
     "@fluent-wallet/spec": "1.0.23",
-    "@thi.ng/rstream": "7.2.7"
+    "@thi.ng/rstream": "7.2.46"
   }
 }
