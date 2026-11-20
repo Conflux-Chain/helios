@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@spruceid/siwe-parser": "3.0.0",
-    "bn.js": "5.2.1",
+    "bn.js": "5.2.5",
     "is-hex-prefixed": "^1.0.0",
     "randombytes": "^2.1.0",
     "strip-hex-prefix": "^1.0.0"

@@ -3892,7 +3892,7 @@ __metadata:
   dependencies:
     "@ethersproject/units": "npm:5.6.1"
     "@fluent-wallet/spec": "npm:1.0.23"
-    bn.js: "npm:5.2.0"
+    bn.js: "npm:5.2.5"
   languageName: unknown
   linkType: soft
 
@@ -4536,7 +4536,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/utils": "workspace:packages/utils"
     big.js: "npm:^6.1.1"
-    bn.js: "npm:5.2.1"
+    bn.js: "npm:5.2.5"
   languageName: unknown
   linkType: soft
 
@@ -4579,7 +4579,7 @@ __metadata:
     "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
     "@fluent-wallet/utils": "workspace:packages/utils"
-    bn.js: "npm:5.2.1"
+    bn.js: "npm:5.2.5"
   languageName: unknown
   linkType: soft
 
@@ -4668,7 +4668,7 @@ __metadata:
     "@fluent-wallet/utils": "workspace:packages/utils"
     "@types/big.js": "npm:^6"
     big.js: "npm:6.2.0"
-    bn.js: "npm:5.2.1"
+    bn.js: "npm:5.2.5"
   languageName: unknown
   linkType: soft
 
@@ -4717,7 +4717,7 @@ __metadata:
   dependencies:
     "@ethersproject/units": "npm:5.6.1"
     "@fluent-wallet/spec": "npm:1.0.23"
-    bn.js: "npm:5.2.0"
+    bn.js: "npm:5.2.5"
   languageName: unknown
   linkType: soft
 
@@ -5243,7 +5243,7 @@ __metadata:
   resolution: "@fluent-wallet/utils@workspace:packages/utils"
   dependencies:
     "@spruceid/siwe-parser": "npm:3.0.0"
-    bn.js: "npm:5.2.1"
+    bn.js: "npm:5.2.5"
     is-hex-prefixed: "npm:^1.0.0"
     randombytes: "npm:^2.1.0"
     strip-hex-prefix: "npm:^1.0.0"
@@ -11684,11 +11684,11 @@ __metadata:
   linkType: hard
 
 "base-x@npm:^3.0.2":
-  version: 3.0.10
-  resolution: "base-x@npm:3.0.10"
+  version: 3.0.11
+  resolution: "base-x@npm:3.0.11"
   dependencies:
     safe-buffer: "npm:^5.0.1"
-  checksum: 10/52307739559e81d9980889de2359cb4f816cc0eb9a463028fa3ab239ab913d9044a1b47b4520f98e68453df32a457b8ba58b8d0ee7e757fc3fb971f3fa7a1482
+  checksum: 10/c2e3c443fd07cb9b9d3e179a9e9c581daa31881005841fe8d6a834e534505890fedf03465ccf14512da60e3f7be00fe66167806b159ba076d2c03952ae7460c4
   languageName: node
   linkType: hard
 
@@ -11859,10 +11859,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bn.js@npm:5.2.0":
-  version: 5.2.0
-  resolution: "bn.js@npm:5.2.0"
-  checksum: 10/37052dad02242b70e21f59b52642d67521d160239964a7f5653d86d856f9c4936aee229a66b69e6864e020f41e934ede9ddd0f873b23cffee42c132163558c2a
+"bn.js@npm:5.2.5":
+  version: 5.2.5
+  resolution: "bn.js@npm:5.2.5"
+  checksum: 10/10b1ac91e76fd828c1187cf65a9f1a0374e7afb9acd167e19c2d7c4108f6216841007c1e3aef145fa95cc7b3d07f705236a707184af1537667362b3a842d01ac
   languageName: node
   linkType: hard
 
@@ -18498,7 +18498,7 @@ __metadata:
     "@fluent-wallet/tx-history-checker": "workspace:*"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
-    bn.js: "npm:5.2.1"
+    bn.js: "npm:5.2.5"
     dayjs: "npm:1.10.7"
     i18next: "npm:21.5.2"
     i18next-browser-languagedetector: "npm:6.1.2"
