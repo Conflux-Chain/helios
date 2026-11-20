@@ -46,7 +46,8 @@
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "remark-parse@npm:8.0.3/trim": "0.0.3"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
@@ -131,7 +132,6 @@
     "eslint-plugin-testing-library": "^5.3.1",
     "finalhandler": "1.2.0",
     "fs-extra": "^10.1.0",
-    "highlight.js": "9.18.5",
     "html-webpack-plugin": "5.6.0",
     "husky": "^8.0.1",
     "identity-obj-proxy": "3.0.0",
@@ -151,7 +151,6 @@
     "ramda": "^0.28.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-highlight.js": "1.0.7",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
     "serve-static": "1.15.0",
