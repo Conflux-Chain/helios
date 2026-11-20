@@ -12412,6 +12412,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"call-bind@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "call-bind@npm:1.0.9"
+  dependencies:
+    call-bind-apply-helpers: "npm:^1.0.2"
+    es-define-property: "npm:^1.0.1"
+    get-intrinsic: "npm:^1.3.0"
+    set-function-length: "npm:^1.2.2"
+  checksum: 10/25b1a98d6158f0adf9fface594ca82be4e3ed481d8ff7f36ad1fccb0c8377e38c6a04ff3248693723222d378677e93077c739defc8a6741c82b7e00bcee1245d
+  languageName: node
+  linkType: hard
+
+"call-bound@npm:^1.0.3, call-bound@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "call-bound@npm:1.0.4"
+  dependencies:
+    call-bind-apply-helpers: "npm:^1.0.2"
+    get-intrinsic: "npm:^1.3.0"
+  checksum: 10/ef2b96e126ec0e58a7ff694db43f4d0d44f80e641370c21549ed911fecbdbc2df3ebc9bddad918d6bbdefeafb60bb3337902006d5176d72bcd2da74820991af7
+  languageName: node
+  linkType: hard
+
 "callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
@@ -12807,12 +12829,13 @@ __metadata:
   linkType: hard
 
 "cipher-base@npm:^1.0.0, cipher-base@npm:^1.0.1, cipher-base@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "cipher-base@npm:1.0.4"
+  version: 1.0.7
+  resolution: "cipher-base@npm:1.0.7"
   dependencies:
-    inherits: "npm:^2.0.1"
-    safe-buffer: "npm:^5.0.1"
-  checksum: 10/3d5d6652ca499c3f7c5d7fdc2932a357ec1e5aa84f2ad766d850efd42e89753c97b795c3a104a8e7ae35b4e293f5363926913de3bf8181af37067d9d541ca0db
+    inherits: "npm:^2.0.4"
+    safe-buffer: "npm:^5.2.1"
+    to-buffer: "npm:^1.2.2"
+  checksum: 10/9501d2241b7968aaae74fc3db1d6a69a804e0b14117a8fd5d811edf351fcd39a1807bfd98e090a799cfe98b183fbf2e01ebb57f1239080850db07b68dcd9ba02
   languageName: node
   linkType: hard
 
@@ -17480,6 +17503,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"for-each@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "for-each@npm:0.3.5"
+  dependencies:
+    is-callable: "npm:^1.2.7"
+  checksum: 10/330cc2439f85c94f4609de3ee1d32c5693ae15cdd7fe3d112c4fd9efd4ce7143f2c64ef6c2c9e0cfdb0058437f33ef05b5bdae5b98fcc903fb2143fbaf0fea0f
+  languageName: node
+  linkType: hard
+
 "foreground-child@npm:^3.1.0":
   version: 3.3.0
   resolution: "foreground-child@npm:3.3.0"
@@ -17875,7 +17907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-intrinsic@npm:^1.2.6":
+"get-intrinsic@npm:^1.2.6, get-intrinsic@npm:^1.3.0":
   version: 1.3.1
   resolution: "get-intrinsic@npm:1.3.1"
   dependencies:
@@ -18496,6 +18528,18 @@ __metadata:
     readable-stream: "npm:^3.6.0"
     safe-buffer: "npm:^5.2.0"
   checksum: 10/26b7e97ac3de13cb23fc3145e7e3450b0530274a9562144fc2bf5c1e2983afd0e09ed7cc3b20974ba66039fad316db463da80eb452e7373e780cbee9a0d2f2dc
+  languageName: node
+  linkType: hard
+
+"hash-base@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "hash-base@npm:3.1.2"
+  dependencies:
+    inherits: "npm:^2.0.4"
+    readable-stream: "npm:^2.3.8"
+    safe-buffer: "npm:^5.2.1"
+    to-buffer: "npm:^1.2.1"
+  checksum: 10/f2100420521ec77736ebd9279f2c0b3ab2820136a2fa408ea36f3201d3f6984cda166806e6a0287f92adf179430bedfbdd74348ac351e24a3eff9f01a8c406b0
   languageName: node
   linkType: hard
 
@@ -20303,6 +20347,15 @@ __metadata:
   dependencies:
     which-typed-array: "npm:^1.1.14"
   checksum: 10/f850ba08286358b9a11aee6d93d371a45e3c59b5953549ee1c1a9a55ba5c1dd1bd9952488ae194ad8f32a9cf5e79c8fa5f0cc4d78c00720aa0bbcf238b38062d
+  languageName: node
+  linkType: hard
+
+"is-typed-array@npm:^1.1.14":
+  version: 1.1.15
+  resolution: "is-typed-array@npm:1.1.15"
+  dependencies:
+    which-typed-array: "npm:^1.1.16"
+  checksum: 10/e8cf60b9ea85667097a6ad68c209c9722cfe8c8edf04d6218366469e51944c5cc25bae45ffb845c23f811d262e4314d3b0168748eb16711aa34d12724cdf0735
   languageName: node
   linkType: hard
 
@@ -24885,15 +24938,16 @@ __metadata:
   linkType: hard
 
 "pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9, pbkdf2@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "pbkdf2@npm:3.1.2"
+  version: 3.1.7
+  resolution: "pbkdf2@npm:3.1.7"
   dependencies:
-    create-hash: "npm:^1.1.2"
-    create-hmac: "npm:^1.1.4"
-    ripemd160: "npm:^2.0.1"
-    safe-buffer: "npm:^5.0.1"
-    sha.js: "npm:^2.4.8"
-  checksum: 10/40bdf30df1c9bb1ae41ec50c11e480cf0d36484b7c7933bf55e4451d1d0e3f09589df70935c56e7fccc5702779a0d7b842d012be8c08a187b44eb24d55bb9460
+    create-hash: "npm:^1.2.0"
+    create-hmac: "npm:^1.1.7"
+    ripemd160: "npm:^2.0.3"
+    safe-buffer: "npm:^5.2.1"
+    sha.js: "npm:^2.4.12"
+    to-buffer: "npm:^1.2.2"
+  checksum: 10/3b8cf9d991d823d426f71aecbb75f9ec261887683448f1f41e16cd3745512b3d96c3f455f6417ca5c562a9ef557a82f7888e703e8f03695de989603ae5d1f555
   languageName: node
   linkType: hard
 
@@ -27494,6 +27548,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ripemd160@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "ripemd160@npm:2.0.3"
+  dependencies:
+    hash-base: "npm:^3.1.2"
+    inherits: "npm:^2.0.4"
+  checksum: 10/d15d42ea0460426675e5320f86d3468ab408af95b1761cf35f8d32c0c97b4d3bb72b7226e990e643b96e1637a8ad26b343a6c7666e1a297bcab4f305a1d9d3e3
+  languageName: node
+  linkType: hard
+
 "rlp@npm:^2.0.0, rlp@npm:^2.2.3, rlp@npm:^2.2.4, rlp@npm:^2.2.7":
   version: 2.2.7
   resolution: "rlp@npm:2.2.7"
@@ -28068,7 +28132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"set-function-length@npm:^1.2.1":
+"set-function-length@npm:^1.2.1, set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
   dependencies:
@@ -28122,15 +28186,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:2.4.11, sha.js@npm:^2.4.0, sha.js@npm:^2.4.8":
-  version: 2.4.11
-  resolution: "sha.js@npm:2.4.11"
+"sha.js@npm:2.4.12, sha.js@npm:^2.4.0, sha.js@npm:^2.4.12, sha.js@npm:^2.4.8":
+  version: 2.4.12
+  resolution: "sha.js@npm:2.4.12"
   dependencies:
-    inherits: "npm:^2.0.1"
-    safe-buffer: "npm:^5.0.1"
+    inherits: "npm:^2.0.4"
+    safe-buffer: "npm:^5.2.1"
+    to-buffer: "npm:^1.2.0"
   bin:
-    sha.js: ./bin.js
-  checksum: 10/d833bfa3e0a67579a6ce6e1bc95571f05246e0a441dd8c76e3057972f2a3e098465687a4369b07e83a0375a88703577f71b5b2e966809e67ebc340dbedb478c7
+    sha.js: bin.js
+  checksum: 10/39c0993592c2ab34eb2daae2199a2a1d502713765aecb611fd97c0c4ab7cd53e902d628e1962aaf384bafd28f55951fef46dcc78799069ce41d74b03aa13b5a7
   languageName: node
   linkType: hard
 
@@ -29833,6 +29898,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"to-buffer@npm:^1.2.0, to-buffer@npm:^1.2.1, to-buffer@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "to-buffer@npm:1.2.2"
+  dependencies:
+    isarray: "npm:^2.0.5"
+    safe-buffer: "npm:^5.2.1"
+    typed-array-buffer: "npm:^1.0.3"
+  checksum: 10/69d806c20524ff1e4c44d49276bc96ff282dcae484780a3974e275dabeb75651ea430b074a2a4023701e63b3e1d87811cd82c0972f35280fe5461710e4872aba
+  languageName: node
+  linkType: hard
+
 "to-fast-properties@npm:^2.0.0":
   version: 2.0.0
   resolution: "to-fast-properties@npm:2.0.0"
@@ -30202,6 +30278,17 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-typed-array: "npm:^1.1.13"
   checksum: 10/02ffc185d29c6df07968272b15d5319a1610817916ec8d4cd670ded5d1efe72901541ff2202fcc622730d8a549c76e198a2f74e312eabbfb712ed907d45cbb0b
+  languageName: node
+  linkType: hard
+
+"typed-array-buffer@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "typed-array-buffer@npm:1.0.3"
+  dependencies:
+    call-bound: "npm:^1.0.3"
+    es-errors: "npm:^1.3.0"
+    is-typed-array: "npm:^1.1.14"
+  checksum: 10/3fb91f0735fb413b2bbaaca9fabe7b8fc14a3fa5a5a7546bab8a57e755be0e3788d893195ad9c2b842620592de0e68d4c077d4c2c41f04ec25b8b5bb82fa9a80
   languageName: node
   linkType: hard
 
@@ -31974,6 +32061,21 @@ __metadata:
     gopd: "npm:^1.0.1"
     has-tostringtag: "npm:^1.0.2"
   checksum: 10/c3b6a99beadc971baa53c3ee5b749f2b9bdfa3b3b9a70650dd8511a48b61d877288b498d424712e9991d16019633086bd8b5923369460d93463c5825fa36c448
+  languageName: node
+  linkType: hard
+
+"which-typed-array@npm:^1.1.16":
+  version: 1.1.24
+  resolution: "which-typed-array@npm:1.1.24"
+  dependencies:
+    available-typed-arrays: "npm:^1.0.7"
+    call-bind: "npm:^1.0.9"
+    call-bound: "npm:^1.0.4"
+    for-each: "npm:^0.3.5"
+    get-proto: "npm:^1.0.1"
+    gopd: "npm:^1.2.0"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/5b9abdc4ff046414312eac5c5b2fedab57b08979209882049fd2f4064166f8f97edd6831ff701cb6171313da19dbbd091ed46f30712e733e9b166f5f5388159e
   languageName: node
   linkType: hard
 
