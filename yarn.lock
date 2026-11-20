@@ -3563,31 +3563,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/signing-key@npm:5.6.2":
-  version: 5.6.2
-  resolution: "@ethersproject/signing-key@npm:5.6.2"
+"@ethersproject/signing-key@npm:5.8.0":
+  version: 5.8.0
+  resolution: "@ethersproject/signing-key@npm:5.8.0"
   dependencies:
-    "@ethersproject/bytes": "npm:^5.6.1"
-    "@ethersproject/logger": "npm:^5.6.0"
-    "@ethersproject/properties": "npm:^5.6.0"
+    "@ethersproject/bytes": "npm:^5.8.0"
+    "@ethersproject/logger": "npm:^5.8.0"
+    "@ethersproject/properties": "npm:^5.8.0"
     bn.js: "npm:^5.2.1"
-    elliptic: "npm:6.5.4"
+    elliptic: "npm:6.6.1"
     hash.js: "npm:1.1.7"
-  checksum: 10/69d92fd883acc8b8cf2d83d7c9f6cf218b507b35da7383457d271e49207d81fba3d2be022de2375eaac632791fc1265f7335ef5975b68772c353e4ae4233d821
-  languageName: node
-  linkType: hard
-
-"@ethersproject/signing-key@npm:^5.6.2, @ethersproject/signing-key@npm:^5.7.0":
-  version: 5.7.0
-  resolution: "@ethersproject/signing-key@npm:5.7.0"
-  dependencies:
-    "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/logger": "npm:^5.7.0"
-    "@ethersproject/properties": "npm:^5.7.0"
-    bn.js: "npm:^5.2.1"
-    elliptic: "npm:6.5.4"
-    hash.js: "npm:1.1.7"
-  checksum: 10/ff2f79ded86232b139e7538e4aaa294c6022a7aaa8c95a6379dd7b7c10a6d363685c6967c816f98f609581cf01f0a5943c667af89a154a00bcfe093a8c7f3ce7
+  checksum: 10/07e5893bf9841e1d608c52b58aa240ed10c7aa01613ff45b15c312c1403887baa8ed543871721052d7b7dd75d80b1fa90945377b231d18ccb6986c6677c8315d
   languageName: node
   linkType: hard
 
@@ -3761,7 +3747,6 @@ __metadata:
     "@ethersproject/wallet": "npm:5.6.2"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/utils": "workspace:packages/utils"
-    elliptic: "npm:6.5.4"
   languageName: unknown
   linkType: soft
 
@@ -5106,7 +5091,7 @@ __metadata:
     "@ethersproject/bytes": "npm:5.6.1"
     "@ethersproject/hash": "npm:5.6.1"
     "@ethersproject/keccak256": "npm:5.6.1"
-    "@ethersproject/signing-key": "npm:5.6.2"
+    "@ethersproject/signing-key": "npm:5.8.0"
     "@ethersproject/transactions": "npm:5.6.2"
     "@ethersproject/wallet": "npm:5.6.2"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
@@ -15066,9 +15051,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.5.4":
-  version: 6.5.4
-  resolution: "elliptic@npm:6.5.4"
+"elliptic@npm:6.6.1, elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.5, elliptic@npm:^6.5.7":
+  version: 6.6.1
+  resolution: "elliptic@npm:6.6.1"
   dependencies:
     bn.js: "npm:^4.11.9"
     brorand: "npm:^1.1.0"
@@ -15077,22 +15062,7 @@ __metadata:
     inherits: "npm:^2.0.4"
     minimalistic-assert: "npm:^1.0.1"
     minimalistic-crypto-utils: "npm:^1.0.1"
-  checksum: 10/2cd7ff4b69720dbb2ca1ca650b2cf889d1df60c96d4a99d331931e4fe21e45a7f3b8074e86618ca7e56366c4b6258007f234f9d61d9b0c87bbbc8ea990b99e94
-  languageName: node
-  linkType: hard
-
-"elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.4, elliptic@npm:^6.5.5":
-  version: 6.5.7
-  resolution: "elliptic@npm:6.5.7"
-  dependencies:
-    bn.js: "npm:^4.11.9"
-    brorand: "npm:^1.1.0"
-    hash.js: "npm:^1.0.0"
-    hmac-drbg: "npm:^1.0.1"
-    inherits: "npm:^2.0.4"
-    minimalistic-assert: "npm:^1.0.1"
-    minimalistic-crypto-utils: "npm:^1.0.1"
-  checksum: 10/fbad1fad0a5cc07df83f80cc1f7a784247ef59075194d3e340eaeb2f4dd594825ee24c7e9b0cf279c9f1982efe610503bb3139737926428c4821d4fca1bcf348
+  checksum: 10/dc678c9febd89a219c4008ba3a9abb82237be853d9fd171cd602c8fb5ec39927e65c6b5e7a1b2a4ea82ee8e0ded72275e7932bb2da04a5790c2638b818e4e1c5
   languageName: node
   linkType: hard
 
@@ -23656,6 +23626,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "node-addon-api@npm:5.1.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10/595f59ffb4630564f587c502119cbd980d302e482781021f3b479f5fc7e41cf8f2f7280fdc2795f32d148e4f3259bd15043c52d4a3442796aa6f1ae97b959636
+  languageName: node
+  linkType: hard
+
 "node-domexception@npm:^1.0.0":
   version: 1.0.0
   resolution: "node-domexception@npm:1.0.0"
@@ -27865,31 +27844,31 @@ __metadata:
   linkType: hard
 
 "secp256k1@npm:^3.0.1, secp256k1@npm:^3.7.1":
-  version: 3.8.0
-  resolution: "secp256k1@npm:3.8.0"
+  version: 3.8.1
+  resolution: "secp256k1@npm:3.8.1"
   dependencies:
     bindings: "npm:^1.5.0"
     bip66: "npm:^1.1.5"
     bn.js: "npm:^4.11.8"
     create-hash: "npm:^1.2.0"
     drbg.js: "npm:^1.0.1"
-    elliptic: "npm:^6.5.2"
+    elliptic: "npm:^6.5.7"
     nan: "npm:^2.14.0"
     node-gyp: "npm:latest"
     safe-buffer: "npm:^5.1.2"
-  checksum: 10/45e65c68affb228fa253297188ba64c60c39a0f0defc80578ca50e0dda188efb109e9711f9d434672d3e1507860434a9c4bf16bf41a91d67ae50d32f8f6e2059
+  checksum: 10/dfe9621aea56268878ed384cbf8aac55ad7d3a887816d6e130d202ad679a25546f0079b22ab462f605c30668733e6b7676e4e77c63542d6fc45a7a5ad9ebb3f4
   languageName: node
   linkType: hard
 
 "secp256k1@npm:^4.0.1":
-  version: 4.0.3
-  resolution: "secp256k1@npm:4.0.3"
+  version: 4.0.5
+  resolution: "secp256k1@npm:4.0.5"
   dependencies:
-    elliptic: "npm:^6.5.4"
-    node-addon-api: "npm:^2.0.0"
+    elliptic: "npm:^6.5.7"
+    node-addon-api: "npm:^5.0.0"
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.2.0"
-  checksum: 10/8b45820cd90fd2f95cc8fdb9bf8a71e572de09f2311911ae461a951ffa9e30c99186a129d0f1afeb380dd67eca0c10493f8a7513c39063fda015e99995088e3b
+  checksum: 10/16b6131d521ca345959469cf6720f55b2ffec83d6989a2ae80975d6dfa3815b29a8ff80b30ce8089532999544f64bc070c2933f701721800a88b9e0e6d4814a1
   languageName: node
   linkType: hard
 
