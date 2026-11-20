@@ -91,16 +91,13 @@ function serve() {
     index: false,
   })
 
+  const host = '127.0.0.1'
   return esb
-    .serve(
-      {
-        servedir: 'packages/browser-extension/', // port: 18003
-        port: 8174,
-      },
-      config,
+    .context(config)
+    .then(ctx =>
+      ctx.serve({servedir: 'packages/browser-extension/', host, port: 8174}),
     )
-    .then(result => {
-      const {host, port} = result
+    .then(({port}) => {
       http
         .createServer((req, res) => {
           const options = {
@@ -127,7 +124,7 @@ function serve() {
           // Forward the body of the request to esbuild
           req.pipe(proxyReq, {end: true})
         })
-        .listen(18003)
+        .listen(18003, host)
     })
 }
 
