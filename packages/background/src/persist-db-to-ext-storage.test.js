@@ -1,27 +1,27 @@
-import {expect, describe, it, beforeEach} from 'vitest'
+import {expect, describe, it, beforeEach, vi} from 'vitest'
 import {persist} from './persist-db-to-ext-storage.js'
 import browser from 'webextension-polyfill'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 
 beforeEach(() => {
-  browser.geckoProfiler.start.mockClear()
-  browser.geckoProfiler.stop.mockClear()
+  browser.storage.local.set.mockClear()
 })
 
 describe('persist-db-to-ext-storage', () => {
   describe('persist', () => {
-    it('should call the webextension storage.local.set api on new input data', async () => {
-      await persist('foo')
-      expect(browser.storage.local.set).not.toBeCalled()
+    it('writes only the latest channel value to storage after debouncing', async () => {
+      await persist('first')
+      await persist('latest')
+      expect(browser.storage.local.set).not.toHaveBeenCalled()
 
-      // 500ms debounce
-      setTimeout(
+      await vi.waitFor(
         () =>
-          expect(browser.storage.local.set).toBeCalledWith({
-            [EXT_STORAGE]: 'foo',
+          expect(browser.storage.local.set).toHaveBeenCalledWith({
+            [EXT_STORAGE]: 'latest',
           }),
-        500,
+        {timeout: 2000},
       )
+      expect(browser.storage.local.set).toHaveBeenCalledTimes(1)
     })
   })
 })
