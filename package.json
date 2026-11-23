@@ -49,7 +49,8 @@
     "@ethersproject/abi": "^5.7.0",
     "request@npm:2.88.2/qs": "6.17.1",
     "@sentry/node@npm:5.30.0/cookie": "0.7.2",
-    "@babel/core@npm:7.12.9": "7.29.13"
+    "@babel/core@npm:7.12.9": "7.29.13",
+    "mocha@npm:11.8.0/diff": "8.0.4"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
