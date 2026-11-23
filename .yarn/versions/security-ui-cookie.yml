@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/component-modal": patch
+  "@fluent-wallet/doc-rpc-parameter": patch
+  "@fluent-wallet/doc-try-rpc": patch
+  "@fluent-wallet/use-rpc": patch
+  "helios-popup": patch
+
+declined:
+  - "browser-extension"
+  - "doc"
+  - "helios"
