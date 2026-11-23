@@ -47,11 +47,14 @@
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
     "@ethersproject/abi": "^5.7.0",
+    "request@npm:2.88.2/qs": "6.17.1",
+    "@sentry/node@npm:5.30.0/cookie": "0.7.2",
     "minimatch@npm:3.1.2": "3.1.5",
     "glob@npm:^10.4.5": "14.0.6",
     "glob@npm:^10.4.1": "14.0.6",
     "glob@npm:^10.3.10": "14.0.6",
     "test-exclude@npm:7.0.1/minimatch": "11.0.9",
+    "mocha@npm:11.8.0/minimatch": "11.0.9",
     "glob@npm:^10.2.2": "14.0.6"
   },
   "scripts": {
@@ -160,7 +163,7 @@
     "react-highlight.js": "1.0.7",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
-    "serve-static": "1.15.0",
+    "serve-static": "1.16.3",
     "shadow-cljs": "^2.19.4",
     "stream-browserify": "3.0.0",
     "style-loader": "4.0.0",
