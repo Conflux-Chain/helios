@@ -1,11 +1,10 @@
 const path = require('path')
-const webpack = require(path.resolve(__dirname, '../../node_modules/webpack'))
 const jsbi = path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi-cjs.js')
 
 module.exports = function (/* context, options */) {
   return {
     name: '@fluent-wallet/docusaurus-plugin',
-    configureWebpack() {
+    configureWebpack(_config, _isServer, {currentBundler}) {
       return {
         module: {rules: [{test: /\.m?js$/, resolve: {fullySpecified: false}}]},
         resolve: {
@@ -13,7 +12,7 @@ module.exports = function (/* context, options */) {
           alias: {jsbi},
         },
         plugins: [
-          new webpack.ProvidePlugin({
+          new currentBundler.instance.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
           }),
         ],
