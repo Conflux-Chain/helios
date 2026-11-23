@@ -17715,7 +17715,6 @@ __metadata:
     eslint-plugin-testing-library: "npm:^5.3.1"
     finalhandler: "npm:1.2.0"
     fs-extra: "npm:^10.1.0"
-    highlight.js: "npm:9.18.5"
     html-webpack-plugin: "npm:5.6.0"
     husky: "npm:^8.0.1"
     identity-obj-proxy: "npm:3.0.0"
@@ -17736,7 +17735,6 @@ __metadata:
     ramda: "npm:^0.28.0"
     react: "npm:^16.13.0"
     react-dom: "npm:^16.13.0"
-    react-highlight.js: "npm:1.0.7"
     regenerator-runtime: "npm:^0.13.9"
     rimraf: "npm:^3.0.2"
     serve-static: "npm:1.16.3"
@@ -17759,13 +17757,6 @@ __metadata:
     zip-a-folder: "npm:1.1.3"
   languageName: unknown
   linkType: soft
-
-"highlight.js@npm:9.18.5, highlight.js@npm:^9.3.0":
-  version: 9.18.5
-  resolution: "highlight.js@npm:9.18.5"
-  checksum: 10/56ddbd562ece7da84847770d96e8e52bd0e6151f69efb95e249d8e1fde2b5ed78cdaa2c0d33e4c838caa434cb0fe1aeeca4edca9c2c3343daf23dcf2ffbd3dc9
-  languageName: node
-  linkType: hard
 
 "history@npm:^4.9.0":
   version: 4.10.1
@@ -23404,9 +23395,9 @@ __metadata:
   linkType: hard
 
 "prismjs@npm:^1.23.0":
-  version: 1.29.0
-  resolution: "prismjs@npm:1.29.0"
-  checksum: 10/2080db382c2dde0cfc7693769e89b501ef1bfc8ff4f8d25c07fd4c37ca31bc443f6133d5b7c145a73309dc396e829ddb7cc18560026d862a887ae08864ef6b07
+  version: 1.30.0
+  resolution: "prismjs@npm:1.30.0"
+  checksum: 10/6b48a2439a82e5c6882f48ebc1564c3890e16463ba17ac10c3ad4f62d98dea5b5c915b172b63b83023a70ad4f5d7be3e8a60304420db34a161fae69dd4e3e2da
   languageName: node
   linkType: hard
 
@@ -24027,19 +24018,6 @@ __metadata:
   peerDependencies:
     react: ">=16.3.0"
   checksum: 10/eff25231384bb0a229870a0552839953a59af17f0ff5e8bca1b8c8fdf19a329e4c00c7fa2fcedc8be5d73f5c7bebb30cf9a32ea58efc7c8f726a10dba51f48a2
-  languageName: node
-  linkType: hard
-
-"react-highlight.js@npm:1.0.7":
-  version: 1.0.7
-  resolution: "react-highlight.js@npm:1.0.7"
-  dependencies:
-    highlight.js: "npm:^9.3.0"
-    prop-types: "npm:^15.6.0"
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 10/dde9a2e6ec956919c172d8662c340fa93edadc595fbea5cd6c5fa392a432541ecab5b263e20640d344613344314cfbafd10caf64f1730162eff7ec37cd11a537
   languageName: node
   linkType: hard
 
@@ -27118,10 +27096,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trim@npm:0.0.1":
-  version: 0.0.1
-  resolution: "trim@npm:0.0.1"
-  checksum: 10/2b4646dff99a222e8e1526edd4e3a43bbd925af0b8e837c340455d250157e7deefaa4da49bb891ab841e5c27b1afc5e9e32d4b57afb875d2dfcabf4e319b8f7f
+"trim@npm:0.0.3":
+  version: 0.0.3
+  resolution: "trim@npm:0.0.3"
+  checksum: 10/9a059ba56d5e22c9e571798a7c63640cb25478c495d8a9d001f6352927207c6bd224018751a0c5145fbedc943ee2ebab1d7cc2e8ccba3121a51a7d3428dd879c
   languageName: node
   linkType: hard
 
