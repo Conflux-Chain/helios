@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/sentry": patch
+
+declined:
+  - "helios"
