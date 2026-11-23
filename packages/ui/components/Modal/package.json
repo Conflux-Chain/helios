@@ -1,12 +1,12 @@
 {
   "private": true,
-  "version": "0.0.9",
+  "version": "0.0.10",
   "name": "@fluent-wallet/component-modal",
   "type": "module",
   "main": "index.js",
   "dependencies": {
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons",
-    "react-use": "17.3.2"
+    "react-use": "17.6.1"
   },
   "peerDependencies": {
     "react": "^17",

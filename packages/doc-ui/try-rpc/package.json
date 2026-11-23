@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "peerDependencies": {
     "react": "^17",
     "react-dom": "^17"
@@ -13,7 +13,7 @@
     "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.8.1",
     "react-json-editor-ajrm": "2.5.13",
-    "react-use": "17.3.2",
+    "react-use": "17.6.1",
     "zustand": "^3.7.2"
   }
 }
