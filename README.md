@@ -10,7 +10,7 @@ Fluent supports Chrome, Firefox and Edge. You can install in:
 
 # Setup Environment
 
-1. Install Node.js You can install Node.js from [here](https://nodejs.org/en/download). We use the current LTS version.
+1. Install [Node.js 22](https://nodejs.org/en/download) for development and tests (`nvm use`), matching CI.
 
 2. Install clojure
 
