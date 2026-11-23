@@ -23,7 +23,9 @@
     "bn.js": "5.2.5",
     "tslib": "^2.3.1",
     "ethereumjs-vm": "4.2.0",
+    "doc/react": "18.3.1",
     "react": "17.0.2",
+    "doc/react-dom": "18.3.1",
     "react-dom": "17.0.2",
     "babel-plugin-dynamic-import-node": "2.3.3",
     "esinstall/rollup-plugin-polyfill-node": "0.8.0",
@@ -43,6 +45,7 @@
     "@ethersproject/signing-key": "5.8.0",
     "@ethersproject/providers@npm:5.8.0/ws": "8.21.0",
     "js-conflux-sdk": "^2.1.9",
+    "webpack@npm:^5.95.0": "5.113.0",
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
@@ -50,7 +53,7 @@
     "request@npm:2.88.2/qs": "6.17.1",
     "@sentry/node@npm:5.30.0/cookie": "0.7.2",
     "@babel/core@npm:7.12.9": "7.29.13",
-    "@docusaurus/core@npm:2.4.3/webpack-dev-server": "5.2.7"
+    "@docusaurus/core@npm:3.10.2/tinypool": "2.2.0"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",

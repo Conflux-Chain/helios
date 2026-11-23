@@ -1,5 +1,10 @@
 releases:
   "doc": patch
+  "@fluent-wallet/doc-rpc-parameter": patch
+  "@fluent-wallet/doc-try-rpc": patch
+  "@fluent-wallet/doc-use-rpc": patch
+  "@fluent-wallet/doc-use-spec": patch
+  "@fluent-wallet/docusaurus-plugin": patch
 
 declined:
   - "helios"
