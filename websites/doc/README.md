@@ -1,6 +1,6 @@
 # Website
 
-This website uses [Docusaurus 3](https://docusaurus.io/), MDX 3, and React 18. Yarn installs the site's dependencies inside the `doc` workspace; the wallet and browser extension still use React 17. Keep the `doc/react` and `doc/react-dom` resolutions ahead of the wallet-wide defaults.
+This website uses [Docusaurus 3](https://docusaurus.io/), MDX 3, and React 18. Yarn installs the site's dependencies inside the `doc` workspace; the wallet and browser extension still use React 17. Keep the wallet's root React dependencies pinned to 17 rather than forcing a single React version across the whole repository.
 
 ## Installation
 
