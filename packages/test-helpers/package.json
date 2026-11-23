@@ -1,7 +1,7 @@
 {
   "name": "@fluent-wallet/test-helpers",
   "main": "index.js",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "dependencies": {
     "delay": "4.4.1",
     "ethers": "5.8.0",
