@@ -48,7 +48,8 @@
     "eth-lib": "0.2.8",
     "@ethersproject/abi": "^5.7.0",
     "request@npm:2.88.2/qs": "6.17.1",
-    "@sentry/node@npm:5.30.0/cookie": "0.7.2"
+    "@sentry/node@npm:5.30.0/cookie": "0.7.2",
+    "@babel/core@npm:7.12.9": "7.29.13"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
@@ -77,7 +78,7 @@
     "removeEmptyFile": "find ./dist -name \"manifest.js\" -type f -delete"
   },
   "devDependencies": {
-    "@babel/core": "7.17.9",
+    "@babel/core": "7.29.13",
     "@babel/eslint-parser": "7.17.0",
     "@babel/plugin-syntax-import-meta": "7.10.4",
     "@babel/preset-env": "7.16.11",
