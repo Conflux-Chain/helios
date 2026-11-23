@@ -45,6 +45,7 @@
     "@sentry/node@npm:5.30.0/cookie": "0.7.2",
     "@babel/core@npm:7.12.9": "7.29.13",
     "latest-version@npm:5.1.0/package-json": "7.0.0",
+    "remark-parse@npm:8.0.3/trim": "0.0.3",
     "uuid@npm:^8.3.2": "11.1.1",
     "@npmcli/run-script@npm:^1.8.2": "2.0.0"
   },
@@ -125,7 +126,6 @@
     "eslint-plugin-testing-library": "^5.3.1",
     "finalhandler": "1.2.0",
     "fs-extra": "^10.1.0",
-    "highlight.js": "9.18.5",
     "html-webpack-plugin": "5.6.0",
     "husky": "^8.0.1",
     "identity-obj-proxy": "3.0.0",
@@ -145,7 +145,6 @@
     "ramda": "^0.28.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-highlight.js": "1.0.7",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
     "serve-static": "1.16.3",
