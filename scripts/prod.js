@@ -1,6 +1,5 @@
 /**
- * @fileOverview snowpack prod
- * @name snowpackjs.js
+ * @fileOverview Build the legacy esbuild production bundle
  */
 const setupDotenv = require('./setup-dotenv.js')
 setupDotenv()
@@ -9,11 +8,26 @@ const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
 const buildBg = require('./build/bg.js')
 const buildPopup = require('./build/popup.js')
-require(resolve(__dirname, '../packages/background/snowpack.config.cjs'))
-require(resolve(__dirname, '../packages/popup/snowpack.config.cjs'))
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
+
+// Keep the HTML entries used by prod:zip without loading the retired dev server.
+const {mustacheRender} = require('./snowpack.utils.js')
+for (const page of ['popup', 'notification', 'page']) {
+  mustacheRender(
+    resolve(__dirname, `../packages/popup/public/${page}.html.mustache`),
+    resolve(
+      __dirname,
+      `../packages/browser-extension/build/popup/${page}.html`,
+    ),
+    {
+      scripts:
+        '<link rel="stylesheet" href="dist/index.css" type="text/css" media="screen" />\n<script src="dist/index.js" type="module" charset="utf-8"></script>',
+      body: '',
+    },
+  )
+}
 
 async function cleanup(exitCode) {
   process.exit(exitCode)
