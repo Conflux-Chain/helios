@@ -1,5 +1,4 @@
-const lightCodeTheme = require('prism-react-renderer/themes/github')
-const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const {themes} = require('prism-react-renderer')
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/fluent-wallet-doc/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {hooks: {onBrokenMarkdownLinks: 'warn'}},
   favicon: 'img/favicon.ico',
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
@@ -95,8 +94,8 @@ module.exports = {
       copyright: `© ${new Date().getFullYear()} Conflux. All Rights Reserved.`,
     },
     prism: {
-      theme: lightCodeTheme,
-      darkTheme: darkCodeTheme,
+      theme: themes.github,
+      darkTheme: themes.dracula,
     },
   },
   presets: [
