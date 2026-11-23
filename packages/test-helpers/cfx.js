@@ -1,4 +1,3 @@
-const CFXNODE = require('@cfxjs/fullnode')
 const {Conflux, format} = require('js-conflux-sdk')
 
 const CHAINID = '0xbb7'
@@ -63,7 +62,6 @@ module.exports = {
   cfxCall,
   sendTx,
   sendCFX,
-  CFXNODE,
   GENESIS_PRI_KEY,
   GENESIS_ADDRESS,
 }
