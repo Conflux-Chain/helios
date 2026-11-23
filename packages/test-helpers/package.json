@@ -3,7 +3,7 @@
   "main": "index.js",
   "version": "0.0.16",
   "dependencies": {
-    "@cfxjs/fullnode": "3.2.0",
+    "delay": "4.4.1",
     "ethers": "5.8.0",
     "js-conflux-sdk": "2.1.2"
   },
