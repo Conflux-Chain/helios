@@ -5377,6 +5377,7 @@ __metadata:
   resolution: "@fluent-wallet/test-helpers@workspace:packages/test-helpers"
   dependencies:
     "@xcfx/node": "npm:0.3.2"
+    delay: "npm:4.4.1"
     ethers: "npm:5.8.0"
     hardhat: "npm:2.29.2"
     js-conflux-sdk: "npm:2.1.2"
@@ -13735,6 +13736,13 @@ __metadata:
     rimraf: "npm:^3.0.2"
     slash: "npm:^3.0.0"
   checksum: 10/563288b73b8b19a7261c47fd21a330eeab6e2acd7c6208c49790dfd369127120dd7836cdf0c1eca216b77c94782a81507eac6b4734252d3bef2795cb366996b6
+  languageName: node
+  linkType: hard
+
+"delay@npm:4.4.1":
+  version: 4.4.1
+  resolution: "delay@npm:4.4.1"
+  checksum: 10/97b001126a3979a398b6c5f33e437d78acda3b19731d9e6f991a05e2e09e7a410d655b8fdcaedc05743928bb533c0ac9401826cccb2af71c81d2cab50e199351
   languageName: node
   linkType: hard
 
