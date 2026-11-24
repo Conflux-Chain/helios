@@ -1,8 +1,7 @@
 const setupDotenv = require('../setup-dotenv.js')
 setupDotenv(true)
 const NodeModulesPolyfills = require('@cztocm/node-modules-polyfill')
-const browserslist = require('browserslist')
-const {esbuildPluginBrowserslist} = require('esbuild-plugin-browserslist')
+const browserslistToEsbuild = require('browserslist-to-esbuild')
 const browserLists = require('../../package.json').browserslist
 const alias = require('esbuild-plugin-alias')
 const {pnpPlugin} = require('@yarnpkg/esbuild-plugin-pnp')
@@ -45,14 +44,8 @@ const config = {
   sourcemap: true,
   format: 'esm',
   outdir: 'packages/browser-extension/build/background/dist',
+  target: isProd() ? browserslistToEsbuild(browserLists) : undefined,
   plugins: [
-    ...(isProd()
-      ? [
-          esbuildPluginBrowserslist(browserslist(browserLists), {
-            printUnknownTargets: false,
-          }),
-        ]
-      : []),
     pnpPlugin(),
     alias({
       jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi-cjs.js'),

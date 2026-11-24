@@ -1,7 +1,6 @@
 require('../setup-dotenv.js')
 const NodeModulesPolyfills = require('@cztocm/node-modules-polyfill')
-const browserslist = require('browserslist')
-const {esbuildPluginBrowserslist} = require('esbuild-plugin-browserslist')
+const browserslistToEsbuild = require('browserslist-to-esbuild')
 const browserLists = require('../../package.json').browserslist
 const {pnpPlugin} = require('@yarnpkg/esbuild-plugin-pnp')
 const esb = require('esbuild')
@@ -42,10 +41,8 @@ const config = {
   minify: isProd(),
   sourcemap: true,
   // sourcemap: isProd() ? 'inline' : true,
+  target: browserslistToEsbuild(browserLists),
   plugins: [
-    esbuildPluginBrowserslist(browserslist(browserLists), {
-      printUnknownTargets: false,
-    }),
     pnpPlugin(),
     NodeModulesPolyfills.default(),
     stylePlugin({
