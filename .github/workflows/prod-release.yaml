@@ -17,6 +17,10 @@ on:
     types:
       - closed
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   prod-release:
     if: ${{ github.event.pull_request.merged == true }}

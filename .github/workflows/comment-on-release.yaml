@@ -7,6 +7,11 @@ on:
       - released
       - published
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   comment-release:
     runs-on: ubuntu-latest

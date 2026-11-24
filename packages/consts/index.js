@@ -169,8 +169,8 @@ export const EIP7702_ACCOUNT_STATES = {
 }
 
 const FLUENT_BACKEND_BASE_URLS = {
-  [CFX_ESPACE_MAINNET_CHAINID]: 'https://api.fluentwallet.com/api',
-  [CFX_ESPACE_TESTNET_CHAINID]: 'https://api-testnet.fluentwallet.com/api',
+  [CFX_ESPACE_MAINNET_CHAINID]: 'https://api.fluentwallet.com/api/',
+  [CFX_ESPACE_TESTNET_CHAINID]: 'https://api-testnet.fluentwallet.com/api/',
 }
 
 const ENTRY_POINT_CONTRACT_ADDRESS =

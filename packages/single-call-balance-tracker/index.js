@@ -41,19 +41,17 @@ export const balances = async (...args) => {
   })
 
   const [decoded] = decode(data)
-  const tl = tokens.length
-  const rst = {}
+  const tokenCount = tokens.length
+  const entries = users.map((user, userIndex) => {
+    const tokenEntries = tokens.map((token, tokenIndex) => [
+      token.toLowerCase(),
+      hexValue(decoded[userIndex * tokenCount + tokenIndex]),
+    ])
 
-  users.forEach((u, uidx) => {
-    u = u.toLowerCase()
-    rst[u] = {}
-    tokens.forEach((t, tidx) => {
-      t = t.toLowerCase()
-      rst[u][t] = hexValue(decoded[uidx * tl + tidx].toHexString())
-    })
+    return [user.toLowerCase(), Object.fromEntries(tokenEntries)]
   })
 
-  return rst
+  return Object.fromEntries(entries)
 }
 
 export const NetworkMetaData = {

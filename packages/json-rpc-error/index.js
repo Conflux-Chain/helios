@@ -1,11 +1,24 @@
 import {defRpcError} from '@fluent-wallet/errors'
 
+function isStackFrame(line) {
+  const frame = /^\s*at\s(.*)$/.exec(line)?.[1]
+  if (!frame) return false
+
+  const locationSeparator = frame.lastIndexOf(':')
+  const dot = frame.indexOf('.')
+  return (
+    dot !== -1 &&
+    dot < locationSeparator &&
+    /^\d+\)?$/.test(frame.slice(locationSeparator + 1))
+  )
+}
+
 export const errorStackPop = error => {
   if (error?.stack) {
     const stack = error.stack.split('\n')
     error.stack = stack.reduce(
       ([s, poped], line) => {
-        if (!poped && /^\s*at\s.*\..*:\d+\)?$/.test(line)) return [s, true]
+        if (!poped && isStackFrame(line)) return [s, true]
         if (/@thi\.ng/.test(line)) return [s, poped]
         return [s + '\n' + line]
       },

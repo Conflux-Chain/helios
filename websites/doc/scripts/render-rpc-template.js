@@ -61,7 +61,11 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
     getAllRpcs =
       getAllRpcs || (await import('workspace-tools/rpc/get-all.js')).default
     const rpcs = await getAllRpcs()
+    const rpcNames = new Set()
     rpcs.forEach(rpc => {
+      rpcNames.add(rpc.name)
+      if (rpc.module?.NAME) rpcNames.add(rpc.module.NAME)
+
       if (
         // rpc?.module?.NAME?.startsWith?.('eth_') ||
         // rpc?.module?.NAME?.includes?.('Ethereum') ||
@@ -72,6 +76,11 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
       const oneRpcContent = renderOneRpc(rpcInfoToRenderParam(rpc))
       cache[rpc.name] = {content: oneRpcContent, doc: rpc.doc}
     })
+
+    await promises.writeFile(
+      resolve(__dirname, '../docs/rpc-names.json'),
+      JSON.stringify([...rpcNames].sort()),
+    )
   }
 
   const [providerRpcContent, standardRpcContent, innerRpcContent] =

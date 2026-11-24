@@ -46,7 +46,7 @@ export function createPaymasterMethods(request) {
      * @returns {Promise<PaymasterConfig>}
      */
     getPaymasterConfig() {
-      return request('/aa/paymaster/config')
+      return request('aa/paymaster/config')
     },
 
     /**
@@ -58,7 +58,7 @@ export function createPaymasterMethods(request) {
      * @returns {Promise<PaymasterStub>}
      */
     getPaymasterStub(params) {
-      return request('/aa/paymaster/stub', {
+      return request('aa/paymaster/stub', {
         method: 'POST',
         body: params,
       })
@@ -73,7 +73,7 @@ export function createPaymasterMethods(request) {
      * @returns {Promise<string>} Signed paymaster data.
      */
     signPaymasterUserOperation(userOperation) {
-      return request('/aa/paymaster/sign', {
+      return request('aa/paymaster/sign', {
         method: 'POST',
         body: userOperation,
       })

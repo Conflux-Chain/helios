@@ -17,6 +17,9 @@ on:
     types:
       - closed
 
+permissions:
+  contents: read
+
 jobs:
   release-pkg:
     if: ${{ github.event.pull_request.merged == true && github.head_ref != '__release-pkg' }}

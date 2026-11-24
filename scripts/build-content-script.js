@@ -1,6 +1,6 @@
 const {resolve} = require('path')
 const esbuild = require('esbuild')
-const {isDev} = require('./snowpack.utils.js')
+const {isDev} = require('./env.js')
 const {render} = require('mustache')
 const jsStringEscape = require('js-string-escape')
 const fs = require('fs-extra')
