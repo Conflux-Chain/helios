@@ -10,7 +10,7 @@
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
     "@thi.ng/rstream": "7.2.46",
-    "uuid": "^8.3.2",
+    "uuid": "11.1.1",
     "webextension-polyfill": "0.8.0"
   }
 }
