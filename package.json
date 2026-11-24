@@ -58,7 +58,9 @@
     "glob@npm:^10.3.10": "14.0.6",
     "test-exclude@npm:7.0.1/minimatch": "11.0.9",
     "mocha@npm:11.8.0/minimatch": "11.0.9",
-    "glob@npm:^10.2.2": "14.0.6"
+    "glob@npm:^10.2.2": "14.0.6",
+    "uuid@npm:^8.3.2": "11.1.1",
+    "@npmcli/run-script@npm:^1.8.2": "2.0.0"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",

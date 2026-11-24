@@ -1,0 +1,6 @@
+releases:
+  "helios-inpage": patch
+
+declined:
+  - "browser-extension"
+  - "helios"
