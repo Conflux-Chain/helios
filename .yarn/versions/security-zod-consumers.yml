@@ -3,5 +3,6 @@ releases:
   helios-popup: patch
 
 declined:
+  - "@fluent-wallet/test-helpers"
   - browser-extension
   - helios

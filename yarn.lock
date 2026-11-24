@@ -7040,7 +7040,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/test-helpers@workspace:packages/test-helpers"
   dependencies:
-    "@xcfx/node": "npm:0.3.2"
+    "@xcfx/node": "npm:0.4.0"
     delay: "npm:4.4.1"
     ethers: "npm:5.8.0"
     hardhat: "npm:2.29.2"
@@ -12462,43 +12462,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xcfx/node-darwin-arm64@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@xcfx/node-darwin-arm64@npm:0.3.1"
+"@xcfx/node-darwin-arm64@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@xcfx/node-darwin-arm64@npm:0.4.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@xcfx/node-darwin-x64@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@xcfx/node-darwin-x64@npm:0.3.1"
+"@xcfx/node-darwin-x64@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@xcfx/node-darwin-x64@npm:0.4.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@xcfx/node-linux-x64-gnu@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@xcfx/node-linux-x64-gnu@npm:0.3.1"
+"@xcfx/node-linux-x64-gnu@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@xcfx/node-linux-x64-gnu@npm:0.4.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@xcfx/node-win32-x64-msvc@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@xcfx/node-win32-x64-msvc@npm:0.3.1"
+"@xcfx/node-win32-x64-msvc@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@xcfx/node-win32-x64-msvc@npm:0.4.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@xcfx/node@npm:0.3.2":
-  version: 0.3.2
-  resolution: "@xcfx/node@npm:0.3.2"
+"@xcfx/node@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@xcfx/node@npm:0.4.0"
   dependencies:
-    "@xcfx/node-darwin-arm64": "npm:0.3.1"
-    "@xcfx/node-darwin-x64": "npm:0.3.1"
-    "@xcfx/node-linux-x64-gnu": "npm:0.3.1"
-    "@xcfx/node-win32-x64-msvc": "npm:0.3.1"
-    cive: "npm:0.7.0"
+    "@xcfx/node-darwin-arm64": "npm:0.4.0"
+    "@xcfx/node-darwin-x64": "npm:0.4.0"
+    "@xcfx/node-linux-x64-gnu": "npm:0.4.0"
+    "@xcfx/node-win32-x64-msvc": "npm:0.4.0"
+    cive: "npm:0.8.0"
   dependenciesMeta:
     "@xcfx/node-darwin-arm64":
       optional: true
@@ -12508,7 +12508,7 @@ __metadata:
       optional: true
     "@xcfx/node-win32-x64-msvc":
       optional: true
-  checksum: 10/69b63a5f481e7edcfc9cdca97b60eccf5487b72adafe4916a36cfb9a6b55cc7b0d0c759fbe851b7cdf39873ee1423d21eb5a065443b32142cc0e1e4c69ea42b9
+  checksum: 10/1ff4bc5b8f1a832f81dee211027ae27ce73182cce3b2bd73e001ca7c0529aea1d6ffbf34c2bc9c06ee8f7208d6d0ed9e953c3deed44f8eaf74033cc0c9183f59
   languageName: node
   linkType: hard
 
