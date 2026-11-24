@@ -1,25 +1,32 @@
-// github api doc https://octokit.github.io/rest.js/v18#repos-list-tags
+/* eslint-env es2020 */
+
 module.exports = async ({github, context}) => {
   const {
     repo: {owner, repo},
   } = context
-  const nextver = process.env.NEXT_VERSION
-  let tags = await github.rest.repos.listTags({owner, repo})
-  tags = (tags && tags.data) || []
-  const re = new RegExp(`v${nextver}-rc\.`)
+  const nextVersion = process.env.NEXT_VERSION
+  const tagPrefix = `v${nextVersion}-rc.`
+  const tags = await github.paginate(github.rest.repos.listTags, {
+    owner,
+    repo,
+    per_page: 100,
+  })
 
-  const nextrc =
-    tags.reduce((nextrc, {name}) => {
-      if (!re.test(name)) return nextrc
-      const rc = parseInt(name.replace(re, ''), 10)
-      if (!rc) return nextrc
-      return Math.max(nextrc, rc)
-    }, 0) + 1
+  let latestRc = 0n
+  for (const {name} of tags) {
+    if (!name.startsWith(tagPrefix)) continue
+    const suffix = name.slice(tagPrefix.length)
+    if (!/^\d+$/.test(suffix)) continue
+
+    const rc = BigInt(suffix)
+    if (rc > latestRc) latestRc = rc
+  }
+  const version = `${nextVersion}-rc.${latestRc + 1n}`
 
   return {
-    version: `${nextver}-rc.${nextrc}`,
-    tag: `v${nextver}-rc.${nextrc}`,
-    prod_version: `${nextver}`,
-    prod_tag: `v${nextver}`,
+    version,
+    tag: `v${version}`,
+    prod_version: `${nextVersion}`,
+    prod_tag: `v${nextVersion}`,
   }
 }

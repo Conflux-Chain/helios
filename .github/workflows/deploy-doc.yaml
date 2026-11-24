@@ -18,6 +18,9 @@ on:
     branches:
       - dev
 
+permissions:
+  contents: read
+
 jobs:
   deploy-doc:
     if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}

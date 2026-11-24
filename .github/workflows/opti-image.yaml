@@ -4,6 +4,9 @@ on:
   push:
     branches: [__release-pkg]
 
+permissions:
+  contents: write
+
 jobs:
   cleanup_tasks:
     runs-on: ubuntu-latest

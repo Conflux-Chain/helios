@@ -2,8 +2,7 @@ import {useEffect} from 'react'
 import create from 'zustand'
 import {paramCase} from 'param-case'
 
-const RPCS = {}
-const Stores = {}
+const stores = new Map()
 
 const createRPC = rpcName =>
   create((set, get) => ({
@@ -16,7 +15,6 @@ const createRPC = rpcName =>
     setRPC: () => {
       const {rpcName} = get()
       if (!rpcName) return
-      if (RPCS[rpcName]) return set({...RPCS[rpcName], loadingRPC: false})
       const rpcNameSplit = rpcName.split('_')
       const [rpcPkgNamePrefix, ...rpcPkgNameRest] = rpcNameSplit
       let rpcPkgName = rpcPkgNameRest.reduce(
@@ -61,10 +59,13 @@ const createRPC = rpcName =>
 export const useRPC = rpcName => {
   if (!rpcName) throw new Error(`invalid rpcName: ${rpcName}`)
 
-  // find/init the store of this rpc
-  const isNewRpc = !Stores[rpcName]
-  if (isNewRpc) Stores[rpcName] = createRPC(rpcName)
-  const s = Stores[rpcName]()
+  let useStore = stores.get(rpcName)
+  const isNewRpc = !useStore
+  if (isNewRpc) {
+    useStore = createRPC(rpcName)
+    stores.set(rpcName, useStore)
+  }
+  const s = useStore()
 
   // init the rpc store if it's first call
   useEffect(() => {

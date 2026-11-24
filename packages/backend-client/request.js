@@ -6,19 +6,17 @@ const FETCH_OPTIONS = {
   throwHttpErrors: false,
 }
 
-function joinUrl(baseUrl, path) {
-  return `${baseUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
-}
-
 export function createBackendRequest({
   baseUrl,
   fetcher = initFetcher(FETCH_OPTIONS),
 }) {
-  return async function request(path, {method = 'GET', body} = {}) {
+  return async function request(relativePath, {method = 'GET', body} = {}) {
     let response
 
     try {
-      response = await fetcher(joinUrl(baseUrl, path), {
+      // Use a directory base URL such as "https://example.com/api/".
+      const url = new URL(relativePath, baseUrl)
+      response = await fetcher(url.href, {
         method,
         ...(body === undefined ? {} : {json: body}),
         throwHttpErrors: false,

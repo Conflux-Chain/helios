@@ -12,6 +12,9 @@ name: Version Check
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   version-check:
     if: ${{ github.head_ref != '__release-pkg' }}

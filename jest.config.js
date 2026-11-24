@@ -79,8 +79,6 @@ module.exports = {
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
     '/node_modules/',
-    'index.dev.js',
-    'index.prod.js',
     '/websites/doc',
     '/packages/browser-extension',
     '/packages/csp',

@@ -13,6 +13,9 @@ name: Push Check
 
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}

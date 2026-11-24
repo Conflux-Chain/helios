@@ -1,38 +1,41 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-empty */
 /* global conflux */
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {useInterval, useBoolean} from 'react-use'
+import {useBoolean} from 'react-use'
 import {useRPC} from '@fluent-wallet/doc-use-rpc'
 import {useSpec} from '@fluent-wallet/doc-use-spec'
 import JSONInput from 'react-json-editor-ajrm/es'
 import locale from 'react-json-editor-ajrm/es/locale/en'
 
-export function UI() {
-  const [rpcName, setRpcName] = useState(null)
+export function UI({rpcNames}) {
+  const [rpcName, setRpcName] = useState('')
 
-  useInterval(
-    () => {
-      if (location && location.hash) {
-        setRpcName(location.hash?.substr?.(1))
-      }
-    },
-    rpcName ? null : 100,
-  )
+  useEffect(() => {
+    const updateRpcName = () => setRpcName(window.location.hash.slice(1))
+    updateRpcName()
+    window.addEventListener('hashchange', updateRpcName)
+    return () => window.removeEventListener('hashchange', updateRpcName)
+  }, [])
 
-  const noRpc = (
+  if (!rpcName || !rpcNames.includes(rpcName)) {
+    return (
+      <section>
+        <h2>{rpcName ? 'Unknown RPC method' : 'No rpc method provided'}</h2>
+      </section>
+    )
+  }
+
+  return (
     <section>
-      <h2>No rpc method provided</h2>
+      <Try key={rpcName} name={rpcName} />
     </section>
   )
-  const ui = (
-    <section>
-      <Try name={rpcName} />
-    </section>
-  )
+}
 
-  return rpcName ? ui : noRpc
+UI.propTypes = {
+  rpcNames: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 function request(payload) {
@@ -53,12 +56,14 @@ function Try({name}) {
   const {gen, valid, error, data, setData, schema} = useSpec(name, {
     schema: schemas?.input,
   })
-  if (gen && !genedOnce) {
+
+  useEffect(() => {
+    if (!gen || !schema || genedOnce) return
     try {
       setData(gen(schema))
     } catch (err) {}
     setGened(true)
-  }
+  }, [gen, schema, genedOnce, setData, setGened])
 
   return (
     <div>
@@ -77,7 +82,9 @@ function Try({name}) {
       >
         Try
       </button>
-      <button onClick={() => setData(gen(schema))}>Random</button>
+      <button disabled={!gen || !schema} onClick={() => setData(gen(schema))}>
+        Random
+      </button>
       {!valid && !error && <p>Invalid Data</p>}
       {!valid && error && <p>{`Error in params: \n${error}`}</p>}
       <h4>Params: </h4>
