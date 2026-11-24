@@ -4,7 +4,6 @@ const {isDev} = require('./snowpack.utils.js')
 
 const esbuildOpts = {
   entryPoints: [resolve(__dirname, '../packages/inpage/index.js')],
-  watch: isDev(),
   minify: !isDev(),
   bundle: true,
   outfile: resolve(
@@ -15,4 +14,7 @@ const esbuildOpts = {
   ),
 }
 
-module.exports = () => esbuild.build(esbuildOpts)
+module.exports = async () =>
+  isDev()
+    ? (await esbuild.context(esbuildOpts)).watch()
+    : esbuild.build(esbuildOpts)

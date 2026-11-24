@@ -27,7 +27,6 @@ function renderTemplate(content) {
 
 const contentScriptOpts = {
   entryPoints: [resolve(__dirname, '../packages/content-script/index.js')],
-  watch: isDev(),
   minify: !isDev(),
   bundle: true,
   outfile: resolve(
@@ -40,30 +39,41 @@ const contentScriptOpts = {
 
 const inpageOpts = {
   entryPoints: [resolve(__dirname, '../packages/inpage/index.js')],
-  watch: isDev() && {
-    onRebuild(error) {
-      if (error) return
-      renderTemplate()
-      esbuild.build({...contentScriptOpts, watch: false})
-    },
-  },
   minify: !isDev(),
   bundle: true,
   outfile: builtInpagePath,
 }
 
 module.exports = async () => {
-  if (isDev()) {
-    await esbuild.build({...inpageOpts, watch: false}).then(() => {
-      renderTemplate()
-      esbuild.build({...contentScriptOpts, watch: false})
-    })
-  }
-  esbuild.build(inpageOpts).then(() => {
-    if (isDev()) return
+  if (!isDev()) {
+    await esbuild.build(inpageOpts)
     renderTemplate()
     return esbuild.build(contentScriptOpts)
+  }
+
+  const content = await esbuild.context(contentScriptOpts)
+  const inpage = await esbuild.context({
+    ...inpageOpts,
+    plugins: [
+      {
+        name: 'update-content-script',
+        setup(build) {
+          build.onEnd(async result => {
+            if (result.errors.length) return
+            renderTemplate()
+            await content.rebuild()
+          })
+        },
+      },
+    ],
   })
+  await inpage.rebuild()
+  await Promise.all([inpage.watch(), content.watch()])
 }
 
-module.exports()
+if (require.main === module) {
+  module.exports().catch(error => {
+    console.error(error)
+    process.exitCode = 1
+  })
+}

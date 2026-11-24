@@ -1,6 +1,6 @@
 import ENSRegistryWithFallback from './abi/ENSRegistryWithFallback.json'
 import Resolver from './abi/Resolver.json'
-import Web3EthContract from 'web3-eth-contract'
+import {Contract} from 'web3-eth-contract'
 import {hash} from '@ensdomains/eth-ens-namehash'
 
 export default class ENS {
@@ -9,7 +9,7 @@ export default class ENS {
   ENSRegistryWithFallbackContract
   constructor(provider) {
     if (!provider) throw new Error('The provider is required')
-    Web3EthContract.setProvider(provider)
+    this.provider = provider
     this._initContract()
   }
 
@@ -70,13 +70,14 @@ export default class ENS {
   }
 
   _initContract() {
-    this.ENSRegistryWithFallbackContract = new Web3EthContract(
+    this.ENSRegistryWithFallbackContract = new Contract(
       ENSRegistryWithFallback,
       '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      {provider: this.provider},
     )
   }
 
   _getResolverContract(address) {
-    return new Web3EthContract(Resolver, address)
+    return new Contract(Resolver, address, {provider: this.provider})
   }
 }
