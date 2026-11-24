@@ -60,11 +60,13 @@ function build() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function serve() {
-  return esb.serve(
-    {servedir: 'packages/browser-extension/', port: 18001},
-    config,
-  )
+async function serve() {
+  const ctx = await esb.context(config)
+  return ctx.serve({
+    servedir: 'packages/browser-extension/',
+    host: '127.0.0.1',
+    port: 18001,
+  })
 }
 
 function analyze() {
