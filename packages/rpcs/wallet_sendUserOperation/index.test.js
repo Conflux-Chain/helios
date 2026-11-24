@@ -1,4 +1,5 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest'
+import {recoverAddress} from '@ethersproject/transactions'
 import {
   BundlerRpcError,
   createBundlerClient,
@@ -169,6 +170,19 @@ function getStoredUserOperation(db) {
   return db.insertUserOperation.mock.calls[0][0]
 }
 
+function expectSubmittedSigner() {
+  expect(bundler.sendUserOperation).toHaveBeenCalledOnce()
+  const [userOperation, entryPointAddress] =
+    bundler.sendUserOperation.mock.calls[0]
+  const digest = getUserOperationHash({
+    chainId: NETWORK.chainId,
+    entryPointAddress,
+    userOperation,
+  })
+  expect(userOperation.sender.toLowerCase()).toBe(SENDER.toLowerCase())
+  expect(recoverAddress(digest, userOperation.signature)).toBe(SENDER)
+}
+
 function expectUserOperationTracking(rpcs, hash) {
   expect(rpcs.wallet_handleUserOperation).toHaveBeenCalledOnce()
   expect(rpcs.wallet_handleUserOperation).toHaveBeenCalledWith(
@@ -219,6 +233,7 @@ describe('wallet_sendUserOperation', () => {
 
       const [, prepareParams] = rpcs.wallet_prepareUserOperation.mock.calls[0]
       const preparedUserOperation = prepareUserOperation(prepareParams)
+      expectSubmittedSigner()
       const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
       const storedUserOperation = getStoredUserOperation(db)
 
@@ -306,6 +321,7 @@ describe('wallet_sendUserOperation', () => {
 
     const result = await main(input)
     const storedUserOperation = getStoredUserOperation(db)
+    expectSubmittedSigner()
 
     expect(result).toEqual({
       userOpHash: storedUserOperation.hash,
