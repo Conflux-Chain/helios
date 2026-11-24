@@ -1,0 +1,6 @@
+releases:
+  helios-popup: patch
+
+declined:
+  - browser-extension
+  - helios
