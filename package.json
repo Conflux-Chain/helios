@@ -60,11 +60,6 @@
     "mocha@npm:11.8.0/minimatch": "11.0.9",
     "glob@npm:^10.2.2": "14.0.6",
     "uuid@npm:^8.3.2": "11.1.1",
-    "@npmcli/run-script@npm:^1.8.2": "2.0.0",
-    "@yqrashawn/snowpack@npm:3.8.6-fix-6/esbuild": "0.25.12",
-    "vite@npm:5.4.6/esbuild": "0.25.12",
-    "rollup@npm:~2.37.1": "2.80.0",
-    "serialize-javascript@npm:^5.0.1": "7.1.4",
     "serialize-javascript@npm:^6.0.0": "7.1.4",
     "serialize-javascript@npm:^6.0.1": "7.1.4",
     "serialize-javascript@npm:^6.0.2": "7.1.4"
