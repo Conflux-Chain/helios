@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/wallet_get-current-network",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.23"
+    "@fluent-wallet/spec": "1.0.24"
   }
 }
