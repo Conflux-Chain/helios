@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/did": patch
+  helios-popup: patch
+
+declined:
+  - browser-extension
+  - helios
