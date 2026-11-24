@@ -7909,6 +7909,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_send-user-operation@workspace:packages/rpcs/wallet_sendUserOperation"
   dependencies:
     "@ethersproject/bytes": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:5.6.2"
     "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/nonce-manager": "workspace:*"

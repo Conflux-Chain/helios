@@ -18,8 +18,29 @@ describe('raw Ethereum digest signing', () => {
     }
   })
 
-  it('rejects non-32-byte inputs rather than signing a different value', () => {
-    expect(() => signDigest(privateKey, new Uint8Array(31))).toThrow()
-    expect(() => signDigest('0x01', new Uint8Array(32))).toThrow()
+  it('rejects a non-32-byte digest rather than signing a different value', () => {
+    expect(() => signDigest(privateKey, new Uint8Array(31))).toThrow(
+      'Expected a 32-byte signing digest',
+    )
+  })
+
+  it.each([
+    ['malformed hex', '0xnot-a-private-key'],
+    ['odd-length hex', '0xabc'],
+    ['short key', new Uint8Array(31)],
+    ['zero scalar', new Uint8Array(32)],
+    ['out-of-range scalar', new Uint8Array(32).fill(255)],
+  ])('rejects %s without exposing the private key', (_, invalidKey) => {
+    let error
+    try {
+      signDigest(invalidKey, new Uint8Array(32))
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toBe('Invalid secp256k1 private key')
+    expect(error).not.toHaveProperty('value')
+    expect(error).not.toHaveProperty('cause')
+    expect(JSON.stringify(error)).toBe('{}')
   })
 })
