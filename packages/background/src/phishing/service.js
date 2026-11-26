@@ -67,12 +67,9 @@ export function createDomainService({
   fetchFn = fetch,
   now = Date.now,
 }) {
-  let active,
-    hash,
-    checkedAt = 0,
-    lastFailure,
-    loading,
-    updating
+  let active, hash, lastFailure, loading, updating
+  let checkedAt = 0
+  const changes = new EventTarget()
 
   async function restore() {
     try {
@@ -134,6 +131,7 @@ export function createDomainService({
       active = rules
       hash = next
       checkedAt = time
+      changes.dispatchEvent(new Event('updated'))
       return true
     } catch {
       lastFailure = now()
@@ -161,11 +159,29 @@ export function createDomainService({
       await ready()
       return due(isLocked)
     },
-    async checkOrigin(origin, isLocked) {
+    async checkOrigin(origin, isLocked, pendingSignal) {
       await ready()
       const verdict = active ? matchOrigin(origin, active) : UNKNOWN
-      // No remote wait for the initial result. The caller must still bind a
-      // later verdict to the same pending request and ignore it after dismissal.
+      if (pendingSignal?.aborted || isLocked())
+        return {verdict, rechecked: Promise.resolve(null)}
+      // A still-open request can opt in to the next publication, even if its
+      // own lookup was fresh. Aborting it detaches only that request.
+      if (pendingSignal) {
+        const rechecked = new Promise(resolve => {
+          const finish = result => {
+            changes.removeEventListener('updated', onUpdate)
+            pendingSignal.removeEventListener('abort', onAbort)
+            resolve(result)
+          }
+          const onUpdate = () =>
+            finish(isLocked() ? null : matchOrigin(origin, active))
+          const onAbort = () => finish(null)
+          changes.addEventListener('updated', onUpdate)
+          pendingSignal.addEventListener('abort', onAbort)
+        })
+        void due(isLocked)
+        return {verdict, rechecked}
+      }
       const rechecked = due(isLocked).then(changed =>
         changed && !isLocked() ? matchOrigin(origin, active) : null,
       )

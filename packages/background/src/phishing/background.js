@@ -6,20 +6,15 @@ const domains = createDomainService({
   fetchFn: (...args) => fetch(...args),
 })
 
-// Background only. The caller supplies a live wallet lock-state getter, not a DApp parameter.
 export const checkPhishingOrigin = domains.checkOrigin
 
-export function withDomainRefresh(afterUnlock, refresh = domains.refreshIfDue) {
-  return {
-    ...afterUnlock,
-    permissions: {
-      ...afterUnlock.permissions,
-      db: [...afterUnlock.permissions.db, 'getLocked'],
-    },
-    main(args) {
-      // No wallet lock/unlock side effect waits on the network. No periodic wakeups.
-      void refresh(args.db.getLocked)
-      return afterUnlock.main(args)
-    },
-  }
+// Internal RPC, just like other refetch methods called by wallet_afterUnlock.
+// Only start the check here: neither unlocking nor refreshing balances waits for HTTP.
+export const walletRefetchPhishingList = {
+  NAME: 'wallet_refetchPhishingList',
+  schemas: {},
+  permissions: {external: [], db: ['getLocked']},
+  main: ({db: {getLocked}}) => {
+    void domains.refreshIfDue(getLocked)
+  },
 }

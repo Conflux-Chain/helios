@@ -196,7 +196,7 @@ import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
 import * as unwalletWatchAsset from '@fluent-wallet/wallet_unwatch-asset'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 import * as walletAfterUnlock from '@fluent-wallet/wallet_after-unlock'
-import {withDomainRefresh} from './phishing/background.js'
+import {walletRefetchPhishingList} from './phishing/background.js'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -285,6 +285,7 @@ export const rpcEngineOpts = {
     walletDeleteApp,
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
+    walletRefetchPhishingList,
     walletRefetchTxList,
     walletUpdateTokenList,
     walletGetBlockchainExplorerUrl,
@@ -404,6 +405,6 @@ export const rpcEngineOpts = {
     walletDeleteMemo,
     walletGetBlockTime,
 
-    IS_TEST_MODE ? walletAfterUnlock : withDomainRefresh(walletAfterUnlock),
+    walletAfterUnlock,
   ],
 }

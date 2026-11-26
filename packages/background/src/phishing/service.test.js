@@ -127,6 +127,40 @@ describe('Fluent mirror / demand-driven updates', () => {
     expect((await b.rechecked).status).toBe('blocklisted')
     expect(s.urls()).toHaveLength(4)
   })
+  it('rechecks a still-pending fresh lookup on the next publication, not a cancelled request', async () => {
+    const s = setup()
+    await s.refresh()
+    const pending = new AbortController(),
+      dismissed = new AbortController()
+    const a = await s.service.checkOrigin(
+      'https://new.test',
+      s.isLocked,
+      pending.signal,
+    )
+    const b = await s.service.checkOrigin(
+      'https://new.test',
+      s.isLocked,
+      dismissed.signal,
+    )
+    expect(a.verdict.status).toBe('no-match')
+    expect(s.urls()).toHaveLength(2)
+    dismissed.abort()
+    expect(await b.rechecked).toBeNull()
+    // An unchanged stamp is not a new publication.
+    s.advance(MAX_AGE)
+    expect(await s.refresh()).toBe(false)
+    s.advance(MAX_AGE)
+    s.publish(second)
+    expect(await s.refresh()).toBe(true)
+    expect((await a.rechecked).status).toBe('blocklisted')
+    expect(s.urls()).toEqual([
+      'source.json',
+      'domains.json',
+      'source.json',
+      'source.json',
+      'domains.json',
+    ])
+  })
   it('uses the persisted success time across worker restarts; an unchanged digest downloads nothing else', async () => {
     const s = setup()
     await s.refresh()

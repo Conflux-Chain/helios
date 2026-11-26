@@ -1,21 +1,17 @@
 import {expect, it, vi} from 'vitest'
-import {withDomainRefresh} from './background.js'
+import {walletRefetchPhishingList} from './background.js'
 
-it('starts a due check on the internal after-unlock path without delaying its normal result', async () => {
-  const existing = {
-    NAME: 'wallet_afterUnlock',
-    permissions: {external: [], db: ['getNetwork']},
-    main: vi.fn(async () => 'done'),
-  }
-  const refresh = vi.fn(() => new Promise(() => {}))
-  const rpc = withDomainRefresh(existing, refresh)
-  const args = {db: {getLocked: () => false}}
-  expect(await rpc.main(args)).toBe('done')
-  expect(existing.main).toHaveBeenCalledWith(args)
-  expect(refresh).toHaveBeenCalledWith(args.db.getLocked)
-  expect(rpc.permissions).toEqual({
+const {refreshIfDue} = vi.hoisted(() => ({refreshIfDue: vi.fn()}))
+vi.mock('./service.js', () => ({createDomainService: () => ({refreshIfDue})}))
+
+it('dispatches an internal, non-blocking refresh with the live wallet lock getter', () => {
+  const getLocked = () => false
+  refreshIfDue.mockReturnValue(new Promise(() => {}))
+  expect(walletRefetchPhishingList.NAME).toBe('wallet_refetchPhishingList')
+  expect(walletRefetchPhishingList.permissions).toEqual({
     external: [],
-    db: ['getNetwork', 'getLocked'],
+    db: ['getLocked'],
   })
-  expect(existing.permissions.db).toEqual(['getNetwork'])
+  expect(walletRefetchPhishingList.main({db: {getLocked}})).toBeUndefined()
+  expect(refreshIfDue).toHaveBeenCalledWith(getLocked)
 })
