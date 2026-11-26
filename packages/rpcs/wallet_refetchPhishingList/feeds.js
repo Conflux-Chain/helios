@@ -10,7 +10,7 @@ export const FLUENT_URL =
 const DAY = 24 * 60 * 60 * 1000
 export const FULL_INTERVAL = 30 * DAY
 export const DIFF_INTERVAL = 5 * DAY
-export const FLUENT_INTERVAL = 6 * 60 * 60 * 1000
+export const FLUENT_INTERVAL = DAY
 export const validCursor = n => Number.isSafeInteger(n) && n > 0
 export const pack = ({allow, block}) => ({
   version: 2,

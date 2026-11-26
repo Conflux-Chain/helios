@@ -106,11 +106,18 @@ describe('MetaMask snapshot + diffs and independent Fluent configuration', () =>
     )
     expect(s.urls()).toHaveLength(3)
   })
-  it('checks only when used: Fluent after 6 hours, deltas after 5 days, snapshot after 30 days', async () => {
+  it('checks only when used: Fluent after 24 hours, deltas after 5 days, snapshot after 30 days', async () => {
     const s = setup()
     await s.refresh()
     s.fetchFn.mockClear()
-    s.advance(FLUENT_INTERVAL)
+    s.advance(24 * 60 * 60 * 1000 - 1)
+    await s.refresh()
+    expect(s.urls()).toEqual([])
+    s.advance(1)
+    s.lock(true)
+    await s.refresh()
+    expect(s.urls()).toEqual([])
+    s.lock(false)
     s.fixture.fluent = null
     await s.refresh()
     expect(s.urls()).toEqual([FLUENT_URL])
