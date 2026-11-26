@@ -1,9 +1,10 @@
 import {compileFeed, normalizeRule} from './domains.js'
 
 // MetaMask/core phishing-controller: v1 snapshot plus ordered v2 mutations.
-const api = 'https://phishing-detection.api.cx.metamask.io'
-export const FULL_URL = `${api}/v1/stalelist`
-export const diffUrl = cursor => `${api}/v2/diffsSince/${cursor}`
+const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
+const LIST_PREFIX = 'eth_phishing_detect_config.'
+export const FULL_URL = `${METAMASK_API}/v1/stalelist`
+export const diffUrl = cursor => `${METAMASK_API}/v2/diffsSince/${cursor}`
 // A separate path prevents old CDN copies of the retired mirror being read as Fluent rules.
 export const FLUENT_URL =
   'https://raw.githubusercontent.com/conflux-fans/phishing-detect/main/config.json'
@@ -17,11 +18,22 @@ export const pack = ({allow, block}) => ({
   whitelist: [...allow],
   blacklist: [...block],
 })
-export const sameRules = (a, b) =>
-  !!a &&
-  ['allow', 'block'].every(
-    k => a[k].size === b[k].size && [...a[k]].every(h => b[k].has(h)),
+function sameHosts(current, next) {
+  if (current === next) return true
+  if (current.size !== next.size) return false
+  for (const host of current) {
+    if (!next.has(host)) return false
+  }
+  return true
+}
+
+export function sameRules(current, next) {
+  return Boolean(
+    current &&
+      sameHosts(current.allow, next.allow) &&
+      sameHosts(current.block, next.block),
   )
+}
 
 export function snapshot(data) {
   if (
@@ -54,9 +66,9 @@ export function validateSize(rules, previous) {
 export function applyDiffs(base, diffs) {
   if (!Array.isArray(diffs) || diffs.length > 500000)
     throw new Error('Invalid MetaMask diffs')
-  const since = base.cursor
-  let cursor = since,
-    rules = base.rules
+  // The cursor is the last upstream event time (seconds), not the local
+  // fetch time. Compare every row with the starting cursor: ties are valid.
+  let cursor = base.cursor
   const events = []
   for (const row of diffs) {
     if (
@@ -66,19 +78,13 @@ export function applyDiffs(base, diffs) {
       (row.isRemoval !== undefined && typeof row.isRemoval !== 'boolean')
     )
       throw new Error('Invalid MetaMask diff')
-    if (
-      row.timestamp <= since ||
-      !row.targetList.startsWith('eth_phishing_detect_config.')
-    )
+    if (row.timestamp <= base.cursor || !row.targetList.startsWith(LIST_PREFIX))
       continue
     cursor = Math.max(cursor, row.timestamp)
-    const key =
-      row.targetList === 'eth_phishing_detect_config.blocklist'
-        ? 'block'
-        : row.targetList === 'eth_phishing_detect_config.allowlist'
-        ? 'allow'
-        : null
-    if (!key) continue // Never treat paths, fuzzy matches or CIDs as parent-domain rules.
+    let key
+    if (row.targetList === `${LIST_PREFIX}blocklist`) key = 'block'
+    else if (row.targetList === `${LIST_PREFIX}allowlist`) key = 'allow'
+    else continue // Consume the cursor but never turn a path or CID into a host rule.
     const host = normalizeRule(row.url)
     if (host)
       events.push({
@@ -88,9 +94,13 @@ export function applyDiffs(base, diffs) {
         time: row.timestamp,
       })
   }
-  // Apply chronologically, preserving response order for ties. Clone only on change.
-  for (const {key, host, remove} of events.sort((a, b) => a.time - b.time)) {
-    if (rules[key].has(host) !== remove) continue
+  // Keep the active rules untouched until the batch has been saved. A stable
+  // sort preserves upstream order when two events share a timestamp.
+  let rules = base.rules
+  events.sort((a, b) => a.time - b.time)
+  for (const {key, host, remove} of events) {
+    const exists = rules[key].has(host)
+    if ((remove && !exists) || (!remove && exists)) continue
     if (rules === base.rules) rules = {...rules}
     if (rules[key] === base.rules[key]) rules[key] = new Set(rules[key])
     if (remove) rules[key].delete(host)
@@ -101,11 +111,11 @@ export function applyDiffs(base, diffs) {
 
 // Auth-free, fixed-source requests only. Bound decompressed bytes as well as headers.
 export async function fetchJSON(url, fetchFn, limit, etag) {
-  const ctl = new AbortController(),
-    timer = setTimeout(() => ctl.abort(), 30000)
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 30_000)
   try {
     const res = await fetchFn(url, {
-      signal: ctl.signal,
+      signal: controller.signal,
       cache: 'no-cache',
       redirect: 'error',
       credentials: 'omit',
@@ -115,9 +125,9 @@ export async function fetchJSON(url, fetchFn, limit, etag) {
     if (res.status === 304 && etag) return null
     if (res.status !== 200 || Number(res.headers.get('content-length')) > limit)
       throw new Error('Invalid phishing feed response')
-    const reader = res.body.getReader(),
-      decoder = new TextDecoder('utf-8', {fatal: true}),
-      parts = []
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder('utf-8', {fatal: true})
+    const parts = []
     let bytes = 0
     try {
       for (;;) {
@@ -133,7 +143,7 @@ export async function fetchJSON(url, fetchFn, limit, etag) {
     }
     return {data: JSON.parse(parts.join('')), etag: res.headers.get('etag')}
   } finally {
-    ctl.abort()
+    controller.abort()
     clearTimeout(timer)
   }
 }
