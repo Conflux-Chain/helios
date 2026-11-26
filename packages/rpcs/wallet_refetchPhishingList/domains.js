@@ -2,7 +2,7 @@
 const labels = /^[a-z0-9_-]+(?:\.[a-z0-9_-]+)*$/
 const MAX_ENTRIES = 500000
 
-function normalizeRule(value) {
+export function normalizeRule(value) {
   if (typeof value !== 'string') throw new Error('Invalid phishing list entry')
   if (!value || value.length > 1024 || /[\s\\/@:?#%*]/u.test(value)) return null
   let host = value.toLowerCase().replace(/\.$/, '')
@@ -24,18 +24,13 @@ function normalizeRule(value) {
 }
 
 function normalizeList(entries) {
-  if (
-    !Array.isArray(entries) ||
-    !entries.length ||
-    entries.length > MAX_ENTRIES
-  )
+  if (!Array.isArray(entries) || entries.length > MAX_ENTRIES)
     throw new Error('Invalid phishing list size')
   const hosts = new Set()
   for (const value of entries) {
     const host = normalizeRule(value)
     if (host) hosts.add(host)
   }
-  if (!hosts.size) throw new Error('Empty phishing domain list')
   return hosts
 }
 

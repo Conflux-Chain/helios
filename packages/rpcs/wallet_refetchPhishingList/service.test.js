@@ -1,256 +1,310 @@
 // @vitest-environment node
-import {createHash} from 'node:crypto'
 import {describe, expect, it, vi} from 'vitest'
-import {createDomainService, MAX_AGE} from './service.js'
-const prefix =
-  'https://raw.githubusercontent.com/conflux-fans/phishing-detect/main/'
-const whitelist = Array.from({length: 20}, (_, i) => `allow-${i}.test`)
-const blacklist = Array.from({length: 50000}, (_, i) => `block-${i}.test`)
-function publish(extra) {
-  const list = JSON.stringify({
-    version: 2,
-    whitelist,
-    blacklist: [...blacklist, extra],
-  })
-  return {
-    list,
-    stamp: {
-      allowed: whitelist.length,
-      blocked: blacklist.length + 1,
-      domainsSha256: createHash('sha256').update(list).digest('hex'),
-    },
-  }
+import {createDomainService} from './service.js'
+import {
+  FULL_URL,
+  diffUrl,
+  FLUENT_URL,
+  FULL_INTERVAL,
+  DIFF_INTERVAL,
+  FLUENT_INTERVAL,
+  applyDiffs,
+  fetchJSON,
+} from './feeds.js'
+
+const cursor = 1795567388
+const full = {
+  version: 2,
+  lastUpdated: cursor,
+  allowlist: Array.from({length: 20}, (_, i) => `allow-${i}.test`),
+  blocklist: [
+    ...Array.from({length: 50000}, (_, i) => `block-${i}.test`),
+    'old.test',
+  ],
+  fuzzylist: [],
+  blocklistPaths: [],
 }
-const first = publish('old.test'),
-  second = publish('new.test')
+const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
+  targetList: `eth_phishing_detect_config.${kind}`,
+  url,
+  timestamp,
+  isRemoval,
+})
 function setup() {
-  let data = {},
-    time = Date.UTC(2026, 0, 1),
-    live = first,
+  let time = Date.UTC(2026, 10, 25),
     locked = false
-  const storage = {
-    get: vi.fn(async () => ({...data})),
-    set: vi.fn(async patch => {
-      Object.assign(data, patch)
-    }),
+  const data = {},
+    storage = {
+      get: vi.fn(async () => ({...data})),
+      set: vi.fn(async patch => {
+        Object.assign(data, patch)
+      }),
+    }
+  const fixture = {
+    full,
+    diffs: [],
+    fluent: {version: 2, whitelist: [], blacklist: []},
+    fail: null,
   }
   const fetchFn = vi.fn(async url => {
-    if (url === prefix + 'source.json') return Response.json(live.stamp)
-    if (url === prefix + 'domains.json') return new Response(live.list)
-    throw new Error('Unexpected request')
+    if (fixture.fail?.(url)) throw new Error('offline')
+    if (url === FULL_URL)
+      return fixture.full === null
+        ? new Response(null, {status: 304})
+        : Response.json({data: fixture.full}, {headers: {etag: '"full"'}})
+    if (url === FLUENT_URL)
+      return fixture.fluent === null
+        ? new Response(null, {status: 304})
+        : Response.json(fixture.fluent, {headers: {etag: '"local"'}})
+    if (url.startsWith(diffUrl(''))) return Response.json({data: fixture.diffs})
+    throw new Error('unexpected URL')
   })
   const make = () => createDomainService({storage, fetchFn, now: () => time})
-  const service = make(),
-    isLocked = () => locked
+  let service = make()
+  const isLocked = () => locked
   return {
     storage,
     fetchFn,
-    make,
-    service,
+    fixture,
+    data,
     isLocked,
+    restart: () => {
+      service = make()
+    },
     advance: ms => {
       time += ms
-    },
-    publish: v => {
-      live = v
     },
     lock: v => {
       locked = v
     },
-    urls: () => fetchFn.mock.calls.map(([u]) => u.slice(prefix.length)),
-    check: (origin = 'https://new.test') =>
-      service.checkOrigin(origin, isLocked),
     refresh: () => service.refreshIfDue(isLocked),
+    check: (origin, signal) => service.checkOrigin(origin, isLocked, signal),
+    urls: () => fetchFn.mock.calls.map(([url]) => url),
   }
 }
-describe('Fluent mirror / demand-driven updates', () => {
-  it('returns unknown on first use, then a verdict for the same origin from the verified list', async () => {
+describe('MetaMask snapshot + diffs and independent Fluent configuration', () => {
+  it('bootstraps once, catches up from the server snapshot timestamp, and never transmits the origin', async () => {
     const s = setup()
-    const {verdict, rechecked} = await s.check('https://old.test/private?q=1')
+    s.fixture.diffs = [event('new.test', cursor + 1)]
+    const {verdict, rechecked} = await s.check('https://new.test/private')
     expect(verdict.status).toBe('unknown')
     expect((await rechecked).status).toBe('blocklisted')
-    expect(s.urls()).toEqual(['source.json', 'domains.json'])
+    expect(s.urls().sort()).toEqual(
+      [FULL_URL, FLUENT_URL, diffUrl(cursor)].sort(),
+    )
     expect(s.fetchFn).toHaveBeenCalledWith(
-      prefix + 'source.json',
+      FULL_URL,
       expect.objectContaining({
         credentials: 'omit',
         referrerPolicy: 'no-referrer',
         redirect: 'error',
       }),
     )
-    expect(s.storage.set).toHaveBeenCalledTimes(1)
+    s.restart()
+    expect((await s.check('https://new.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+    expect(s.urls()).toHaveLength(3)
   })
-  it('starts no timer and does not fetch while locked; unlock checks due stamps, not every unlock', async () => {
+  it('checks only when used: Fluent after 6 hours, deltas after 5 days, snapshot after 30 days', async () => {
     const s = setup()
-    s.lock(true)
+    await s.refresh()
+    s.fetchFn.mockClear()
+    s.advance(FLUENT_INTERVAL)
+    s.fixture.fluent = null
+    await s.refresh()
+    expect(s.urls()).toEqual([FLUENT_URL])
+    s.fetchFn.mockClear()
+    s.advance(DIFF_INTERVAL - FLUENT_INTERVAL - 1)
+    await s.refresh()
+    expect(s.urls()).toEqual([FLUENT_URL])
+    s.advance(1)
+    s.fixture.diffs = [event('new.test', cursor + 7)]
+    await s.refresh()
+    expect(s.urls()).toContain(diffUrl(cursor))
+    expect(s.urls()).not.toContain(FULL_URL)
+    s.fetchFn.mockClear()
+    s.restart()
+    s.advance(DIFF_INTERVAL)
+    s.fixture.diffs = []
+    await s.refresh()
+    expect(s.urls()).toContain(diffUrl(cursor + 7))
+    expect(s.urls()).not.toContain(FULL_URL)
+    s.advance(FULL_INTERVAL - 2 * DIFF_INTERVAL)
+    s.fetchFn.mockClear()
+    s.fixture.full = null
+    await s.refresh()
+    expect(s.urls()).toContain(FULL_URL)
+    expect(s.fetchFn).toHaveBeenCalledWith(
+      FULL_URL,
+      expect.objectContaining({headers: {'If-None-Match': '"full"'}}),
+    )
+    expect(s.urls()).toContain(diffUrl(cursor + 7))
+    expect((await s.check('https://new.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+  })
+  it('replaces the baseline after 30 days, replaying from the new snapshot rather than a local clock', async () => {
+    const s = setup()
+    await s.refresh()
+    s.advance(FULL_INTERVAL)
+    s.fixture.full = {
+      ...full,
+      lastUpdated: cursor + 55,
+      blocklist: full.blocklist.filter(x => x !== 'old.test'),
+    }
+    s.fixture.diffs = [event('latest.test', cursor + 56)]
+    expect(await s.refresh()).toBe(true)
+    expect(s.urls()).toContain(diffUrl(cursor + 55))
+    expect((await s.check('https://old.test')).verdict.status).toBe('no-match')
+    expect((await s.check('https://latest.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+  })
+  it('stages one full response across a failed catch-up and worker restart, without activating partial data', async () => {
+    const s = setup()
+    s.fixture.fail = url => url.startsWith(diffUrl(''))
+    await s.refresh()
+    expect((await s.check('https://old.test')).verdict.status).toBe('unknown')
+    s.restart()
+    s.fixture.fail = null
+    expect(await s.refresh()).toBe(true)
+    expect(s.urls().filter(u => u === FULL_URL)).toHaveLength(1)
+    expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(2)
+  })
+  it('does not retry the big list on normal delta errors, or lose Fluent policy on MetaMask failure', async () => {
+    const s = setup()
+    s.fixture.fluent = {
+      version: 2,
+      whitelist: ['old.test'],
+      blacklist: ['fluent-only.test'],
+    }
+    s.fixture.fail = u => u === FULL_URL
+    await s.refresh()
+    expect((await s.check('https://fluent-only.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+    expect((await s.check('https://other.test')).verdict.status).toBe('unknown')
+    s.advance(DIFF_INTERVAL)
+    s.fixture.fail = null
+    await s.refresh()
+    expect((await s.check('https://old.test')).verdict.status).toBe(
+      'allowlisted',
+    )
+    s.fetchFn.mockClear()
+    s.advance(DIFF_INTERVAL)
+    s.fixture.fail = u => u.startsWith(diffUrl(''))
+    await s.refresh()
+    await s.refresh()
+    expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(1)
+    expect(s.urls()).not.toContain(FULL_URL)
+    expect((await s.check('https://fluent-only.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+  })
+  it('does not erase valid independent sources if the other config is malformed or storage fails', async () => {
+    const s = setup()
+    await s.refresh()
+    s.advance(DIFF_INTERVAL)
+    s.fixture.fluent = {version: 2, blacklist: []}
+    s.fixture.diffs = [event('old.test', cursor + 1, 'blocklist', true)]
+    s.storage.set.mockRejectedValueOnce(new Error('quota'))
     expect(await s.refresh()).toBe(false)
-    expect(await (await s.check()).rechecked).toBeNull()
-    expect(s.urls()).toEqual([])
-    s.lock(false)
-    await s.refresh()
-    s.advance(MAX_AGE - 1)
-    await s.refresh()
-    expect(s.urls()).toHaveLength(2)
+    s.restart()
     s.lock(true)
-    s.advance(2)
-    await s.refresh()
-    expect(s.urls()).toHaveLength(2)
-    s.lock(false)
-    await s.refresh()
-    expect(s.urls()).toEqual(['source.json', 'domains.json', 'source.json'])
-    s.advance(MAX_AGE - 1)
-    await s.refresh()
-    expect(s.urls()).toHaveLength(3)
+    expect((await s.check('https://old.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+    expect((await s.check('https://other.test')).verdict.status).toBe(
+      'no-match',
+    )
   })
-  it('serves stale data immediately; overlapping unlock and domain checks share one download and recheck each origin', async () => {
-    const s = setup()
-    await s.refresh()
-    s.advance(MAX_AGE)
-    s.publish(second)
-    let release
-    const wait = new Promise(r => {
-      release = r
-    })
-    s.fetchFn.mockImplementationOnce(async () => {
-      await wait
-      return Response.json(second.stamp)
-    })
-    const change = s.refresh()
-    const a = await s.check('https://old.test'),
-      b = await s.check('https://new.test')
-    expect(a.verdict.status).toBe('blocklisted')
-    expect(b.verdict.status).toBe('no-match')
-    expect(s.urls()).toHaveLength(3)
-    release()
-    expect(await change).toBe(true)
-    expect((await a.rechecked).status).toBe('no-match')
-    expect((await b.rechecked).status).toBe('blocklisted')
-    expect(s.urls()).toHaveLength(4)
-  })
-  it('rechecks a still-pending fresh lookup on the next publication, not a cancelled request', async () => {
+  it('coalesces concurrent checks, immediately serves stale data, and updates only a still-pending request', async () => {
     const s = setup()
     await s.refresh()
     const pending = new AbortController(),
       dismissed = new AbortController()
-    const a = await s.service.checkOrigin(
-      'https://new.test',
-      s.isLocked,
-      pending.signal,
-    )
-    const b = await s.service.checkOrigin(
-      'https://new.test',
-      s.isLocked,
-      dismissed.signal,
-    )
+    const a = await s.check('https://new.test', pending.signal),
+      b = await s.check('https://new.test', dismissed.signal)
     expect(a.verdict.status).toBe('no-match')
-    expect(s.urls()).toHaveLength(2)
     dismissed.abort()
     expect(await b.rechecked).toBeNull()
-    // An unchanged stamp is not a new publication.
-    s.advance(MAX_AGE)
-    expect(await s.refresh()).toBe(false)
-    s.advance(MAX_AGE)
-    s.publish(second)
-    expect(await s.refresh()).toBe(true)
+    s.advance(DIFF_INTERVAL)
+    let release
+    s.fetchFn.mockImplementationOnce(
+      () =>
+        new Promise(r => {
+          release = r
+        }),
+    )
+    const refreshing = s.refresh()
+    const c = await s.check('https://old.test')
+    expect(c.verdict.status).toBe('blocklisted')
+    release(
+      Response.json({
+        data: [
+          event('new.test', cursor + 1),
+          event('old.test', cursor + 1, 'blocklist', true),
+        ],
+      }),
+    )
+    await refreshing
     expect((await a.rechecked).status).toBe('blocklisted')
-    expect(s.urls()).toEqual([
-      'source.json',
-      'domains.json',
-      'source.json',
-      'source.json',
-      'domains.json',
-    ])
+    expect((await c.rechecked).status).toBe('no-match')
+    expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(2)
   })
-  it('uses the persisted success time across worker restarts; an unchanged digest downloads nothing else', async () => {
+  it('never starts requests while locked, and does not start the follow-up diff after relock', async () => {
     const s = setup()
+    s.lock(true)
     await s.refresh()
-    const svc = s.make()
-    const a = await svc.checkOrigin('https://old.test', s.isLocked)
-    expect(a.verdict.status).toBe('blocklisted')
-    expect(await a.rechecked).toBeNull()
-    expect(s.urls()).toHaveLength(2)
-    s.advance(MAX_AGE)
-    expect(await svc.refreshIfDue(s.isLocked)).toBe(false)
-    expect(s.urls()).toHaveLength(3)
-    expect(Object.keys(s.storage.set.mock.lastCall[0])).toEqual([
-      'phishing.fluentCheck.v1',
-    ])
-    await s.make().refreshIfDue(s.isLocked)
-    expect(s.urls()).toHaveLength(3)
-  })
-  it.each([
-    'offline',
-    'status',
-    'stamp',
-    'digest',
-    'counts',
-    'schema',
-    'quota',
-    'oversize',
-  ])(
-    'retains the last good pair and throttles retries after %s',
-    async mode => {
-      const s = setup()
-      await s.refresh()
-      s.advance(MAX_AGE)
-      s.publish(second)
-      if (mode === 'offline')
-        s.fetchFn.mockRejectedValueOnce(new Error('offline'))
-      if (mode === 'status')
-        s.fetchFn.mockResolvedValueOnce(new Response(null, {status: 503}))
-      if (mode === 'stamp')
-        s.fetchFn.mockResolvedValueOnce(Response.json({domainsSha256: 'bad'}))
-      if (mode === 'digest') s.publish({...first, stamp: second.stamp})
-      if (mode === 'counts')
-        s.publish({...second, stamp: {...second.stamp, allowed: 1}})
-      if (mode === 'schema') {
-        const list = JSON.stringify({version: 3})
-        s.publish({
-          list,
-          stamp: {
-            ...second.stamp,
-            domainsSha256: createHash('sha256').update(list).digest('hex'),
-          },
-        })
-      }
-      if (mode === 'quota')
-        s.storage.set.mockRejectedValueOnce(new Error('quota'))
-      if (mode === 'oversize')
-        s.fetchFn.mockResolvedValueOnce(new Response(new Uint8Array(8193)))
-      const old = await s.check('https://old.test')
-      expect(old.verdict.status).toBe('blocklisted')
-      expect(await old.rechecked).toBeNull()
-      const calls = s.urls().length
-      await s.refresh()
-      expect(s.urls()).toHaveLength(calls)
-      s.publish(second)
-      s.advance(61000)
-      expect(await s.refresh()).toBe(true)
-    },
-  )
-  it('does not download the large list when the wallet relocks during the stamp request', async () => {
-    const s = setup()
-    await s.refresh()
-    s.advance(MAX_AGE)
+    expect(await (await s.check('https://old.test')).rechecked).toBeNull()
+    expect(s.urls()).toEqual([])
+    s.lock(false)
     s.fetchFn.mockImplementationOnce(async () => {
       s.lock(true)
-      return Response.json(second.stamp)
+      return Response.json({data: full})
     })
-    expect(await s.refresh()).toBe(false)
-    expect(s.urls()).toEqual(['source.json', 'domains.json', 'source.json'])
-    expect(s.storage.set).toHaveBeenCalledTimes(1)
-  })
-  it('discards inconsistent storage and recovers on next unlocked check', async () => {
-    const s = setup()
     await s.refresh()
-    s.storage.get.mockResolvedValueOnce({
-      'phishing.fluentDomains.v1': 'bad',
-      'phishing.fluentCheck.v1': {hash: first.stamp.domainsSha256},
-    })
-    const {verdict, rechecked} = await s
-      .make()
-      .checkOrigin('https://old.test', s.isLocked)
-    expect(verdict.status).toBe('unknown')
-    expect((await rechecked).status).toBe('blocklisted')
+    expect(s.urls()).not.toContain(diffUrl(cursor))
+  })
+})
+
+describe('MetaMask diff wire format', () => {
+  const base = {
+    rules: {allow: new Set(), block: new Set(['unchanged.test'])},
+    cursor,
+  }
+  it('orders same-feed add/remove mutations, ignores stale/foreign/path records and uses a server cursor', () => {
+    const next = applyDiffs(base, [
+      event('unchanged.test', cursor, 'blocklist', true),
+      event('x.test', cursor + 4, 'blocklist', true),
+      event('x.test', cursor + 2),
+      event('ok.test', cursor + 4, 'allowlist'),
+      event('shared.test/only', cursor + 6, 'blocklistPaths'),
+      {...event('foreign.test', cursor + 99), targetList: 'other.blocklist'},
+    ])
+    expect([...next.rules.allow]).toEqual(['ok.test'])
+    expect([...next.rules.block]).toEqual(['unchanged.test'])
+    expect(next.cursor).toBe(cursor + 6)
+    expect(base.rules.allow.size).toBe(0)
+    expect(base.cursor).toBe(cursor)
+  })
+  it('rejects malformed batches without partially changing the input', () => {
+    expect(() =>
+      applyDiffs(base, [
+        event('new.test', cursor + 1),
+        {...event('x.test', cursor + 2), isRemoval: 'false'},
+      ]),
+    ).toThrow()
+    expect([...base.rules.block]).toEqual(['unchanged.test'])
+    expect(applyDiffs(base, [])).toEqual(base)
+  })
+  it('bounds downloads and rejects HTTP errors or unsolicited 304', async () => {
+    for (const res of [
+      new Response(new Uint8Array(9)),
+      new Response(null, {status: 503}),
+      new Response(null, {status: 304}),
+    ])
+      await expect(fetchJSON(FULL_URL, async () => res, 8)).rejects.toThrow()
   })
 })
