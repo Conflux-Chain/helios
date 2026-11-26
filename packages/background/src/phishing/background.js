@@ -1,37 +1,25 @@
 import browser from 'webextension-polyfill'
-import {
-  createDomainService,
-  downloadFeed,
-  FEED_URL,
-  SNAPSHOT_PATH,
-  SYNC_MINUTES,
-} from './service.js'
+import {createDomainService} from './service.js'
 
 const domains = createDomainService({
   storage: browser.storage.local,
-  loadBundled: async () =>
-    (await downloadFeed(browser.runtime.getURL(SNAPSHOT_PATH), fetch)).feed,
-  download: etag => downloadFeed(FEED_URL, fetch, etag),
+  fetchFn: (...args) => fetch(...args),
 })
 
-// Background-only API for the next PR. Never send an origin to the feed server.
+// Background only. The caller supplies a live wallet lock-state getter, not a DApp parameter.
 export const checkPhishingOrigin = domains.checkOrigin
 
-export function startDomainSync(
-  alarms = browser.alarms,
-  refresh = domains.refresh,
-) {
-  const name = 'phishing.refreshMetaMaskDomains'
-  // Register synchronously so an alarm can wake an MV3 worker. Do not reset
-  // an existing alarm on every wake, or frequent restarts could postpone it forever.
-  alarms.onAlarm.addListener(alarm => {
-    if (alarm.name === name) return refresh()
-  })
-  return alarms.get(name).then(existing => {
-    if (!existing)
-      return alarms.create(name, {
-        delayInMinutes: 1,
-        periodInMinutes: SYNC_MINUTES,
-      })
-  })
+export function withDomainRefresh(afterUnlock, refresh = domains.refreshIfDue) {
+  return {
+    ...afterUnlock,
+    permissions: {
+      ...afterUnlock.permissions,
+      db: [...afterUnlock.permissions.db, 'getLocked'],
+    },
+    main(args) {
+      // No wallet lock/unlock side effect waits on the network. No periodic wakeups.
+      void refresh(args.db.getLocked)
+      return afterUnlock.main(args)
+    },
+  }
 }

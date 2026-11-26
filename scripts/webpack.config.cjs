@@ -177,10 +177,6 @@ const defaultConfig = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.join(packagesPath, 'background/src/phishing/snapshot'),
-          to: 'phishing',
-        },
-        {
           from: path.join(packagesPath, 'browser-extension/_locales'),
           to: path.join(path.resolve(), `./dist/${targetBrowser}/_locales`),
         },

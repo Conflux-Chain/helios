@@ -1,20 +1,15 @@
-# Fluent phishing domain lists (background only)
+# Fluent phishing domains (background only)
 
-`checkPhishingOrigin(origin)` returns a local verdict for an HTTP(S) origin: `blocklisted`, `allowlisted`, `no-match`, or `unknown`. A match also contains `hostname` and `matchedDomain`. `no-match` is not a safety guarantee. Callers should supply the origin derived from the extension port, not a domain asserted by a DApp. No URL lookup, telemetry, DApp callback, confirmation UI or RPC interception is introduced here.
+The wallet reads only the public [Fluent mirror](https://github.com/conflux-fans/phishing-detect). The mirror publishes both MetaMask domain lists as `domains.json` and a small `source.json` stamp containing the upstream revision, input/ license hashes, counts and SHA-256 of the exact published bytes. The wallet never sends visited URLs. There is no bundled list, timer, alarm permission, per-site override, UI or RPC enforcement in this change.
 
-## Source and scope
+## When does the wallet go online?
 
-Both lists come from the same [MetaMask eth-phishing-detect config](https://github.com/MetaMask/eth-phishing-detect/blob/main/src/config.json). For schema version 2 we consume `whitelist` and `blacklist`; the allowed host (or one of its subdomains) takes precedence. The candidate origin is parsed with `URL`, including IDNA handling. Matching is case-insensitive on whole DNS labels, not on substrings. This version does **not** implement fuzzy matching, URL/path rules, IPFS/CID matching or transaction/contract-address checks. Path entries are never broadened to their shared host. Localhost and IPv4 entries in the feed are supported as exact matches.
+- Unlock starts a non-blocking freshness check. While still unlocked, the next request that needs a domain verdict also checks freshness. No activity means no network request, even after six hours. A live `getLocked` getter gates networking; do not pass a DApp-supplied flag.
+- If a validated local copy was checked successfully less than six hours ago, use it without contacting the mirror. When due, fetch only the stamp. Same hash: persist the new successful check time, not the full list. Different hash (or first use): fetch the list, verify SHA-256, schema and counts, then store the list and metadata in one write before activating it. Concurrent requests share the refresh.
+- An offline, incomplete, invalid or mismatched response, or a failed write, keeps the previous list and success time. A one-minute in-memory retry delay prevents repeated checks during an outage. Without any usable local list the verdict is `unknown`, not `no-match`.
 
-A future Fluent mirror could be published in [conflux-fans/phishing-detect](https://github.com/conflux-fans/phishing-detect); this version does not depend on a mirror or publish to it.
+## Pending requests (consumer contract)
 
-## Lifecycle
+`await checkPhishingOrigin(origin, getLocked)` returns `{verdict, rechecked}`. `verdict` is the local result; it never waits for the server. `rechecked` resolves to a second verdict for **the same origin** only if new verified rules were installed while unlocked, otherwise `null`. A future confirmation UI must bind the second result to the original pending request ID/origin and ignore it if dismissed, replaced or already executed. Do not trigger a business action from a recheck.
 
-- Chrome/Edge MV3 and Firefox MV2 use the same background entry. A browser alarm starts after one minute and repeats every six hours. A worker restart re-registers the listener and only recreates the alarm if missing.
-- Checks do not wait for a remote response. On first use, read the last valid pair from `storage.local`, otherwise load the packaged JSON asset. The data is not exposed as a web-accessible resource or bundled into popup/content-script JS.
-- Updates use a fixed HTTPS URL, omit credentials/referrer, disallow redirects, time out after 30 seconds and cap decoded JSON at 12 MiB. Conditional requests use the last accepted ETag. A failed download, parse, validation or write retains the existing pair; both lists are persisted with the ETag in a single storage write before activating them. No persistent per-site whitelist.
-- Validation rejects unsupported schema, non-string entries, oversized arrays, unusable lists, fewer than 50,000 unique blocked hosts / 20 allowed hosts, or a drop of more than half from the active list. These are sanity checks, **not** a signature or proof of feed authenticity. Review legitimate large upstream list changes before relaxing the limits.
-
-## Rebuild the packaged snapshot
-
-The bundled asset records the source commit and SHA-256 of its unmodified input. To reproduce it, run `node packages/background/src/phishing/update-snapshot.mjs <full-upstream-commit>` with Node 22 and curl. For the initial snapshot (`ef7ed0fdf7594ff3bb23479245f806083ee635da`) this retained 59 allowed and 119,089 blocked hosts, excluding 1,746 path-bearing block entries. The assets include MetaMask's original license, copyright and attribution. Keep both files together on redistribution. No remote scripts are loaded.
+`blocklisted` is the only domain-warning result; `allowlisted` and `no-match` do not certify site safety. Match whole DNS labels (including subdomains), normalize IDNs and trailing dots, and give upstream allowlisted hosts precedence. Path-only entries are not broadened to a shared host; fuzzy and CID matching are outside this version.
