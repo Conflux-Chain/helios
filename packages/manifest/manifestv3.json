@@ -77,6 +77,7 @@
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "permissions": [
+    "alarms",
     "storage",
     "unlimitedStorage",
     "clipboardWrite",

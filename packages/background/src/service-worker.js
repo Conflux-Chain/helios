@@ -12,6 +12,13 @@ import fillInitialDBData from './init-db.js'
 import * as bb from '@fluent-wallet/webextension'
 
 import {rpcEngineOpts} from './rpc-engine-opts.js'
+import {startDomainSync} from './phishing/background.js'
+
+// Both extension manifests use this entry. Register before asynchronous wallet init.
+if (!IS_TEST_MODE)
+  startDomainSync().catch(() =>
+    console.warn('Phishing list sync could not be scheduled'),
+  )
 
 // # setup
 // ## dev helper
