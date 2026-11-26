@@ -3,5 +3,6 @@ releases:
   "@fluent-wallet/wallet_after-unlock": patch
 
 declined:
+  - "@fluent-wallet/wallet_refetch-phishing-list"
   - browser-extension
   - helios

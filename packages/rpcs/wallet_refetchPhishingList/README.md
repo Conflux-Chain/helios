@@ -1,4 +1,6 @@
-# Fluent phishing domains (background only)
+# @fluent-wallet/wallet_refetch-phishing-list
+
+Internal RPC for the background: `index.js` exposes RPC metadata and dispatch, `client.js` owns the one extension-storage-backed client, `service.js` handles freshness and downloads, and `domains.js` matches domains without browser APIs. Other background consumers can import `checkPhishingOrigin` from `@fluent-wallet/wallet_refetch-phishing-list/client.js` to share the same cache and in-flight refresh.
 
 The wallet reads only the public [Fluent mirror](https://github.com/conflux-fans/phishing-detect). The mirror publishes both MetaMask domain lists as `domains.json` and a small `source.json` stamp containing the upstream revision, input/ license hashes, counts and SHA-256 of the exact published bytes. The wallet never sends visited URLs. There is no bundled list, timer, alarm permission, per-site override, UI or RPC enforcement in this change.
 

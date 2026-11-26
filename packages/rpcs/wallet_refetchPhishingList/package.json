@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/wallet_refetch-phishing-list",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@fluent-wallet/spec": "1.0.24",
+    "webextension-polyfill": "0.8.0"
+  }
+}
