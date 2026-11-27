@@ -11,6 +11,7 @@ export const permissions = {
   external: [],
   methods: [
     'wallet_refetchTokenList',
+    'wallet_refetchPhishingList',
     'wallet_refetchBalance',
     'wallet_discoverAccounts',
     'wallet_createAddress',
@@ -109,6 +110,11 @@ async function fillMissingAccountAddress({
 
 export const main = async args => {
   await fillMissingAccountAddress(args)
+  // This RPC only starts the background check. Isolate dispatch errors so a
+  // failed refresh cannot prevent an unlock or the token-list / balance sync.
+  await args.rpcs
+    .wallet_refetchPhishingList({errorFallThrough: true}, undefined)
+    .catch(() => {})
   try {
     await updateBalanceInfo(args)
     // eslint-disable-next-line no-empty

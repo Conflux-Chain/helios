@@ -156,6 +156,7 @@
     "@fluent-wallet/wallet_prepare-sponsorship": "workspace:packages/rpcs/wallet_prepareSponsorship",
     "@fluent-wallet/wallet_prepare-user-operation": "workspace:packages/rpcs/wallet_prepareUserOperation",
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance",
+    "@fluent-wallet/wallet_refetch-phishing-list": "workspace:packages/rpcs/wallet_refetchPhishingList",
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList",
     "@fluent-wallet/wallet_refetch-tx-list": "workspace:*",
     "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata",

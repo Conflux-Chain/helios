@@ -171,6 +171,7 @@ import * as walletImportPrivateKey from '@fluent-wallet/wallet_import-private-ke
 import * as walletIsLocked from '@fluent-wallet/wallet_is-locked'
 import * as walletLock from '@fluent-wallet/wallet_lock'
 import * as walletRefreshBalance from '@fluent-wallet/wallet_refetch-balance'
+import * as walletRefetchPhishingList from '@fluent-wallet/wallet_refetch-phishing-list'
 import * as walletRefetchTokenList from '@fluent-wallet/wallet_refetch-token-list'
 import * as walletRegisterSiteMetadata from '@fluent-wallet/wallet_register-site-metadata'
 import * as walletRequestPermissions from '@fluent-wallet/wallet_request-permissions'
@@ -284,6 +285,7 @@ export const rpcEngineOpts = {
     walletDeleteApp,
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
+    walletRefetchPhishingList,
     walletRefetchTxList,
     walletUpdateTokenList,
     walletGetBlockchainExplorerUrl,
