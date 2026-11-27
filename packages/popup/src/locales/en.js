@@ -627,6 +627,11 @@ const en = {
       'Unable to estimate asset changes. Review transaction details before confirming.',
     youSend: 'You send',
     youReceive: 'You receive',
+    youMaximumSend: 'Maximum send',
+    youMinimumReceive: 'Minimum receive',
+    swapDetails: 'Swap details',
+    swapDetailsTooltip:
+      'Swap details are decoded from request parameters, not simulation results. Amounts and limits describe the request and do not guarantee actual spending or receipt. ',
   },
 }
 

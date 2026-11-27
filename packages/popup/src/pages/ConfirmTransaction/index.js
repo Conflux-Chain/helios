@@ -807,12 +807,13 @@ function ConfirmTransaction() {
                 : undefined
             }
             // unknown transaction
-            tx={sendTransactionParams}
             sessionId={sessionId}
-            showEstimateAssetChanges={
+            tx={
               !confirmDisabled &&
               !sponsoredUserOperation.loading &&
               !isSponsoredSubmission
+                ? sendTransactionParams
+                : undefined
             }
           />
           <InfoList

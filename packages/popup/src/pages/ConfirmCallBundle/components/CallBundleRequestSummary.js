@@ -2,25 +2,24 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Tooltip from '@fluent-wallet/component-tooltip'
-import EstimateChanges from '../../../components/EstimateChanges'
+import TransactionAssetDetails from '../../../components/TransactionAssetDetails'
 
 function CallBundleRequestSummary({callCount, tx, sessionId}) {
   const {t} = useTranslation()
 
   return (
-    <section className="relative flex min-h-[81px] flex-col items-center gap-[7px] px-3 pt-4 pb-6">
-      <img
-        src="/images/signature-request-bg.svg"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full"
-      />
-      <h2 className="relative flex items-center gap-1 text-base font-medium leading-[18px] text-primary">
+    <section
+      className="flex flex-col items-center gap-[7px] px-3 pt-4 pb-6 mb-4 rounded-t-[8px] bg-no-repeat bg-bottom bg-cover"
+      style={{
+        backgroundImage: 'url(/images/signature-request-bg.svg)',
+      }}
+    >
+      <h2 className="flex items-center gap-1 text-base font-medium leading-[18px] text-primary">
         <img src="/images/sign-icon.svg" width={12} height={12} alt="" />
         {t('signatureRequest')}
       </h2>
 
-      <div className="relative flex items-center justify-center gap-1 text-sm leading-4 text-gray-40">
+      <div className="flex items-center justify-center gap-1 text-sm leading-4 text-gray-40">
         <span>{t('callBundleTransactionCount', {count: callCount})}</span>
         <Tooltip
           placement="bottom"
@@ -38,7 +37,7 @@ function CallBundleRequestSummary({callCount, tx, sessionId}) {
           </button>
         </Tooltip>
       </div>
-      <EstimateChanges tx={tx} sessionId={sessionId} />
+      <TransactionAssetDetails tx={tx} sessionId={sessionId} />
     </section>
   )
 }
