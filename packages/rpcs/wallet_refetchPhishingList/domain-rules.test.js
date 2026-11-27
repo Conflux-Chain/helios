@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest'
-import {compileFeed, matchOrigin} from './domain-rules.js'
+import {buildDomainRules, matchOrigin} from './domain-rules.js'
 
-const rules = compileFeed({
+const rules = buildDomainRules({
   version: 2,
   whitelist: ['accounts.flagged.test', 'both.test', 'localhost'],
   blacklist: [

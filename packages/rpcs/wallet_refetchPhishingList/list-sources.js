@@ -1,5 +1,5 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
-import {compileFeed, normalizeRule} from './domain-rules.js'
+import {buildDomainRules, normalizeRule} from './domain-rules.js'
 
 // MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
@@ -18,7 +18,7 @@ function parseMetamaskFullList(payload) {
     data.version < 0
   )
     throw new Error('Invalid MetaMask full list')
-  const rules = compileFeed({
+  const rules = buildDomainRules({
     version: 2,
     whitelist: data.allowlist,
     blacklist: data.blocklist,
@@ -27,7 +27,7 @@ function parseMetamaskFullList(payload) {
   return {rules, cursor: data.lastUpdated}
 }
 function parseFluentFullList(payload) {
-  return {rules: compileFeed(payload)}
+  return {rules: buildDomainRules(payload)}
 }
 
 export function validateSize(rules, previous) {

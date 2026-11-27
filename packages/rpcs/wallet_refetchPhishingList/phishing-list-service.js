@@ -1,5 +1,5 @@
 import {
-  compileFeed,
+  buildDomainRules,
   matchOrigin,
   sameRules,
   serializeRules,
@@ -35,10 +35,10 @@ function isDue(time, lastCheck, interval) {
   )
 }
 
-function restoreRules(feed, validate) {
-  if (!feed) return undefined
+function restoreRules(domainList, validate) {
+  if (!domainList) return undefined
   try {
-    const rules = compileFeed(feed)
+    const rules = buildDomainRules(domainList)
     if (validate) validate(rules)
     return rules
   } catch {

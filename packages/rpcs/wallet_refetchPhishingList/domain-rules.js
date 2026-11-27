@@ -34,11 +34,12 @@ function normalizeList(entries) {
   return hosts
 }
 
-export function compileFeed(feed) {
-  if (feed?.version !== 2) throw new Error('Unsupported phishing list format')
+export function buildDomainRules(domainList) {
+  if (domainList?.version !== 2)
+    throw new Error('Unsupported phishing list format')
   return {
-    allow: normalizeList(feed.whitelist),
-    block: normalizeList(feed.blacklist),
+    allow: normalizeList(domainList.whitelist),
+    block: normalizeList(domainList.blacklist),
   }
 }
 
