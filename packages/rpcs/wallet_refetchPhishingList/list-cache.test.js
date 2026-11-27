@@ -169,16 +169,53 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       'blocklisted',
     )
   })
-  it('stages one full response across a failed catch-up and worker restart, without activating partial data', async () => {
+  it('serves the verified full list when catch-up fails and retries only diffs after restart', async () => {
     const s = setup()
     s.fixture.fail = url => url.startsWith(diffUrl(''))
-    await s.refresh()
-    expect((await s.check('https://old.test')).verdict.status).toBe('unknown')
+    const first = await s.check('https://old.test')
+    expect(first.verdict.status).toBe('unknown')
+    expect((await first.rechecked).status).toBe('blocklisted')
+    expect(Object.keys(s.data).sort()).toEqual([
+      'phishing.fluent',
+      'phishing.fluent.meta',
+      'phishing.metamask',
+      'phishing.metamask.meta',
+    ])
+    expect(s.data['phishing.metamask.meta']).toMatchObject({
+      cursor,
+      diffAt: null,
+    })
     s.restart()
     s.fixture.fail = null
-    expect(await s.refresh()).toBe(true)
+    s.fixture.diffs = [event('old.test', cursor + 1, 'blocklist', true)]
+    const afterRestart = await s.check('https://old.test')
+    expect(afterRestart.verdict.status).toBe('blocklisted')
+    expect((await afterRestart.rechecked).status).toBe('no-match')
+    expect(s.data['phishing.metamask.meta'].cursor).toBe(cursor + 1)
     expect(s.urls().filter(u => u === FULL_URL)).toHaveLength(1)
     expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(2)
+  })
+  it('never rolls back newer local diffs when the monthly full list is older and catch-up fails', async () => {
+    const s = setup()
+    s.fixture.diffs = [
+      event('new.test', cursor + 10),
+      event('old.test', cursor + 10, 'blocklist', true),
+    ]
+    await s.refresh()
+    s.advance(FULL_INTERVAL)
+    s.fixture.fail = url => url.startsWith(diffUrl(''))
+    expect(await s.refresh()).toBe(false)
+    expect(s.urls()).toContain(diffUrl(cursor + 10))
+    expect(s.data['phishing.metamask.meta']).toMatchObject({
+      cursor: cursor + 10,
+      diffAt: null,
+    })
+    s.lock(true)
+    s.restart()
+    expect((await s.check('https://new.test')).verdict.status).toBe(
+      'blocklisted',
+    )
+    expect((await s.check('https://old.test')).verdict.status).toBe('no-match')
   })
   it('does not retry the big list on normal delta errors, or lose Fluent policy on MetaMask failure', async () => {
     const s = setup()
@@ -306,7 +343,7 @@ it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not
     expect(await service.refreshIfDue(isLocked)).toBe(true)
     time += FLUENT_INTERVAL
     expect(await service.refreshIfDue(isLocked)).toBe(false)
-    expect(storage.set.mock.lastCall[0]['phishing.fluent.v2.meta']).toEqual({
+    expect(storage.set.mock.lastCall[0]['phishing.fluent.meta']).toEqual({
       etag: '"v1"',
       checkedAt: time,
     })

@@ -12,18 +12,11 @@ export const DIFF_INTERVAL = 5 * DAY
 export const FLUENT_INTERVAL = DAY
 
 // Keep the sources separate: a Fluent config is not a copy of MetaMask's list.
-const METAMASK_LISTS = 'phishing.metamask.v2'
+const METAMASK_LISTS = 'phishing.metamask'
 const METAMASK_META = `${METAMASK_LISTS}.meta`
-const STAGED_FULL_LIST = `${METAMASK_LISTS}.pending`
-const FLUENT_LISTS = 'phishing.fluent.v2'
+const FLUENT_LISTS = 'phishing.fluent'
 const FLUENT_META = `${FLUENT_LISTS}.meta`
-const CACHE_KEYS = [
-  METAMASK_LISTS,
-  METAMASK_META,
-  STAGED_FULL_LIST,
-  FLUENT_LISTS,
-  FLUENT_META,
-]
+const CACHE_KEYS = [METAMASK_LISTS, METAMASK_META, FLUENT_LISTS, FLUENT_META]
 const RETRY_DELAY = 15 * 60 * 1000
 
 function isDue(time, lastCheck, interval) {
@@ -70,7 +63,6 @@ export function createListCache({
 }) {
   let metaMaskLists
   let metaMaskMeta = {}
-  let stagedFullList
   let fluentLists
   let fluentMeta = {}
   let cacheReady
@@ -86,21 +78,6 @@ export function createListCache({
       if (metaMaskLists) metaMaskMeta = meta
     }
 
-    const staged = cache[STAGED_FULL_LIST]
-    if (
-      validCursor(staged?.cursor) &&
-      !isDue(now(), staged.fetchedAt, FULL_INTERVAL)
-    ) {
-      const domainLists = restoreDomainLists(staged.feed, validateSize)
-      if (domainLists)
-        stagedFullList = {
-          domainLists,
-          cursor: staged.cursor,
-          fetchedAt: staged.fetchedAt,
-          etag: staged.etag,
-        }
-    }
-
     fluentLists = restoreDomainLists(cache[FLUENT_LISTS])
     if (fluentLists) fluentMeta = cache[FLUENT_META] ?? {}
   }
@@ -111,83 +88,65 @@ export function createListCache({
     return cacheReady
   }
 
-  async function getFullListForCatchUp(isLocked) {
-    if (
-      stagedFullList &&
-      !isDue(now(), stagedFullList.fetchedAt, FULL_INTERVAL)
-    )
-      return stagedFullList
+  async function saveMetaMaskLists(domainLists, meta) {
+    // The cursor describes these exact domains. Commit both before exposing
+    // changes to readers; an empty diff only needs a metadata write.
+    const changed = !areDomainListsEqual(metaMaskLists, domainLists)
+    const patch = {[METAMASK_META]: meta}
+    if (changed) patch[METAMASK_LISTS] = serializeDomainLists(domainLists)
+    await storage.set(patch)
+    metaMaskLists = domainLists
+    metaMaskMeta = meta
+    return changed
+  }
 
-    const response = await listFetcher.fetchMetamaskFullList(
-      metaMaskLists && metaMaskMeta.etag,
-    )
-    if (isLocked()) return null
-    const fetchedAt = now()
-    if (response === null) {
-      // HTTP 304: our active lists already include previous diffs. Resume from
-      // their cursor instead of replaying everything since the original full list.
-      stagedFullList = {
-        domainLists: metaMaskLists,
-        cursor: metaMaskMeta.cursor,
-        fetchedAt,
-        etag: metaMaskMeta.etag,
-      }
-    } else {
-      const {domainLists, cursor, etag} = response
-      // Save the baseline, but don't serve it yet. If catch-up fails or the worker
-      // restarts, retry only the delta and keep serving the last verified lists.
-      await storage.set({
-        [STAGED_FULL_LIST]: {
-          feed: serializeDomainLists(domainLists),
-          cursor,
-          fetchedAt,
-          etag,
-        },
-      })
-      stagedFullList = {domainLists, cursor, fetchedAt, etag}
-    }
-    return stagedFullList
+  async function updateMetaMaskDiffs(isLocked) {
+    const next = await listFetcher.fetchMetamaskDiffs({
+      domainLists: metaMaskLists,
+      cursor: metaMaskMeta.cursor,
+    })
+    validateSize(next.domainLists, metaMaskLists)
+    if (next.cursor < metaMaskMeta.cursor)
+      throw new Error('Outdated MetaMask response')
+    if (isLocked()) return false
+    return saveMetaMaskLists(next.domainLists, {
+      ...metaMaskMeta,
+      cursor: next.cursor,
+      diffAt: now(),
+    })
   }
 
   async function updateMetaMask(isLocked) {
-    const needsFullList =
-      !metaMaskLists || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)
-    if (!needsFullList && !isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL))
-      return false
-
-    const baseline = needsFullList
-      ? await getFullListForCatchUp(isLocked)
-      : {
-          domainLists: metaMaskLists,
-          cursor: metaMaskMeta.cursor,
-          fetchedAt: metaMaskMeta.fullAt,
-          etag: metaMaskMeta.etag,
-        }
-    if (!baseline || isLocked()) return false
-
-    const next = await listFetcher.fetchMetamaskDiffs(baseline)
-    validateSize(next.domainLists, metaMaskLists)
-    if (metaMaskLists && next.cursor < metaMaskMeta.cursor)
-      throw new Error('Outdated MetaMask response')
-    if (isLocked()) return false
-
-    // The server cursor belongs to these exact lists. Persist them together
-    // before exposing the new verdict. Empty diffs only need a metadata write.
-    const changed = !areDomainListsEqual(metaMaskLists, next.domainLists)
-    const nextMeta = {
-      fullAt: baseline.fetchedAt,
-      diffAt: now(),
-      cursor: next.cursor,
-      etag: baseline.etag,
+    let fullChanged = false
+    if (!metaMaskLists || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)) {
+      const full = await listFetcher.fetchMetamaskFullList(
+        metaMaskLists && metaMaskMeta.etag,
+      )
+      if (isLocked()) return false
+      // A monthly full list may predate diffs we already applied. In that
+      // case (or on 304), keep the newer local list and its cursor.
+      let domainLists = metaMaskLists
+      let cursor = metaMaskMeta.cursor
+      if (full && (!metaMaskLists || full.cursor >= cursor)) {
+        validateSize(full.domainLists, metaMaskLists)
+        domainLists = full.domainLists
+        cursor = full.cursor
+      }
+      fullChanged = await saveMetaMaskLists(domainLists, {
+        cursor,
+        fullAt: now(),
+        etag: full ? full.etag : metaMaskMeta.etag,
+        // Catch up immediately. Even after a restart, a failed diff remains due.
+        diffAt: null,
+      })
     }
-    const patch = {[METAMASK_META]: nextMeta}
-    if (changed) patch[METAMASK_LISTS] = serializeDomainLists(next.domainLists)
-    if (needsFullList) patch[STAGED_FULL_LIST] = null
-    await storage.set(patch)
-    metaMaskMeta = nextMeta
-    metaMaskLists = next.domainLists
-    stagedFullList = undefined
-    return changed
+    if (!isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL)) return fullChanged
+    const diffChanged = await tryRefresh(
+      'metamask-diffs',
+      updateMetaMaskDiffs,
+      isLocked,
+    )
+    return fullChanged || diffChanged
   }
 
   async function updateFluent(isLocked) {
