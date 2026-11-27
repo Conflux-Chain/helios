@@ -1,7 +1,7 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
 import {
   DOMAIN_LIST_VERSION,
-  toDomainListsForMatching,
+  normalizeDomainLists,
   normalizeDomain,
 } from './domain.js'
 
@@ -22,7 +22,7 @@ function parseMetamaskFullList(payload) {
     data.version < 0
   )
     throw new Error('Invalid MetaMask full list')
-  const domainLists = toDomainListsForMatching({
+  const domainLists = normalizeDomainLists({
     version: DOMAIN_LIST_VERSION,
     whitelist: data.allowlist,
     blacklist: data.blocklist,
@@ -31,7 +31,7 @@ function parseMetamaskFullList(payload) {
   return {domainLists, cursor: data.lastUpdated}
 }
 function parseFluentFullList(payload) {
-  return {domainLists: toDomainListsForMatching(payload)}
+  return {domainLists: normalizeDomainLists(payload)}
 }
 
 export function validateSize(domainLists, previous) {

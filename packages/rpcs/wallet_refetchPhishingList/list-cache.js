@@ -1,8 +1,8 @@
 import {
-  toDomainListsForMatching,
+  normalizeDomainLists,
   matchOrigin,
   areDomainListsEqual,
-  toDomainListsForStorage,
+  serializeDomainLists,
 } from './domain.js'
 import {createListFetcher, validCursor, validateSize} from './fetch-list.js'
 
@@ -31,7 +31,7 @@ function isDue(time, lastCheck, interval) {
 function restoreDomainLists(domainList, validate) {
   if (!domainList) return undefined
   try {
-    const domainLists = toDomainListsForMatching(domainList)
+    const domainLists = normalizeDomainLists(domainList)
     if (validate) validate(domainLists)
     return domainLists
   } catch {
@@ -93,7 +93,7 @@ export function createListCache({
     // changes to readers; an empty diff only needs a metadata write.
     const changed = !areDomainListsEqual(metaMaskLists, domainLists)
     const patch = {[METAMASK_META]: meta}
-    if (changed) patch[METAMASK_LISTS] = toDomainListsForStorage(domainLists)
+    if (changed) patch[METAMASK_LISTS] = serializeDomainLists(domainLists)
     await storage.set(patch)
     metaMaskLists = domainLists
     metaMaskMeta = meta
@@ -168,7 +168,7 @@ export function createListCache({
       etag: response ? response.etag : fluentMeta.etag,
     }
     const patch = {[FLUENT_META]: nextMeta}
-    if (changed) patch[FLUENT_LISTS] = toDomainListsForStorage(domainLists)
+    if (changed) patch[FLUENT_LISTS] = serializeDomainLists(domainLists)
     await storage.set(patch)
     fluentLists = domainLists
     fluentMeta = nextMeta

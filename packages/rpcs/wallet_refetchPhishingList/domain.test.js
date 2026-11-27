@@ -1,11 +1,11 @@
 import {describe, expect, it} from 'vitest'
 import {
-  toDomainListsForMatching,
-  toDomainListsForStorage,
+  normalizeDomainLists,
+  serializeDomainLists,
   matchOrigin,
 } from './domain.js'
 
-const domainLists = toDomainListsForMatching({
+const domainLists = normalizeDomainLists({
   version: 1,
   whitelist: ['accounts.flagged.test', 'both.test', 'localhost'],
   blacklist: [
@@ -23,19 +23,19 @@ const domainLists = toDomainListsForMatching({
 describe('MetaMask domain lists', () => {
   it('keeps the same verdict when matching sets are stored as arrays and restored', () => {
     const origin = 'https://sub.bad.test'
-    const forMatching = toDomainListsForMatching({
+    const forMatching = normalizeDomainLists({
       version: 1,
       whitelist: [],
       blacklist: ['BAD.test.', 'bad.test'],
     })
-    const forStorage = toDomainListsForStorage(forMatching)
+    const forStorage = serializeDomainLists(forMatching)
     expect(forStorage).toEqual({
       version: 1,
       whitelist: [],
       blacklist: ['bad.test'],
     })
     expect(forMatching.block).toEqual(new Set(['bad.test']))
-    const restored = toDomainListsForMatching(forStorage)
+    const restored = normalizeDomainLists(forStorage)
     expect(matchOrigin(origin, restored)).toEqual({
       status: 'blocklisted',
       hostname: 'sub.bad.test',

@@ -35,7 +35,7 @@ function normalizeList(entries) {
   return hosts
 }
 
-export function toDomainListsForMatching(domainList) {
+export function normalizeDomainLists(domainList) {
   if (domainList?.version !== DOMAIN_LIST_VERSION)
     throw new Error('Unsupported phishing list format')
   return {
@@ -44,7 +44,7 @@ export function toDomainListsForMatching(domainList) {
   }
 }
 
-export const toDomainListsForStorage = ({allow, block}) => ({
+export const serializeDomainLists = ({allow, block}) => ({
   version: DOMAIN_LIST_VERSION,
   whitelist: [...allow],
   blacklist: [...block],
