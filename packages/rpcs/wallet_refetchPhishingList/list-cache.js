@@ -37,7 +37,7 @@ export async function checkPhishingOrigin(origin, isLocked, pendingSignal) {
 
   const recheck = () => (isLocked() ? null : matchCachedOrigin(origin))
   if (pendingSignal) {
-    const rechecked = waitForListChange(changes, pendingSignal, recheck)
+    const rechecked = waitForVerdictChange(pendingSignal, verdict, recheck)
     void refresh(isLocked)
     return {verdict, rechecked}
   }
@@ -68,9 +68,7 @@ async function refreshSources(isLocked) {
     updateMetaMask(isLocked),
     tryRefresh(fluent.key, () => updateFluent(isLocked)),
   ])
-  if (!metaMaskChanged && !fluentChanged) return false
-  changes.dispatchEvent(new Event('updated'))
-  return true
+  return metaMaskChanged || fluentChanged
 }
 
 async function updateMetaMask(isLocked) {
@@ -186,16 +184,23 @@ function restoreEntry(entry, stored) {
   }
 }
 
-// A pending request outlives a single refresh. Stop listening on either a
-// verified change or dismissal; cancelling one request must not cancel the download.
-function waitForListChange(changes, signal, getVerdict) {
+// An unrelated list edit must not consume this request's one-shot recheck.
+function waitForVerdictChange(signal, initial, getVerdict) {
   return new Promise(resolve => {
     function finish(verdict) {
       changes.removeEventListener('updated', onUpdate)
       signal.removeEventListener('abort', onAbort)
       resolve(verdict)
     }
-    const onUpdate = () => finish(getVerdict())
+    const onUpdate = () => {
+      const next = getVerdict()
+      if (
+        !next ||
+        next.status !== initial.status ||
+        next.matchedDomain !== initial.matchedDomain
+      )
+        finish(next)
+    }
     const onAbort = () => finish(null)
     changes.addEventListener('updated', onUpdate)
     signal.addEventListener('abort', onAbort)
@@ -228,6 +233,8 @@ async function saveEntry(entry, lists, meta) {
   await getListStorage().set(patch)
   entry.lists = lists
   entry.meta = meta
+  // Notify from the commit, not from the end of a possibly slower parallel download.
+  if (changed) changes.dispatchEvent(new Event('updated'))
   return changed
 }
 

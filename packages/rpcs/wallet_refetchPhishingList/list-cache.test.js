@@ -83,6 +83,17 @@ async function setup(platform = 'browser') {
     urls: () => fetchFn.mock.calls.map(([request]) => request.url),
   }
 }
+// Hold only this endpoint; the other source can still commit its list.
+function pauseRequest(s, url) {
+  const {promise, resolve} = Promise.withResolvers()
+  const respond = s.fetchFn.getMockImplementation()
+  s.fetchFn.mockImplementation(async request => {
+    if (request.url === url) await promise
+    return respond(request)
+  })
+  return resolve
+}
+
 describe('MetaMask full list + diffs and independent Fluent configuration', () => {
   it('bootstraps once, catches up from the full list’s server timestamp, and never transmits the origin', async () => {
     const s = await setup()
@@ -376,6 +387,70 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       expect(s.urls()).not.toContain(url === FULL_URL ? FLUENT_URL : FULL_URL)
     },
   )
+  it('notifies a pending origin of a committed Fluent block without waiting for MetaMask', async () => {
+    const s = await setup()
+    await s.refresh()
+    s.advance(FULL_INTERVAL)
+    s.fixture.fluent.blacklist = ['new.test']
+    const resumeFull = pauseRequest(s, FULL_URL)
+    const pending = new AbortController()
+    const {verdict, rechecked} = await s.check(
+      'https://new.test',
+      pending.signal,
+    )
+    const notify = vi.fn()
+    rechecked.then(notify)
+    const refreshing = s.refresh()
+    try {
+      expect(verdict.status).toBe('no-match')
+      await vi.waitFor(() =>
+        expect(notify).toHaveBeenCalledWith(
+          expect.objectContaining({status: 'blocklisted'}),
+        ),
+      )
+    } finally {
+      pending.abort()
+      resumeFull()
+      await refreshing
+    }
+  })
+  it('notifies on a full list commit and keeps waiting across unrelated changes for a later diff', async () => {
+    const s = await setup()
+    await s.refresh()
+    s.advance(FULL_INTERVAL)
+    s.fixture.full = {
+      ...full,
+      lastUpdated: cursor + 1,
+      blocklist: ['from-full.test'],
+    }
+    s.fixture.diffs = [event('from-diff.test', cursor + 2)]
+    const resumeDiff = pauseRequest(s, diffUrl(cursor + 1))
+    const pending = new AbortController()
+    const [a, b] = await Promise.all(
+      ['from-full.test', 'from-diff.test'].map(host =>
+        s.check(`https://${host}`, pending.signal),
+      ),
+    )
+    const onFull = vi.fn(),
+      onDiff = vi.fn()
+    a.rechecked.then(onFull)
+    b.rechecked.then(onDiff)
+    const refreshing = s.refresh()
+    try {
+      await vi.waitFor(() =>
+        expect(onFull).toHaveBeenCalledWith(
+          expect.objectContaining({status: 'blocklisted'}),
+        ),
+      )
+      expect(onDiff).not.toHaveBeenCalled()
+      resumeDiff()
+      expect((await b.rechecked).status).toBe('blocklisted')
+    } finally {
+      pending.abort()
+      resumeDiff()
+      await refreshing
+    }
+  })
   it('coalesces concurrent checks, immediately serves stale data, and updates only a still-pending request', async () => {
     const s = await setup()
     await s.refresh()
