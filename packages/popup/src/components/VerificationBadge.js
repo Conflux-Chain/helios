@@ -116,7 +116,7 @@ function VerificationBadge({
 
   const {Icon, translationKey} = STATUS_CONFIG[status]
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       <Tooltip
         content={
           <div>

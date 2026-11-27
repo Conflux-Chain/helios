@@ -243,6 +243,8 @@ const en = {
     action: 'Action',
     balance: 'Balance',
     createContract: 'Deploy Contract',
+    currentAccount: 'My account',
+    interactingWith: 'Interacting with',
 
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Edit Permission',
