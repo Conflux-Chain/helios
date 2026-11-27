@@ -108,12 +108,14 @@ const uk = {
     seedImport: 'Імпорт секретної фрази',
     seedImportPlaceholder:
       'Секретна фраза складається із слів, розділених пробiлом. Розділяйте кожне введене слово пробiлом.',
+    seedPhraseRequired: 'Будь ласка, введіть вашу секретну фразу.',
     duplicateSeedError: 'Ця секретна фраза вже у вашому гаманці.',
     invalidSeed: 'Невірна секретна фраза, перевірте ще раз.',
 
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Імпортувати привантый ключ',
     pKeyImportPlaceholder: 'Введіть свій приватний ключ тут.',
+    privateKeyRequired: 'Будь ласка, введіть ваш приватний ключ.',
     duplicatePkError: 'Цей приватний ключ вже у вашому гаманці.',
     invalidPrivateKey: 'Невірний приватний ключ, перевірте ще раз.',
 
@@ -491,7 +493,6 @@ const uk = {
     gasFeeIsNotEnough: 'Недостатня ціна за газ',
     contractError: 'Помилка в контракті: ',
     invalidPasswordFromRpc: 'Невірний пароль',
-    required: 'Будь ласка, введіть вашу секретну фразу.',
     changeNetworkError: 'Помилка зміни мережі',
 
     // hardware guard

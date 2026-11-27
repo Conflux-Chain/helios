@@ -41,11 +41,11 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    setErrorMessage(e.target.value ? '' : t('required'))
+    setErrorMessage(e.target.value ? '' : t('privateKeyRequired'))
   }
   const onCreate = async () => {
     if (!keygen) {
-      return setErrorMessage(t('required'))
+      return setErrorMessage(t('privateKeyRequired'))
     }
 
     setLoading(true)
@@ -78,7 +78,7 @@ function ImportPrivateKey() {
               })
           })
         } else {
-          setErrorMessage(t('invalidWord'))
+          setErrorMessage(t('invalidPrivateKey'))
           setLoading(false)
         }
       })
