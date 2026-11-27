@@ -602,6 +602,11 @@ const zh = {
     unableEstimateChanges: '无法预估资产变化，请您在确认交易前核实交易数据。',
     youSend: '你将发送',
     youReceive: '你将收到',
+    youMaximumSend: '最多发送',
+    youMinimumReceive: '最少收到',
+    swapDetails: 'Swap详情',
+    swapDetailsTooltip:
+      '兑换详情来自交易请求参数，不是模拟结果。发送／接收数量表示请求值；“最少收到／最多支付”是请求中的上下限，不保证最终到账或实际支出。',
   },
 }
 
