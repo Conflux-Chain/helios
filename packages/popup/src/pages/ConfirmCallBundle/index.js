@@ -501,7 +501,11 @@ function CallBundleConfirmation({
       >
         <CallBundleRequestSummary
           callCount={confirmationCalls.length}
-          tx={canConfirm ? transactionEstimate.transaction : undefined}
+          tx={
+            canConfirm
+              ? transactionEstimate.transaction || confirmationTransaction
+              : undefined
+          }
           sessionId={sessionId}
         />
 

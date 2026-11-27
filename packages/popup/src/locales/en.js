@@ -622,11 +622,16 @@ const en = {
     // estimate changes
     estimateChanges: 'Estimated changes',
     estimateChangesTooltip:
-      'Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee.',
+      'Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee. ',
     unableEstimateChanges:
-      'Unable to estimate asset changes. Review transaction details before confirming.',
+      'Unable to estimate asset changes.Review transaction details before confirming.',
     youSend: 'You send',
     youReceive: 'You receive',
+    youMaximumSend: 'Maximum send',
+    youMinimumReceive: 'Minimum receive',
+    swapDetails: 'Swap details',
+    swapDetailsTooltip:
+      'Swap details are decoded from request parameters, not simulation results. Amounts and limits describe the request and do not guarantee actual spending or receipt. ',
   },
 }
 
