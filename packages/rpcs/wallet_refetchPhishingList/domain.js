@@ -35,6 +35,7 @@ function normalizeList(entries) {
   return hosts
 }
 
+// Turn downloaded or cached arrays into sets of normalized hostnames for local matching.
 export function normalizeDomainLists(domainList) {
   if (domainList?.version !== DOMAIN_LIST_VERSION)
     throw new Error('Unsupported phishing list format')
@@ -44,6 +45,7 @@ export function normalizeDomainLists(domainList) {
   }
 }
 
+// Convert the in-memory sets back to versioned arrays for storage; the caller writes them.
 export const serializeDomainLists = ({allow, block}) => ({
   version: DOMAIN_LIST_VERSION,
   whitelist: [...allow],
