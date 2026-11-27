@@ -11,13 +11,11 @@ export const FULL_INTERVAL = 30 * DAY
 export const DIFF_INTERVAL = 5 * DAY
 export const FLUENT_INTERVAL = DAY
 
-// Keep the sources separate: a Fluent config is not a copy of MetaMask's list.
-const METAMASK_LISTS = 'phishing.metamask'
-const METAMASK_META = `${METAMASK_LISTS}.meta`
-const FLUENT_LISTS = 'phishing.fluent'
-const FLUENT_META = `${FLUENT_LISTS}.meta`
-const CACHE_KEYS = [METAMASK_LISTS, METAMASK_META, FLUENT_LISTS, FLUENT_META]
 const RETRY_DELAY = 15 * 60 * 1000
+
+function cacheEntry(key) {
+  return {key, metaKey: `${key}.meta`, lists: undefined, meta: {}}
+}
 
 function isDue(time, lastCheck, interval) {
   // Treat a clock that moved backwards like a missing check, not a fresh one.
@@ -28,15 +26,15 @@ function isDue(time, lastCheck, interval) {
   )
 }
 
-function restoreDomainLists(domainList, validate) {
-  if (!domainList) return undefined
+function restoreEntry(entry, stored, validate) {
+  if (!stored[entry.key]) return
   try {
-    const domainLists = normalizeDomainLists(domainList)
-    if (validate) validate(domainLists)
-    return domainLists
+    const lists = normalizeDomainLists(stored[entry.key])
+    if (validate) validate(lists)
+    entry.lists = lists
+    entry.meta = stored[entry.metaKey] ?? {}
   } catch {
-    // Discard only this cache entry. The other source may still be usable offline.
-    return undefined
+    // A bad entry must not prevent us from restoring the other source.
   }
 }
 
@@ -61,25 +59,23 @@ export function createListCache({
   listFetcher = createListFetcher(),
   now = Date.now,
 }) {
-  let metaMaskLists
-  let metaMaskMeta = {}
-  let fluentLists
-  let fluentMeta = {}
+  const metaMask = cacheEntry('phishing.metamask')
+  const fluent = cacheEntry('phishing.fluent')
   let cacheReady
   let refreshInFlight
   const lastFailureAt = {}
   const changes = new EventTarget()
 
   async function restoreCache() {
-    const cache = await storage.get(CACHE_KEYS)
-    const meta = cache[METAMASK_META]
-    if (validCursor(meta?.cursor)) {
-      metaMaskLists = restoreDomainLists(cache[METAMASK_LISTS], validateSize)
-      if (metaMaskLists) metaMaskMeta = meta
-    }
-
-    fluentLists = restoreDomainLists(cache[FLUENT_LISTS])
-    if (fluentLists) fluentMeta = cache[FLUENT_META] ?? {}
+    const stored = await storage.get([
+      metaMask.key,
+      metaMask.metaKey,
+      fluent.key,
+      fluent.metaKey,
+    ])
+    if (validCursor(stored[metaMask.metaKey]?.cursor))
+      restoreEntry(metaMask, stored, validateSize)
+    restoreEntry(fluent, stored)
   }
 
   function loadCacheOnce() {
@@ -88,30 +84,30 @@ export function createListCache({
     return cacheReady
   }
 
-  async function saveMetaMaskLists(domainLists, meta) {
-    // The cursor describes these exact domains. Commit both before exposing
-    // changes to readers; an empty diff only needs a metadata write.
-    const changed = !areDomainListsEqual(metaMaskLists, domainLists)
-    const patch = {[METAMASK_META]: meta}
-    if (changed) patch[METAMASK_LISTS] = serializeDomainLists(domainLists)
+  async function saveEntry(entry, lists, meta) {
+    // Commit the lists and their metadata together. If only freshness or the
+    // cursor changed, skip serializing and rewriting the domain arrays.
+    const changed = !areDomainListsEqual(entry.lists, lists)
+    const patch = {[entry.metaKey]: meta}
+    if (changed) patch[entry.key] = serializeDomainLists(lists)
     await storage.set(patch)
-    metaMaskLists = domainLists
-    metaMaskMeta = meta
+    entry.lists = lists
+    entry.meta = meta
     return changed
   }
 
   async function updateMetaMaskDiffs(isLocked) {
     if (isLocked()) return false
     const next = await listFetcher.fetchMetamaskDiffs({
-      domainLists: metaMaskLists,
-      cursor: metaMaskMeta.cursor,
+      domainLists: metaMask.lists,
+      cursor: metaMask.meta.cursor,
     })
-    validateSize(next.domainLists, metaMaskLists)
-    if (next.cursor < metaMaskMeta.cursor)
+    validateSize(next.domainLists, metaMask.lists)
+    if (next.cursor < metaMask.meta.cursor)
       throw new Error('Outdated MetaMask response')
     if (isLocked()) return false
-    return saveMetaMaskLists(next.domainLists, {
-      ...metaMaskMeta,
+    return saveEntry(metaMask, next.domainLists, {
+      ...metaMask.meta,
       cursor: next.cursor,
       diffAt: now(),
     })
@@ -120,30 +116,28 @@ export function createListCache({
   async function updateMetaMask(isLocked) {
     if (isLocked()) return false
     let fullChanged = false
-    if (!metaMaskLists || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)) {
-      const full = await listFetcher.fetchMetamaskFullList(
-        metaMaskLists && metaMaskMeta.etag,
-      )
+    if (!metaMask.lists || isDue(now(), metaMask.meta.fullAt, FULL_INTERVAL)) {
+      const full = await listFetcher.fetchMetamaskFullList(metaMask.meta.etag)
       // The wallet may have locked while the download was in flight.
       if (isLocked()) return false
       // A monthly full list may predate diffs we already applied. In that
       // case (or on 304), keep the newer local list and its cursor.
-      let domainLists = metaMaskLists
-      let cursor = metaMaskMeta.cursor
-      if (full && (!metaMaskLists || full.cursor >= cursor)) {
-        validateSize(full.domainLists, metaMaskLists)
+      let domainLists = metaMask.lists
+      let cursor = metaMask.meta.cursor
+      if (full && (!metaMask.lists || full.cursor >= cursor)) {
+        validateSize(full.domainLists, metaMask.lists)
         domainLists = full.domainLists
         cursor = full.cursor
       }
-      fullChanged = await saveMetaMaskLists(domainLists, {
+      fullChanged = await saveEntry(metaMask, domainLists, {
         cursor,
         fullAt: now(),
-        etag: full ? full.etag : metaMaskMeta.etag,
+        etag: full ? full.etag : metaMask.meta.etag,
         // Catch up immediately. Even after a restart, a failed diff remains due.
         diffAt: null,
       })
     }
-    if (!isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL)) return fullChanged
+    if (!isDue(now(), metaMask.meta.diffAt, DIFF_INTERVAL)) return fullChanged
     const diffChanged = await tryRefresh(
       'metamask-diffs',
       updateMetaMaskDiffs,
@@ -154,25 +148,15 @@ export function createListCache({
 
   async function updateFluent(isLocked) {
     if (isLocked()) return false
-    if (fluentLists && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
+    if (fluent.lists && !isDue(now(), fluent.meta.checkedAt, FLUENT_INTERVAL))
       return false
-    const response = await listFetcher.fetchFluentFullList(
-      fluentLists && fluentMeta.etag,
-    )
+    const response = await listFetcher.fetchFluentFullList(fluent.meta.etag)
     if (isLocked()) return false
 
-    const domainLists = response ? response.domainLists : fluentLists
-    const changed = !areDomainListsEqual(fluentLists, domainLists)
-    const nextMeta = {
+    return saveEntry(fluent, response ? response.domainLists : fluent.lists, {
       checkedAt: now(),
-      etag: response ? response.etag : fluentMeta.etag,
-    }
-    const patch = {[FLUENT_META]: nextMeta}
-    if (changed) patch[FLUENT_LISTS] = serializeDomainLists(domainLists)
-    await storage.set(patch)
-    fluentLists = domainLists
-    fluentMeta = nextMeta
-    return changed
+      etag: response ? response.etag : fluent.meta.etag,
+    })
   }
 
   async function tryRefresh(source, update, isLocked) {
@@ -187,8 +171,8 @@ export function createListCache({
 
   async function refreshSources(isLocked) {
     const [metaMaskChanged, fluentChanged] = await Promise.all([
-      tryRefresh(METAMASK_LISTS, updateMetaMask, isLocked),
-      tryRefresh(FLUENT_LISTS, updateFluent, isLocked),
+      tryRefresh(metaMask.key, updateMetaMask, isLocked),
+      tryRefresh(fluent.key, updateFluent, isLocked),
     ])
     if (!metaMaskChanged && !fluentChanged) return false
     changes.dispatchEvent(new Event('updated'))
@@ -206,7 +190,7 @@ export function createListCache({
   }
 
   function matchCachedOrigin(origin) {
-    const results = [fluentLists, metaMaskLists]
+    const results = [fluent.lists, metaMask.lists]
       .filter(Boolean)
       .map(domainLists => matchOrigin(origin, domainLists))
     // An explicit exception from either source wins. A known block still matters

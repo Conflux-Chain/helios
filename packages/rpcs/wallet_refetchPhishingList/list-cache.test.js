@@ -289,6 +289,28 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       'no-match',
     )
   })
+  it.each([
+    ['phishing.fluent', 'https://old.test', FLUENT_URL],
+    ['phishing.metamask', 'https://fluent.test', FULL_URL],
+  ])(
+    'restores the other source when %s is corrupt, and does not reuse the corrupt entry’s ETag',
+    async (key, origin, url) => {
+      const s = setup()
+      s.fixture.fluent.blacklist = ['fluent.test']
+      await s.refresh()
+      s.data[key] = {blacklist: 'invalid'}
+      s.fetchFn.mockClear()
+      s.restart()
+      const {verdict, rechecked} = await s.check(origin)
+      expect(verdict.status).toBe('blocklisted')
+      await rechecked
+      const [[, options]] = s.fetchFn.mock.calls.filter(
+        ([request]) => request === url,
+      )
+      expect(options.headers?.['If-None-Match']).toBeUndefined()
+      expect(s.urls()).not.toContain(url === FULL_URL ? FLUENT_URL : FULL_URL)
+    },
+  )
   it('coalesces concurrent checks, immediately serves stale data, and updates only a still-pending request', async () => {
     const s = setup()
     await s.refresh()
