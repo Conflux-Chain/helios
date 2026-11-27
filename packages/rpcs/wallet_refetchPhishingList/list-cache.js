@@ -67,7 +67,7 @@ function refresh(isLocked) {
 
 async function refreshSources(isLocked) {
   const [metaMaskChanged, fluentChanged] = await Promise.all([
-    tryRefresh(metaMask.key, () => updateMetaMask(isLocked)),
+    updateMetaMask(isLocked),
     tryRefresh(fluent.key, () => updateFluent(isLocked)),
   ])
   if (!metaMaskChanged && !fluentChanged) return false
@@ -77,34 +77,51 @@ async function refreshSources(isLocked) {
 
 async function updateMetaMask(isLocked) {
   if (isLocked()) return false
-  const entry = metaMask
   let fullChanged = false
-  if (!entry.lists || isDue(Date.now(), entry.meta.fullAt, FULL_INTERVAL)) {
-    const full = await listFetcher.fetchMetamaskFullList(entry.meta.etag)
-    // The wallet may have locked while the download was in flight.
-    if (isLocked()) return false
-    // A monthly full list may predate diffs we already applied. In that
-    // case (or on 304), keep the newer local list and its cursor.
-    let domainLists = entry.lists
-    let cursor = entry.meta.cursor
-    if (full && (!entry.lists || full.cursor >= cursor)) {
-      validateSize(full.domainLists, entry.lists)
-      domainLists = full.domainLists
-      cursor = full.cursor
-    }
-    fullChanged = await saveEntry(entry, domainLists, {
-      cursor,
-      fullAt: Date.now(),
-      etag: full ? full.etag : entry.meta.etag,
-      // Catch up immediately. Even after a restart, a failed diff remains due.
-      diffAt: null,
-    })
+  if (
+    !metaMask.lists ||
+    isDue(Date.now(), metaMask.meta.fullAt, FULL_INTERVAL)
+  ) {
+    fullChanged = await tryRefresh('metamask-full', () =>
+      updateMetaMaskFullList(isLocked),
+    )
   }
-  if (!isDue(Date.now(), entry.meta.diffAt, DIFF_INTERVAL)) return fullChanged
+
+  // Full-list failure or backoff must not block due diffs from a valid cache.
+  if (
+    !metaMask.lists ||
+    !validCursor(metaMask.meta.cursor) ||
+    !isDue(Date.now(), metaMask.meta.diffAt, DIFF_INTERVAL)
+  )
+    return fullChanged
   const diffChanged = await tryRefresh('metamask-diffs', () =>
     updateMetaMaskDiffs(isLocked),
   )
   return fullChanged || diffChanged
+}
+
+async function updateMetaMaskFullList(isLocked) {
+  if (isLocked()) return false
+  const entry = metaMask
+  const full = await listFetcher.fetchMetamaskFullList(entry.meta.etag)
+  // The wallet may have locked while the download was in flight.
+  if (isLocked()) return false
+  // A monthly full list may predate diffs we already applied. In that
+  // case (or on 304), keep the newer local list and its cursor.
+  let domainLists = entry.lists
+  let cursor = entry.meta.cursor
+  if (full && (!entry.lists || full.cursor >= cursor)) {
+    validateSize(full.domainLists, entry.lists)
+    domainLists = full.domainLists
+    cursor = full.cursor
+  }
+  return saveEntry(entry, domainLists, {
+    cursor,
+    fullAt: Date.now(),
+    etag: full ? full.etag : entry.meta.etag,
+    // Catch up immediately. Even after a restart, a failed diff remains due.
+    diffAt: null,
+  })
 }
 
 async function updateMetaMaskDiffs(isLocked) {

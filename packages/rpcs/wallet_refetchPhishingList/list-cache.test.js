@@ -190,6 +190,52 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       'blocklisted',
     )
   })
+  it('applies due diffs from the saved cursor even if the monthly full list fails', async () => {
+    const s = await setup()
+    s.fixture.diffs = [event('first.test', cursor + 1)]
+    await s.refresh()
+    const {fullAt, etag} = s.data['phishing.metamask.meta']
+    s.advance(FULL_INTERVAL)
+    s.fetchFn.mockClear()
+    s.fixture.fail = url => url === FULL_URL
+    s.fixture.diffs = [event('new.test', cursor + 2)]
+    const {verdict, rechecked} = await s.check('https://new.test')
+    expect(verdict.status).toBe('no-match')
+    expect((await rechecked)?.status).toBe('blocklisted')
+    expect(s.urls()).toContain(diffUrl(cursor + 1))
+    expect(s.data['phishing.metamask.meta']).toEqual({
+      fullAt,
+      etag,
+      cursor: cursor + 2,
+      diffAt: Date.now(),
+    })
+    s.fetchFn.mockClear()
+    await s.refresh()
+    expect(s.urls()).toEqual([])
+  })
+  it('checks a newly due diff during full-list backoff, but never fetches diffs without a baseline', async () => {
+    const s = await setup()
+    s.fixture.fail = url => url === FULL_URL
+    await s.refresh()
+    expect(s.urls().some(url => url.startsWith(diffUrl('')))).toBe(false)
+    s.fixture.fail = null
+    s.advance(15 * 60 * 1000)
+    await s.refresh()
+    // Last successful diff was just under five days ago at the monthly boundary.
+    s.advance(FULL_INTERVAL - DIFF_INTERVAL + 1000)
+    await s.refresh()
+    s.advance(DIFF_INTERVAL - 1000)
+    s.fixture.fail = url => url === FULL_URL
+    s.fetchFn.mockClear()
+    await s.refresh()
+    expect(s.urls()).toContain(FULL_URL)
+    expect(s.urls()).not.toContain(diffUrl(cursor))
+    s.fetchFn.mockClear()
+    s.advance(1000)
+    s.fixture.diffs = [event('new.test', cursor + 1)]
+    expect(await s.refresh()).toBe(true)
+    expect(s.urls()).toEqual([diffUrl(cursor)])
+  })
   it('serves the verified full list when catch-up fails and retries only diffs after restart', async () => {
     const s = await setup()
     s.fixture.fail = url => url.startsWith(diffUrl(''))
