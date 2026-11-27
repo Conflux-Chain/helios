@@ -1,5 +1,5 @@
 import {optParam} from '@fluent-wallet/spec'
-import {refreshIfDue} from './list-cache.js'
+import {refreshIfDue} from './service.js'
 
 export const NAME = 'wallet_refetchPhishingList'
 export const schemas = {input: optParam}

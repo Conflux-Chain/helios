@@ -1,97 +1,84 @@
-// Only list hostnames. A URL with a path must not match the entire host.
-const hostname = /^(?:[a-z0-9_-]+\.)+[a-z0-9_-]+$/u
+const DNS_HOSTNAME = /^(?:[a-z0-9_-]+\.)+[a-z0-9_-]+$/u
 
-export function normalizeDomain(value) {
-  if (typeof value !== 'string') throw new Error('Invalid phishing list entry')
-  // URL would silently discard credentials, ports and paths from a list entry.
-  if (/[\s\\/@:?#%*]/u.test(value)) return null
-  let host = value.toLowerCase()
-  if (/\P{ASCII}/u.test(host)) {
-    try {
-      host = new URL(`https://${host}`).hostname
-    } catch {
-      return null
-    }
-  }
-  // IDNA maps Unicode dots to ASCII first. Strip only one root dot.
-  host = host.replace(/\.$/, '')
-  return host === 'localhost' || hostname.test(host) ? host : null
+function getSupportedHostname(url) {
+  const host = url.hostname.replace(/\.$/, '')
+  return host === 'localhost' || DNS_HOSTNAME.test(host) ? host : null
 }
 
-function normalizeList(entries) {
+// Entries are bare DNS names, IPv4 addresses or localhost, never URLs or paths.
+export function parseDomainRule(value) {
+  if (/[\s\\/@:?#%*]/u.test(value)) return null
+  try {
+    // Use the same URL normalization as origins, including IDNA and IPv4 forms.
+    return getSupportedHostname(new URL(`https://${value}`))
+  } catch {
+    return null
+  }
+}
+
+function createDomainSet(entries) {
   if (!Array.isArray(entries)) throw new Error('Expected an array of domains')
   const hosts = new Set()
   for (const value of entries) {
-    const host = normalizeDomain(value)
+    if (typeof value !== 'string')
+      throw new Error('Invalid phishing list entry')
+    const host = parseDomainRule(value)
     if (host) hosts.add(host)
   }
   return hosts
 }
 
-// Turn downloaded or cached arrays into sets of normalized hostnames for local matching.
-export function normalizeDomainLists(domainList) {
+// Source adapters supply arrays; matching always uses these two normalized sets.
+export function createDomainSets(lists) {
   return {
-    allow: normalizeList(domainList?.whitelist),
-    block: normalizeList(domainList?.blacklist),
+    allowlist: createDomainSet(lists?.allowlist),
+    blocklist: createDomainSet(lists?.blocklist),
   }
 }
 
-// Convert the in-memory sets back to arrays for storage; the caller writes them.
-export const serializeDomainLists = ({allow, block}) => ({
-  whitelist: [...allow],
-  blacklist: [...block],
-})
-function haveSameDomains(current, next) {
-  if (current === next) return true
-  if (current.size !== next.size) return false
-  for (const host of current) {
-    if (!next.has(host)) return false
+// The host itself, then DNS parents; exclude top-level domains. IPv4 is exact-only.
+function getDomainCandidates(host) {
+  const candidates = [host]
+  if (/^[\d.]+$/.test(host)) return candidates
+  const labels = host.split('.')
+  for (let i = 1; i < labels.length - 1; i++) {
+    candidates.push(labels.slice(i).join('.'))
   }
-  return true
+  return candidates
 }
 
-export function areDomainListsEqual(current, next) {
-  return Boolean(
-    current &&
-      haveSameDomains(current.allow, next.allow) &&
-      haveSameDomains(current.block, next.block),
-  )
-}
-
-// Match whole DNS labels, most specific first. IPs and
-// single-label hosts are exact matches; never fall back to a top-level domain.
-function findListedDomain(host, listedDomains) {
-  if (listedDomains.has(host)) return host
-  if (/^[\d.]+$/.test(host) || host.startsWith('[')) return null
-  for (
-    let dot = host.indexOf('.');
-    dot !== -1;
-    dot = host.indexOf('.', dot + 1)
-  ) {
-    const parent = host.slice(dot + 1)
-    if (!parent.includes('.')) break
-    if (listedDomains.has(parent)) return parent
-  }
-  return null
-}
-
-export function matchOrigin(origin, domainLists) {
-  let host
+function parseOriginHostname(origin) {
   try {
-    if (typeof origin !== 'string') return {status: 'unknown'}
+    if (typeof origin !== 'string') return null
     const url = new URL(origin)
-    if (url.protocol !== 'https:' && url.protocol !== 'http:')
-      return {status: 'unknown'}
-    host = url.hostname.toLowerCase().replace(/\.$/, '')
-    if (host.split('.').includes('')) return {status: 'unknown'}
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return null
+    return getSupportedHostname(url)
   } catch {
-    return {status: 'unknown'}
+    return null
   }
-  const allowed = findListedDomain(host, domainLists.allow)
-  if (allowed)
-    return {status: 'allowlisted', hostname: host, matchedDomain: allowed}
-  const blocked = findListedDomain(host, domainLists.block)
-  if (blocked)
-    return {status: 'blocklisted', hostname: host, matchedDomain: blocked}
-  return {status: 'no-match', hostname: host}
+}
+
+export function getOriginVerdict(origin, {fluent, metaMask}) {
+  const hostname = parseOriginHostname(origin)
+  if (!hostname) return {status: 'unknown'}
+  const candidates = getDomainCandidates(hostname)
+
+  function match(lists) {
+    if (!lists) return null
+    const allowed = candidates.find(domain => lists.allowlist.has(domain))
+    if (allowed)
+      return {status: 'allowlisted', hostname, matchedDomain: allowed}
+    const blocked = candidates.find(domain => lists.blocklist.has(domain))
+    if (blocked)
+      return {status: 'blocklisted', hostname, matchedDomain: blocked}
+    return null
+  }
+
+  const fluentMatch = match(fluent)
+  if (fluentMatch) return fluentMatch
+  const metaMaskMatch = match(metaMask)
+  if (metaMaskMatch) return metaMaskMatch
+  return fluent && metaMask
+    ? {status: 'no-match', hostname}
+    : {status: 'unknown'}
 }
