@@ -40,12 +40,12 @@ function ImportSeedPhrase() {
   }
   const onChangeKeygen = e => {
     setMnemonic(e.target.value)
-    setErrorMessage(e.target.value ? '' : t('required'))
+    setErrorMessage(e.target.value ? '' : t('seedPhraseRequired'))
   }
   const onCreate = () => {
     const mnemonicParam = mnemonic.replace(/  +/g, ' ').trim()
     if (!mnemonicParam) {
-      return setErrorMessage(t('required'))
+      return setErrorMessage(t('seedPhraseRequired'))
     }
     setLoading(true)
     request(WALLET_VALIDATE_MNEMONIC, {
