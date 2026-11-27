@@ -5,63 +5,8 @@ import EIP7702TransactionHeader from './EIP7702TransactionHeader'
 import {useTranslation} from 'react-i18next'
 import TransactionAssetDetails from '../../../components/TransactionAssetDetails'
 
-function TransactionHeader({
-  isApproveToken,
-  spenderAddress,
-  allowance,
-  canEditAllowance,
-  onEditAllowance,
-
-  isSendToken,
-  sendAmount,
-  toAddress,
-
-  isInternalEip7702Tx,
-  delegateAddress,
-  title,
-  delegateAddressLabel,
-
-  tx,
-  sessionId,
-
-  token,
-  nickname,
-  fromAddress,
-}) {
+function GenericTransactionHeader({tx, sessionId}) {
   const {t} = useTranslation()
-  if (isSendToken) {
-    return (
-      <TransferTransactionHeader
-        token={token}
-        sendAmount={sendAmount}
-        fromAddress={fromAddress}
-        toAddress={toAddress}
-        nickname={nickname}
-      />
-    )
-  }
-  if (isInternalEip7702Tx) {
-    return (
-      <EIP7702TransactionHeader
-        authority={fromAddress}
-        delegateAddress={delegateAddress}
-        title={title}
-        authorityNickname={nickname}
-        delegateAddressLabel={delegateAddressLabel}
-      />
-    )
-  }
-  if (isApproveToken) {
-    return (
-      <ApproveTransactionHeader
-        token={token}
-        onEditAllowance={onEditAllowance}
-        canEditAllowance={canEditAllowance}
-        allowance={allowance}
-        spenderAddress={spenderAddress}
-      />
-    )
-  }
 
   return (
     <div
@@ -79,32 +24,25 @@ function TransactionHeader({
   )
 }
 
-TransactionHeader.propTypes = {
-  // shared
-  token: PropTypes.object,
-  fromAddress: PropTypes.string,
-  nickname: PropTypes.string,
-  // token approve
-  isApproveToken: PropTypes.bool,
-  spenderAddress: PropTypes.string,
-  allowance: PropTypes.string,
-  canEditAllowance: PropTypes.bool,
-  onEditAllowance: PropTypes.func.isRequired,
-
-  // token transfer
-  isSendToken: PropTypes.bool,
-  sendAmount: PropTypes.string,
-  toAddress: PropTypes.string,
-
-  // internal 7702
-  isInternalEip7702Tx: PropTypes.bool,
-  delegateAddress: PropTypes.string,
-  title: PropTypes.string,
-  delegateAddressLabel: PropTypes.string,
-
-  // unknown transaction
+GenericTransactionHeader.propTypes = {
   tx: PropTypes.object,
   sessionId: PropTypes.string,
+}
+
+const headersByKind = {
+  transfer: TransferTransactionHeader,
+  delegation: EIP7702TransactionHeader,
+  approval: ApproveTransactionHeader,
+  generic: GenericTransactionHeader,
+}
+
+function TransactionHeader({kind, ...props}) {
+  const Header = headersByKind[kind]
+  return <Header {...props} />
+}
+
+TransactionHeader.propTypes = {
+  kind: PropTypes.oneOf(Object.keys(headersByKind)).isRequired,
 }
 
 export default TransactionHeader

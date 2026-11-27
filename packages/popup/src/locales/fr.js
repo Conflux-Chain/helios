@@ -651,6 +651,11 @@ const fr = {
       'Impossible d’estimer les changements de vos actifs. Vérifiez les détails de la transaction avant de confirmer.',
     youSend: 'Vous envoyez',
     youReceive: 'Vous recevez',
+    youMaximumSend: 'Maximum à envoyer',
+    youMinimumReceive: 'Minimum à recevoir',
+    swapDetails: 'Détails de l’échange',
+    swapDetailsTooltip:
+      'Ces montants et ces limites proviennent des paramètres de la demande d’échange, indépendamment de toute simulation. Les montants réellement dépensés ou reçus peuvent différer.',
   },
 }
 
