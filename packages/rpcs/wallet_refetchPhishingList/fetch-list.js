@@ -4,6 +4,8 @@ import {normalizeDomainLists, normalizeDomain} from './domain.js'
 // MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
 const LIST_PREFIX = 'eth_phishing_detect_config.'
+const ALLOW_LIST = `${LIST_PREFIX}allowlist`
+const BLOCK_LIST = `${LIST_PREFIX}blocklist`
 export const FULL_URL = `${METAMASK_API}/v1/stalelist`
 export const diffUrl = cursor => `${METAMASK_API}/v2/diffsSince/${cursor}`
 // A separate path prevents old CDN copies of the retired mirror being read as Fluent-maintained domains.
@@ -44,7 +46,7 @@ export function applyDiffs(base, diffs) {
   // The cursor is the last upstream event time (seconds), not the local
   // fetch time. Compare every row with the starting cursor: ties are valid.
   let cursor = base.cursor
-  const events = []
+  const changes = []
   for (const row of diffs) {
     if (
       !validCursor(row?.timestamp) ||
@@ -55,25 +57,19 @@ export function applyDiffs(base, diffs) {
       throw new Error('Invalid MetaMask diff')
     if (row.timestamp <= base.cursor || !row.targetList.startsWith(LIST_PREFIX))
       continue
+    // Other MetaMask entries advance the cursor but never become host matches.
     cursor = Math.max(cursor, row.timestamp)
-    let key
-    if (row.targetList === `${LIST_PREFIX}blocklist`) key = 'block'
-    else if (row.targetList === `${LIST_PREFIX}allowlist`) key = 'allow'
-    else continue // Consume the cursor but never turn a path or CID into a whole-host match.
-    const host = normalizeDomain(row.url)
-    if (host)
-      events.push({
-        key,
-        host,
-        remove: row.isRemoval === true,
-        time: row.timestamp,
-      })
+    if (row.targetList === ALLOW_LIST || row.targetList === BLOCK_LIST)
+      changes.push(row)
   }
-  // Keep the active lists untouched until the batch has been saved. A stable
-  // sort preserves upstream order when two events share a timestamp.
+
+  // Sort the filtered copy (stable for ties). Copy each active set only if it changes.
+  changes.sort((a, b) => a.timestamp - b.timestamp)
   let domainLists = base.domainLists
-  events.sort((a, b) => a.time - b.time)
-  for (const {key, host, remove} of events) {
+  for (const {url, targetList, isRemoval: remove} of changes) {
+    const host = normalizeDomain(url)
+    if (!host) continue
+    const key = targetList === ALLOW_LIST ? 'allow' : 'block'
     const exists = domainLists[key].has(host)
     if ((remove && !exists) || (!remove && exists)) continue
     if (domainLists === base.domainLists) domainLists = {...domainLists}
@@ -134,12 +130,17 @@ export function createListFetcher(
   }),
 ) {
   const MB = 1024 * 1024
+  async function fetchFullList(url, limit, parse, etag) {
+    const response = await fetchJSON(url, fetcher, limit, etag)
+    if (!response) return null
+    return {...parse(response.data), etag: response.etag}
+  }
+
   return {
-    async fetchMetamaskFullList(etag) {
-      const response = await fetchJSON(FULL_URL, fetcher, 64 * MB, etag)
-      if (!response) return null
-      return {...parseMetamaskFullList(response.data), etag: response.etag}
-    },
+    fetchMetamaskFullList: etag =>
+      fetchFullList(FULL_URL, 64 * MB, parseMetamaskFullList, etag),
+    fetchFluentFullList: etag =>
+      fetchFullList(FLUENT_URL, MB, parseFluentFullList, etag),
     async fetchMetamaskDiffs(baseline) {
       const response = await fetchJSON(
         diffUrl(baseline.cursor),
@@ -147,11 +148,6 @@ export function createListFetcher(
         16 * MB,
       )
       return applyDiffs(baseline, response.data.data)
-    },
-    async fetchFluentFullList(etag) {
-      const response = await fetchJSON(FLUENT_URL, fetcher, MB, etag)
-      if (!response) return null
-      return {...parseFluentFullList(response.data), etag: response.etag}
     },
   }
 }

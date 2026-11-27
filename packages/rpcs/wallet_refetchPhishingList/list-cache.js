@@ -205,7 +205,7 @@ export function createListCache({
     return refreshInFlight
   }
 
-  function localVerdict(origin) {
+  function matchCachedOrigin(origin) {
     const results = [fluentLists, metaMaskLists]
       .filter(Boolean)
       .map(domainLists => matchOrigin(origin, domainLists))
@@ -225,11 +225,11 @@ export function createListCache({
     },
     async checkOrigin(origin, isLocked, pendingSignal) {
       await loadCacheOnce()
-      const verdict = localVerdict(origin)
+      const verdict = matchCachedOrigin(origin)
       if (pendingSignal?.aborted || isLocked())
         return {verdict, rechecked: Promise.resolve(null)}
 
-      const recheck = () => (isLocked() ? null : localVerdict(origin))
+      const recheck = () => (isLocked() ? null : matchCachedOrigin(origin))
       if (pendingSignal) {
         const rechecked = waitForListChange(changes, pendingSignal, recheck)
         void refresh(isLocked)

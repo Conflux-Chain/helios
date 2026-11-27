@@ -57,6 +57,17 @@ describe('MetaMask diff wire format', () => {
     expect(base.domainLists.allow.size).toBe(0)
     expect(base.cursor).toBe(cursor)
   })
+  it('preserves upstream order for changes at the same timestamp without reordering the input', () => {
+    const changes = Object.freeze([
+      event('new.test', cursor + 2, 'blocklist', true),
+      event('new.test', cursor + 1),
+      event('new.test', cursor + 2),
+    ])
+    const next = applyDiffs(base, changes)
+    expect(next.cursor).toBe(cursor + 2)
+    expect(next.domainLists.block.has('new.test')).toBe(true)
+    expect(base.domainLists.block.has('new.test')).toBe(false)
+  })
   it('rejects malformed batches without partially changing the input', () => {
     expect(() =>
       applyDiffs(base, [
