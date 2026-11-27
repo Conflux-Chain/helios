@@ -134,12 +134,12 @@ export function createListSources(
 ) {
   const MB = 1024 * 1024
   return {
-    async fetchMetaMaskSnapshot(etag) {
+    async fetchMetamaskFullList(etag) {
       const response = await fetchJSON(FULL_URL, fetcher, 64 * MB, etag)
       if (!response) return null
       return {...parseSnapshot(response.data.data), etag: response.etag}
     },
-    async fetchMetaMaskChanges(baseline) {
+    async fetchMetamaskDiffs(baseline) {
       const response = await fetchJSON(
         diffUrl(baseline.cursor),
         fetcher,

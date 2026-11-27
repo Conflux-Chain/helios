@@ -118,7 +118,7 @@ export function createDomainService({
     )
       return stagedSnapshot
 
-    const response = await sources.fetchMetaMaskSnapshot(
+    const response = await sources.fetchMetamaskFullList(
       metaMaskRules && metaMaskMeta.etag,
     )
     if (isLocked()) return null
@@ -165,7 +165,7 @@ export function createDomainService({
         }
     if (!baseline || isLocked()) return false
 
-    const next = await sources.fetchMetaMaskChanges(baseline)
+    const next = await sources.fetchMetamaskDiffs(baseline)
     validateSize(next.rules, metaMaskRules)
     if (metaMaskRules && next.cursor < metaMaskMeta.cursor)
       throw new Error('Outdated MetaMask response')
