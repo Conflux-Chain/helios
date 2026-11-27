@@ -1,7 +1,7 @@
 // @vitest-environment node
 import {describe, expect, it, vi} from 'vitest'
 import {
-  createListCache,
+  PhishingListCache,
   FULL_INTERVAL,
   DIFF_INTERVAL,
   FLUENT_INTERVAL,
@@ -55,7 +55,7 @@ function setup() {
     throw new Error('unexpected URL')
   })
   const make = () =>
-    createListCache({
+    new PhishingListCache({
       storage,
       listFetcher: createListFetcher(fetchFn),
       now: () => time,
@@ -391,7 +391,7 @@ it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not
   })
   try {
     const {storage, isLocked} = setup()
-    const service = createListCache({storage, now: () => time})
+    const service = new PhishingListCache({storage, now: () => time})
     expect(await service.refreshIfDue(isLocked)).toBe(true)
     time += FLUENT_INTERVAL
     expect(await service.refreshIfDue(isLocked)).toBe(false)
