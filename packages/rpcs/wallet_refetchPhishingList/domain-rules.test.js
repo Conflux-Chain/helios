@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {compileFeed, matchOrigin} from './domains.js'
+import {compileFeed, matchOrigin} from './domain-rules.js'
 
 const rules = compileFeed({
   version: 2,

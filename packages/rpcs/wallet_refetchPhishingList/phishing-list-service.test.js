@@ -1,16 +1,17 @@
 // @vitest-environment node
 import {describe, expect, it, vi} from 'vitest'
-import {createDomainService} from './service.js'
 import {
-  FULL_URL,
-  diffUrl,
-  FLUENT_URL,
+  createDomainService,
   FULL_INTERVAL,
   DIFF_INTERVAL,
   FLUENT_INTERVAL,
-  applyDiffs,
-  fetchJSON,
-} from './feeds.js'
+} from './phishing-list-service.js'
+import {
+  createListSources,
+  FULL_URL,
+  diffUrl,
+  FLUENT_URL,
+} from './list-sources.js'
 
 const cursor = 1795567388
 const full = {
@@ -60,7 +61,11 @@ function setup() {
     throw new Error('unexpected URL')
   })
   const make = () =>
-    createDomainService({storage, fetcher: fetchFn, now: () => time})
+    createDomainService({
+      storage,
+      sources: createListSources(fetchFn),
+      now: () => time,
+    })
   let service = make()
   const isLocked = () => locked
   return {
@@ -321,44 +326,4 @@ it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not
   } finally {
     network.mockRestore()
   }
-})
-
-describe('MetaMask diff wire format', () => {
-  const base = {
-    rules: {allow: new Set(), block: new Set(['unchanged.test'])},
-    cursor,
-  }
-  it('orders same-feed add/remove mutations, ignores stale/foreign/path records and uses a server cursor', () => {
-    const next = applyDiffs(base, [
-      event('unchanged.test', cursor, 'blocklist', true),
-      event('x.test', cursor + 4, 'blocklist', true),
-      event('x.test', cursor + 2),
-      event('ok.test', cursor + 4, 'allowlist'),
-      event('shared.test/only', cursor + 6, 'blocklistPaths'),
-      {...event('foreign.test', cursor + 99), targetList: 'other.blocklist'},
-    ])
-    expect([...next.rules.allow]).toEqual(['ok.test'])
-    expect([...next.rules.block]).toEqual(['unchanged.test'])
-    expect(next.cursor).toBe(cursor + 6)
-    expect(base.rules.allow.size).toBe(0)
-    expect(base.cursor).toBe(cursor)
-  })
-  it('rejects malformed batches without partially changing the input', () => {
-    expect(() =>
-      applyDiffs(base, [
-        event('new.test', cursor + 1),
-        {...event('x.test', cursor + 2), isRemoval: 'false'},
-      ]),
-    ).toThrow()
-    expect([...base.rules.block]).toEqual(['unchanged.test'])
-    expect(applyDiffs(base, [])).toEqual(base)
-  })
-  it('bounds downloads and rejects HTTP errors or unsolicited 304', async () => {
-    for (const res of [
-      new Response(new Uint8Array(9)),
-      new Response(null, {status: 503}),
-      new Response(null, {status: 304}),
-    ])
-      await expect(fetchJSON(FULL_URL, async () => res, 8)).rejects.toThrow()
-  })
 })

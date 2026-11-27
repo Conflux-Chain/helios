@@ -42,6 +42,28 @@ export function compileFeed(feed) {
   }
 }
 
+export const serializeRules = ({allow, block}) => ({
+  version: 2,
+  whitelist: [...allow],
+  blacklist: [...block],
+})
+function sameHosts(current, next) {
+  if (current === next) return true
+  if (current.size !== next.size) return false
+  for (const host of current) {
+    if (!next.has(host)) return false
+  }
+  return true
+}
+
+export function sameRules(current, next) {
+  return Boolean(
+    current &&
+      sameHosts(current.allow, next.allow) &&
+      sameHosts(current.block, next.block),
+  )
+}
+
 // Apply domain rules at DNS-label boundaries, most specific first. IPs and
 // single-label hosts are exact matches; never fall back to a top-level domain.
 function findRule(host, rules) {

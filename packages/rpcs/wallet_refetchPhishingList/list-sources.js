@@ -1,4 +1,5 @@
-import {compileFeed, normalizeRule} from './domains.js'
+import {initFetcher} from '@fluent-wallet/fetch-rpc'
+import {compileFeed, normalizeRule} from './domain-rules.js'
 
 // MetaMask/core phishing-controller: v1 snapshot plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
@@ -8,34 +9,8 @@ export const diffUrl = cursor => `${METAMASK_API}/v2/diffsSince/${cursor}`
 // A separate path prevents old CDN copies of the retired mirror being read as Fluent rules.
 export const FLUENT_URL =
   'https://raw.githubusercontent.com/conflux-fans/phishing-detect/main/config.json'
-const DAY = 24 * 60 * 60 * 1000
-export const FULL_INTERVAL = 30 * DAY
-export const DIFF_INTERVAL = 5 * DAY
-export const FLUENT_INTERVAL = DAY
 export const validCursor = n => Number.isSafeInteger(n) && n > 0
-export const pack = ({allow, block}) => ({
-  version: 2,
-  whitelist: [...allow],
-  blacklist: [...block],
-})
-function sameHosts(current, next) {
-  if (current === next) return true
-  if (current.size !== next.size) return false
-  for (const host of current) {
-    if (!next.has(host)) return false
-  }
-  return true
-}
-
-export function sameRules(current, next) {
-  return Boolean(
-    current &&
-      sameHosts(current.allow, next.allow) &&
-      sameHosts(current.block, next.block),
-  )
-}
-
-export function snapshot(data) {
+function parseSnapshot(data) {
   if (
     !validCursor(data?.lastUpdated) ||
     !Number.isSafeInteger(data.version) ||
@@ -145,5 +120,37 @@ export async function fetchJSON(url, fetcher, limit, etag) {
   } finally {
     controller.abort()
     clearTimeout(timer)
+  }
+}
+
+// Translate each source's HTTP format to domain rules; the service owns the
+// cursor, ETag and cache lifetime. A conditional 304 needs no new rules.
+export function createListSources(
+  fetcher = initFetcher({
+    throwHttpErrors: false, // handle 304 explicitly
+    retry: {limit: 0}, // the service backs off failed downloads
+    timeout: false, // fetchJSON bounds the entire body read
+  }),
+) {
+  const MB = 1024 * 1024
+  return {
+    async fetchMetaMaskSnapshot(etag) {
+      const response = await fetchJSON(FULL_URL, fetcher, 64 * MB, etag)
+      if (!response) return null
+      return {...parseSnapshot(response.data.data), etag: response.etag}
+    },
+    async fetchMetaMaskChanges(baseline) {
+      const response = await fetchJSON(
+        diffUrl(baseline.cursor),
+        fetcher,
+        16 * MB,
+      )
+      return applyDiffs(baseline, response.data.data)
+    },
+    async fetchFluentConfig(etag) {
+      const response = await fetchJSON(FLUENT_URL, fetcher, MB, etag)
+      if (!response) return null
+      return {rules: compileFeed(response.data), etag: response.etag}
+    },
   }
 }

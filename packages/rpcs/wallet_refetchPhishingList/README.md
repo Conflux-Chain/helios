@@ -2,6 +2,12 @@
 
 `wallet_afterUnlock` dispatches this internal RPC without waiting for HTTP. Domain checks also trigger a due refresh while unlocked. No activity or a locked wallet starts no request. The wallet sends no browsing origins, has no bundled list and does not schedule alarms or enforce UI policy here.
 
+## Module boundaries
+
+- [list-sources.js](./list-sources.js) fetches and decodes the MetaMask snapshot, server-cursor changes, and Fluent config. It does not read wallet storage or decide when to refresh.
+- [phishing-list-service.js](./phishing-list-service.js) decides when each source is due, keeps the last validated rules, coalesces requests, and rechecks pending origins. It consumes source methods instead of interpreting HTTP response bodies.
+- [domain-rules.js](./domain-rules.js) is pure: it normalizes host-only rules, matches origins and handles rule-set equality/serialization. These phishing policies are distinct from validating ENS/CNS names or comparing SIWE authorities.
+
 ## Two independent sources
 
 | Source | When due | Data |

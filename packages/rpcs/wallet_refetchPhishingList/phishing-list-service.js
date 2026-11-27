@@ -1,20 +1,15 @@
-import {initFetcher} from '@fluent-wallet/fetch-rpc'
-import {compileFeed, matchOrigin} from './domains.js'
 import {
-  FULL_URL,
-  diffUrl,
-  FLUENT_URL,
-  FULL_INTERVAL,
-  DIFF_INTERVAL,
-  FLUENT_INTERVAL,
-  applyDiffs,
-  fetchJSON,
-  pack,
+  compileFeed,
+  matchOrigin,
   sameRules,
-  snapshot,
-  validCursor,
-  validateSize,
-} from './feeds.js'
+  serializeRules,
+} from './domain-rules.js'
+import {createListSources, validCursor, validateSize} from './list-sources.js'
+
+const DAY = 24 * 60 * 60 * 1000
+export const FULL_INTERVAL = 30 * DAY
+export const DIFF_INTERVAL = 5 * DAY
+export const FLUENT_INTERVAL = DAY
 
 // Keep the sources separate: a Fluent config is not a copy of MetaMask's list.
 const METAMASK_RULES = 'phishing.metamask.v2'
@@ -30,7 +25,6 @@ const CACHE_KEYS = [
   FLUENT_META,
 ]
 const RETRY_DELAY = 15 * 60 * 1000
-const MB = 1024 * 1024
 
 function isDue(time, lastCheck, interval) {
   // Treat a clock that moved backwards like a missing check, not a fresh one.
@@ -71,13 +65,7 @@ function waitForRuleChange(changes, signal, getVerdict) {
 
 export function createDomainService({
   storage,
-  // fetchJSON handles 304 and applies one deadline through the last body chunk.
-  // Leave retries to the service so a failed large download isn't repeated here.
-  fetcher = initFetcher({
-    throwHttpErrors: false,
-    retry: {limit: 0},
-    timeout: false,
-  }),
+  sources = createListSources(),
   now = Date.now,
 }) {
   let metaMaskRules
@@ -130,10 +118,7 @@ export function createDomainService({
     )
       return stagedSnapshot
 
-    const response = await fetchJSON(
-      FULL_URL,
-      fetcher,
-      64 * MB,
+    const response = await sources.fetchMetaMaskSnapshot(
       metaMaskRules && metaMaskMeta.etag,
     )
     if (isLocked()) return null
@@ -148,12 +133,16 @@ export function createDomainService({
         etag: metaMaskMeta.etag,
       }
     } else {
-      const {rules, cursor} = snapshot(response.data.data)
-      const {etag} = response
+      const {rules, cursor, etag} = response
       // Save the baseline, but don't serve it yet. If catch-up fails or the worker
       // restarts, retry only the delta and keep serving the last verified rules.
       await storage.set({
-        [STAGED_SNAPSHOT]: {feed: pack(rules), cursor, fetchedAt, etag},
+        [STAGED_SNAPSHOT]: {
+          feed: serializeRules(rules),
+          cursor,
+          fetchedAt,
+          etag,
+        },
       })
       stagedSnapshot = {rules, cursor, fetchedAt, etag}
     }
@@ -176,8 +165,7 @@ export function createDomainService({
         }
     if (!baseline || isLocked()) return false
 
-    const response = await fetchJSON(diffUrl(baseline.cursor), fetcher, 16 * MB)
-    const next = applyDiffs(baseline, response.data.data)
+    const next = await sources.fetchMetaMaskChanges(baseline)
     validateSize(next.rules, metaMaskRules)
     if (metaMaskRules && next.cursor < metaMaskMeta.cursor)
       throw new Error('Outdated MetaMask response')
@@ -193,7 +181,7 @@ export function createDomainService({
       etag: baseline.etag,
     }
     const patch = {[METAMASK_META]: nextMeta}
-    if (changed) patch[METAMASK_RULES] = pack(next.rules)
+    if (changed) patch[METAMASK_RULES] = serializeRules(next.rules)
     if (needsSnapshot) patch[STAGED_SNAPSHOT] = null
     await storage.set(patch)
     metaMaskMeta = nextMeta
@@ -205,22 +193,19 @@ export function createDomainService({
   async function updateFluent(isLocked) {
     if (fluentRules && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
       return false
-    const response = await fetchJSON(
-      FLUENT_URL,
-      fetcher,
-      MB,
+    const response = await sources.fetchFluentConfig(
       fluentRules && fluentMeta.etag,
     )
     if (isLocked()) return false
 
-    const rules = response ? compileFeed(response.data) : fluentRules
+    const rules = response ? response.rules : fluentRules
     const changed = !sameRules(fluentRules, rules)
     const nextMeta = {
       checkedAt: now(),
       etag: response ? response.etag : fluentMeta.etag,
     }
     const patch = {[FLUENT_META]: nextMeta}
-    if (changed) patch[FLUENT_RULES] = pack(rules)
+    if (changed) patch[FLUENT_RULES] = serializeRules(rules)
     await storage.set(patch)
     fluentRules = rules
     fluentMeta = nextMeta
