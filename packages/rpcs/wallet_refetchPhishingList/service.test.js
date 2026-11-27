@@ -59,7 +59,8 @@ function setup() {
     if (url.startsWith(diffUrl(''))) return Response.json({data: fixture.diffs})
     throw new Error('unexpected URL')
   })
-  const make = () => createDomainService({storage, fetchFn, now: () => time})
+  const make = () =>
+    createDomainService({storage, fetcher: fetchFn, now: () => time})
   let service = make()
   const isLocked = () => locked
   return {
@@ -274,6 +275,52 @@ describe('MetaMask snapshot + diffs and independent Fluent configuration', () =>
     await s.refresh()
     expect(s.urls()).not.toContain(diffUrl(cursor))
   })
+})
+
+it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not retry a failed download', async () => {
+  const network = vi.spyOn(global, 'fetch')
+  let time = Date.UTC(2026, 10, 25)
+  let fluentChecks = 0
+  network.mockImplementation(async request => {
+    expect(request).toBeInstanceOf(Request)
+    expect(request.method).toBe('GET')
+    expect(request.credentials).toBe('omit')
+    expect(request.referrerPolicy).toBe('no-referrer')
+    expect(request.redirect).toBe('error')
+    if (request.url === FULL_URL) return Response.json({data: full})
+    if (request.url === diffUrl(cursor)) return Response.json({data: []})
+    expect(request.url).toBe(FLUENT_URL)
+    fluentChecks++
+    if (fluentChecks === 1)
+      return Response.json(
+        {version: 2, whitelist: [], blacklist: ['fluent.test']},
+        {headers: {etag: '"v1"'}},
+      )
+    expect(request.headers.get('if-none-match')).toBe('"v1"')
+    if (fluentChecks === 2) return new Response(null, {status: 304})
+    throw new TypeError('offline')
+  })
+  try {
+    const {storage, isLocked} = setup()
+    const service = createDomainService({storage, now: () => time})
+    expect(await service.refreshIfDue(isLocked)).toBe(true)
+    time += FLUENT_INTERVAL
+    expect(await service.refreshIfDue(isLocked)).toBe(false)
+    expect(storage.set.mock.lastCall[0]['phishing.fluent.v2.meta']).toEqual({
+      etag: '"v1"',
+      checkedAt: time,
+    })
+    time += FLUENT_INTERVAL
+    expect(await service.refreshIfDue(isLocked)).toBe(false)
+    expect(
+      (await service.checkOrigin('https://fluent.test', isLocked)).verdict
+        .status,
+    ).toBe('blocklisted')
+    expect(fluentChecks).toBe(3)
+    expect(network).toHaveBeenCalledTimes(5)
+  } finally {
+    network.mockRestore()
+  }
 })
 
 describe('MetaMask diff wire format', () => {

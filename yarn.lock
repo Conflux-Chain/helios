@@ -7788,6 +7788,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-phishing-list@workspace:packages/rpcs/wallet_refetchPhishingList"
   dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
     "@fluent-wallet/spec": "npm:1.0.24"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown

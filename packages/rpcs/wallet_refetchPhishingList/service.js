@@ -1,3 +1,4 @@
+import {initFetcher} from '@fluent-wallet/fetch-rpc'
 import {compileFeed, matchOrigin} from './domains.js'
 import {
   FULL_URL,
@@ -70,7 +71,13 @@ function waitForRuleChange(changes, signal, getVerdict) {
 
 export function createDomainService({
   storage,
-  fetchFn = fetch,
+  // fetchJSON handles 304 and applies one deadline through the last body chunk.
+  // Leave retries to the service so a failed large download isn't repeated here.
+  fetcher = initFetcher({
+    throwHttpErrors: false,
+    retry: {limit: 0},
+    timeout: false,
+  }),
   now = Date.now,
 }) {
   let metaMaskRules
@@ -125,7 +132,7 @@ export function createDomainService({
 
     const response = await fetchJSON(
       FULL_URL,
-      fetchFn,
+      fetcher,
       64 * MB,
       metaMaskRules && metaMaskMeta.etag,
     )
@@ -169,7 +176,7 @@ export function createDomainService({
         }
     if (!baseline || isLocked()) return false
 
-    const response = await fetchJSON(diffUrl(baseline.cursor), fetchFn, 16 * MB)
+    const response = await fetchJSON(diffUrl(baseline.cursor), fetcher, 16 * MB)
     const next = applyDiffs(baseline, response.data.data)
     validateSize(next.rules, metaMaskRules)
     if (metaMaskRules && next.cursor < metaMaskMeta.cursor)
@@ -200,7 +207,7 @@ export function createDomainService({
       return false
     const response = await fetchJSON(
       FLUENT_URL,
-      fetchFn,
+      fetcher,
       MB,
       fluentRules && fluentMeta.etag,
     )

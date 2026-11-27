@@ -110,11 +110,11 @@ export function applyDiffs(base, diffs) {
 }
 
 // Auth-free, fixed-source requests only. Bound decompressed bytes as well as headers.
-export async function fetchJSON(url, fetchFn, limit, etag) {
+export async function fetchJSON(url, fetcher, limit, etag) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 30_000)
   try {
-    const res = await fetchFn(url, {
+    const res = await fetcher(url, {
       signal: controller.signal,
       cache: 'no-cache',
       redirect: 'error',

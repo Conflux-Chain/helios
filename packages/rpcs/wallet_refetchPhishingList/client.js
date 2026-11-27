@@ -5,5 +5,4 @@ import {createDomainService} from './service.js'
 export const {refreshIfDue, checkOrigin: checkPhishingOrigin} =
   createDomainService({
     storage: browser.storage.local,
-    fetchFn: (...args) => fetch(...args),
   })
