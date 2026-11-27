@@ -3,10 +3,10 @@
   "private": true,
   "main": "index.js",
   "type": "module",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "dependencies": {
     "@fluent-wallet/site-metadata": "workspace:packages/site-metadata",
-    "@thi.ng/rstream": "6.0.21",
+    "@thi.ng/rstream": "7.2.46",
     "webextension-polyfill": "0.8.0"
   }
 }

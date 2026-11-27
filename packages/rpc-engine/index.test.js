@@ -1,30 +1,40 @@
-import {expect, describe, it, vi} from 'vitest'
+import {expect, describe, it} from 'vitest'
 import {defRpcEngine} from './index'
 
-// eslint-disable-next-line
-describe.skip('RPCEngine', () => {
-  describe('defRpcEngine', () => {
-    const mockStore = {setState: vi.fn(), getState: vi.fn()}
-    const mockOpts = {
-      methods: [
-        {
-          main: vi.fn().mockResolvedValue(),
-          NAME: 'cfx_mockRpc',
-          permissions: {
-            methods: [],
+describe('RPCEngine', () => {
+  it('dispatches through the graph after a rejected request', async () => {
+    const {request} = defRpcEngine(
+      {getOneNetwork: () => ({name: 'local', type: 'cfx', netId: 1})},
+      {
+        methods: [
+          {
+            NAME: 'wallet_echo',
+            permissions: {external: ['popup'], locked: true},
+            main: ({params}) => params.value,
           },
-        },
-      ],
-    }
+        ],
+      },
+    )
 
-    it('should return the request method', async () => {
-      const {request} = defRpcEngine(mockStore, mockOpts)
-      const res = await request({
-        method: 'cfx_mockRpc',
-        params: {mockParams: 'mockParams'},
-      })
-      expect(res.jsonrpc).toBe('2.0')
-      expect(res.result).toBe('0x1')
+    const rejected = await request({
+      id: 1,
+      method: 'wallet_missing',
+      _popup: true,
     })
+    expect(rejected).toMatchObject({
+      id: 1,
+      jsonrpc: '2.0',
+      error: {code: -32601},
+    })
+
+    for (const id of [2, 3]) {
+      const res = await request({
+        id,
+        method: 'wallet_echo',
+        _popup: true,
+        params: {value: id},
+      })
+      expect(res).toEqual({id, jsonrpc: '2.0', result: id})
+    }
   })
 })

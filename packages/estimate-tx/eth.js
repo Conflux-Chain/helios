@@ -8,8 +8,6 @@ import {
 } from '@fluent-wallet/consts'
 import {prepareEip7702AuthorizationRequestsForEstimate} from '@fluent-wallet/utils'
 
-const ETH_INTRINSIC_GAS = 21000
-
 const toEip7702DelegationCode = delegateAddress =>
   `${EIP7702_DELEGATION_PREFIX}${delegateAddress.slice(2).toLowerCase()}`
 
@@ -62,11 +60,24 @@ async function estimateGasWithNonceRetry(tx, estimate) {
 }
 
 async function estimateEip7702SelfCall(request, tx, finalDelegateAddress) {
-  const authorizationEstimate = await requestGasEstimate(request, {
-    ...tx,
+  // The original value and access list are included in the execution estimate.
+  const transactionWithoutAuthorization = {
+    from: tx.from,
     to: NULL_HEX_ADDRESS,
     data: '0x',
+    value: '0x0',
+    nonce: tx.nonce,
+    chainId: tx.chainId,
+  }
+  const authorizationEstimate = await requestGasEstimate(request, {
+    ...transactionWithoutAuthorization,
+    type: ETH_TX_TYPES.EIP7702,
+    authorizationList: tx.authorizationList,
   })
+  const estimateWithoutAuthorization = await requestGasEstimate(
+    request,
+    transactionWithoutAuthorization,
+  )
 
   const executionTx = {...tx}
 
@@ -82,7 +93,7 @@ async function estimateEip7702SelfCall(request, tx, finalDelegateAddress) {
   const combinedGas = pre0x(
     bn16(authorizationEstimate.gasLimit)
       .add(bn16(executionEstimate.gasLimit))
-      .subn(ETH_INTRINSIC_GAS)
+      .sub(bn16(estimateWithoutAuthorization.gasLimit))
       .toString(16),
   )
 
@@ -172,7 +183,7 @@ export const ethEstimateGas = async (
 }
 
 export const ethGetFeeData = (
-  {gas = '0x5208', gasPrice = '0x1', value = '0x0', tokensAmount = {}} = {},
+  {gas, gasPrice = '0x1', value = '0x0', tokensAmount = {}} = {},
   {balance = '0x0', tokensBalance = {}} = {},
 ) => {
   const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))

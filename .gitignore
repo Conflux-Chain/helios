@@ -257,6 +257,7 @@ cljs-runtime
 /websites/doc/docs/standard-rpc.mdx
 /websites/doc/docs/provider-rpc.mdx
 /websites/doc/docs/inner-rpc.mdx
+/websites/doc/docs/rpc-names.json
 /packages/background/src/local-dev.js
 /blockchain_data/
 /pos_config/

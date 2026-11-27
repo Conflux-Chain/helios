@@ -18,6 +18,10 @@ on:
     types:
       - closed
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   pre-release:
     if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}

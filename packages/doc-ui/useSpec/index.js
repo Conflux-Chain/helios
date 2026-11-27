@@ -3,7 +3,7 @@ import create from 'zustand'
 
 let SPEC = null
 let GEN = null
-const Stores = {}
+const stores = new Map()
 
 const createSpec = id =>
   create((set, get) => ({
@@ -12,8 +12,8 @@ const createSpec = id =>
     _genRetryCount: 0,
     cantLoadSpec: null,
     cantLoadGen: null,
-    loadingSpec: true,
-    loadingGen: true,
+    loadingSpec: !SPEC,
+    loadingGen: !GEN,
     schema: null,
     doc: null,
     parsedData: null,
@@ -137,10 +137,12 @@ const createSpec = id =>
 export const useSpec = (id, {schema, data} = {}) => {
   if (!id) throw new Error(`invalid spec id: ${id}`)
 
-  const isNewSpec = !Stores[id]
-  if (isNewSpec) Stores[id] = createSpec(id)
-
-  const useStore = Stores[id]
+  let useStore = stores.get(id)
+  const isNewSpec = !useStore
+  if (isNewSpec) {
+    useStore = createSpec(id)
+    stores.set(id, useStore)
+  }
   const s = useStore()
 
   useEffect(() => {

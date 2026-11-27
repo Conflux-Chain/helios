@@ -82,35 +82,43 @@ const fallbackBalanceTracker = async (
   },
 ) => {
   const getBalanceMethod = type === 'cfx' ? cfx_getBalance : eth_getBalance
-  const rst = {}
-  const promises = users.reduce((acc, u) => {
-    u = u.toLowerCase()
-    if (!rst[u]) rst[u] = {}
-    return acc.concat(
-      tokens.map(async t => {
-        let res = '0x0'
-        t = t.toLowerCase()
+  const userAddresses = [...new Set(users.map(user => user.toLowerCase()))]
+  const tokenAddresses = [...new Set(tokens.map(token => token.toLowerCase()))]
 
-        const call =
-          t === '0x0'
-            ? addr => getBalanceMethod([addr])
-            : tokenContract.balanceOf(d => callMethod([d]), t)
+  const queryBalance = async (userAddress, tokenAddress) => {
+    let balance = '0x0'
 
-        try {
-          res = await call(
-            type === 'cfx' && t !== '0x0' ? decode(u).hexAddress : u,
-          )
-          if (Array.isArray(res)) res = res[0]
-          res = hexValue(res?.toHexString?.() || res)
-        } catch (err) {} // eslint-disable-line no-empty
-        rst[u][t] = res
-        return res
-      }),
-    )
-  }, [])
+    const call =
+      tokenAddress === '0x0'
+        ? addr => getBalanceMethod([addr])
+        : tokenContract.balanceOf(d => callMethod([d]), tokenAddress)
 
-  await Promise.all(promises)
-  return rst
+    try {
+      balance = await call(
+        type === 'cfx' && tokenAddress !== '0x0'
+          ? decode(userAddress).hexAddress
+          : userAddress,
+      )
+      if (Array.isArray(balance)) balance = balance[0]
+      balance = hexValue(balance)
+    } catch (err) {} // eslint-disable-line no-empty
+    return balance
+  }
+
+  const entries = await Promise.all(
+    userAddresses.map(async userAddress => {
+      const tokenEntries = await Promise.all(
+        tokenAddresses.map(async tokenAddress => [
+          tokenAddress,
+          await queryBalance(userAddress, tokenAddress),
+        ]),
+      )
+
+      return [userAddress, Object.fromEntries(tokenEntries)]
+    }),
+  )
+
+  return Object.fromEntries(entries)
 }
 
 export const main = async arg => {

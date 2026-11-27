@@ -1,4 +1,5 @@
 import {ERROR} from '@fluent-wallet/json-rpc-error'
+import {hasLineWithOrderedPhrases} from '@fluent-wallet/json-rpc-error/message.js'
 
 // shouldDiscard means should stop tracking this tx
 export function processError(err) {
@@ -11,11 +12,22 @@ export function processError(err) {
       return {errorType: 'duplicateTx', shouldDiscard: false}
     if (err.data?.includes?.('too stale nonce'))
       return {errorType: 'tooStaleNonce', shouldDiscard: true}
-    if (err.data?.match?.(/same nonce already inserted.*replace.*gas price/))
+    if (
+      hasLineWithOrderedPhrases(err.data, [
+        'same nonce already inserted',
+        'replace',
+        'gas price',
+      ])
+    )
       return {errorType: 'replacedWithHigherGasPriceTx', shouldDiscard: true}
     if (err.data?.includes?.('EpochHeightOutOfBound'))
       return {errorType: 'epochHeightOutOfBound', shouldDiscard: true}
-    if (err.data?.match?.(/gas price.*less than the minimum value/))
+    if (
+      hasLineWithOrderedPhrases(err.data, [
+        'gas price',
+        'less than the minimum value',
+      ])
+    )
       return {errorType: 'gasPriceTooLow', shouldDiscard: true}
     if (err.data?.includes?.('exceeds the maximum value'))
       return {errorType: 'gasExceedsLimit', shouldDiscard: true}

@@ -39,7 +39,7 @@ function GasAndNonceFields({
               isGasLimitInputVisible ? 'hidden' : ''
             }`}
           >
-            <span id="gasLimit">{toThousands(gasLimit || '21000')}</span>
+            <span id="gasLimit">{gasLimit ? toThousands(gasLimit) : ''}</span>
             <WrapIcon
               onClick={() => setShowGasLimitInput(true)}
               className=" ml-1 shadow-none !bg-primary-10"

@@ -7,6 +7,7 @@ import {hexToBytes} from '@ethereumjs/util'
 import {fromPrivate} from '@fluent-wallet/account'
 import {
   ethEncodeEip7702Transaction,
+  ethSignTransaction,
   ethSignEip7702Transaction,
   personalSign,
   hashEip7702Authorization,
@@ -170,6 +171,23 @@ describe('cfx', () => {
 })
 
 describe('eth', () => {
+  test('signs the published EIP-155 example byte for byte', () => {
+    const raw = ethSignTransaction(
+      {
+        chainId: 1,
+        nonce: 9,
+        gasPrice: 20000000000,
+        gasLimit: 21000,
+        to: `0x${'35'.repeat(20)}`,
+        value: '0x0de0b6b3a7640000',
+      },
+      `0x${'46'.repeat(32)}`,
+    )
+    expect(raw).toBe(
+      '0xf86c098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a76400008025a028ef61340bd939bc2195fe537567866003e1a15d3c71ff63e1590620aa636276a067cbe9d8997f761aecb703304b3800ccf555c9f3dc64214b297fb1966a3b6d83',
+    )
+  })
+
   describe('personal sign', () => {
     test('personalSign and recover', async () => {
       const address = '0x29C76e6aD8f28BB1004902578Fb108c507Be341b'

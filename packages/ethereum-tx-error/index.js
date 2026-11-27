@@ -1,4 +1,5 @@
 import {ERROR} from '@fluent-wallet/json-rpc-error'
+import {hasLineWithOrderedPhrases} from '@fluent-wallet/json-rpc-error/message.js'
 
 // shouldDiscard means should stop tracking this tx
 // error from geth txpool error
@@ -45,7 +46,12 @@ export function processError(err) {
       return {errorType: 'insufficientFunds', shouldDiscard: true}
     if (/ZeroGasPrice/.test(errstr))
       return {errorType: 'zeroGasPrice', shouldDiscard: true}
-    if (/gas price.*less than the minimum value/.test(errstr))
+    if (
+      hasLineWithOrderedPhrases(String(errstr), [
+        'gas price',
+        'less than the minimum value',
+      ])
+    )
       return {errorType: 'gasPriceTooLow', shouldDiscard: true}
     if (/intrinsic gas too low/i.test(errstr))
       return {errorType: 'intrinsicGas', shouldDiscard: true}

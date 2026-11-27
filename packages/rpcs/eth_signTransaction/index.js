@@ -74,7 +74,6 @@ export const permissions = {
     'eth_getTransactionCount',
     'eth_gasPrice',
     'eth_estimateGas',
-    'wallet_detectAddressType',
     'wallet_network1559Compatible',
     'eth_estimate1559Fee',
   ],
@@ -91,7 +90,6 @@ export const main = async args => {
       wallet_getAddressPrivateKey,
       eth_estimateGas,
       eth_getTransactionCount,
-      wallet_detectAddressType,
       eth_estimate1559Fee,
     },
     params: [tx, opts = {}],
@@ -185,15 +183,6 @@ export const main = async args => {
     )
   }
 
-  if (!is7702Tx && newTx.to && !newTx.gas) {
-    const {contract: typeContract} = await wallet_detectAddressType(
-      {errorFallThrough: true},
-      {address: newTx.to},
-    )
-    if (!typeContract && !newTx.data) {
-      if (!newTx.gas) newTx.gas = '0x5208'
-    }
-  }
   if (!newTx.gas) {
     try {
       newTx.gas = await eth_estimateGas({errorFallThrough: true}, [

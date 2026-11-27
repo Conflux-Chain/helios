@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/signature",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.35",
+  "version": "0.0.38",
   "dependencies": {
     "@ethereumjs/common": "10.1.1",
     "@ethereumjs/rlp": "10.1.1",
@@ -11,11 +11,12 @@
     "@ethersproject/bytes": "5.6.1",
     "@ethersproject/hash": "5.6.1",
     "@ethersproject/keccak256": "5.6.1",
-    "@ethersproject/signing-key": "5.6.2",
+    "@ethersproject/signing-key": "5.8.0",
     "@ethersproject/transactions": "5.6.2",
     "@ethersproject/wallet": "5.6.2",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/utils": "workspace:packages/utils",
+    "@noble/curves": "1.9.7",
     "cip-23": "0.2.0",
     "eth-sig-util": "3.0.1",
     "js-conflux-sdk": "2.4.10"
