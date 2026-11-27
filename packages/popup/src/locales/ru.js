@@ -108,12 +108,14 @@ const ru = {
     seedImport: 'Импорт секретной фразы',
     seedImportPlaceholder:
       'Секретная фраза состоит из слов, разделенных пробелами. Разделяйте каждое введенное слово пробелом.',
+    seedPhraseRequired: 'Пожалуйста, введите вашу секретную фразу.',
     duplicateSeedError: 'Эта секретная фраза уже в вашем кошельке.',
     invalidSeed: 'Неверная секретная фраза, проверьте еще раз.',
 
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Импортировать привантый ключ',
     pKeyImportPlaceholder: 'Введите свой приватный ключ здесь.',
+    privateKeyRequired: 'Пожалуйста, введите ваш приватный ключ.',
     duplicatePkError: 'Этот приватный ключ уже в вашем кошельке.',
     invalidPrivateKey: 'Неверный приватный ключ, проверьте еще раз.',
 
@@ -495,7 +497,6 @@ const ru = {
     gasFeeIsNotEnough: 'Недостаточная цена за газ',
     contractError: 'Ошибка в контракте: ',
     invalidPasswordFromRpc: 'Неверный пароль',
-    required: 'Пожалуйста, введите вашу секретную фразу.',
     changeNetworkError: 'Ошибка изменения сети',
 
     // hardware guard

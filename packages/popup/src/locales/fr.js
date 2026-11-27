@@ -111,6 +111,7 @@ const fr = {
     seedImport: 'Importer la Phrase de récupération',
     seedImportPlaceholder:
       'La phrase de récupération est composée de mots séparés par des espaces. Séparez chaque mot par un espace.',
+    seedPhraseRequired: 'Merci de saisir votre phrase seed.',
     duplicateSeedError:
       'Cette phrase de récupération est déjà présente dans votre portefeuille.',
     invalidSeed: 'Phrase de récupération invalide, vérifiez à nouveau.',
@@ -118,6 +119,7 @@ const fr = {
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Importer la Clé Privée',
     pKeyImportPlaceholder: 'Saisir votre Clé Privée ici.',
+    privateKeyRequired: 'Merci de saisir votre clé privée.',
     duplicatePkError:
       'Cette Clé Privée est déjà présente dans votre portefeuille.',
     invalidPrivateKey: 'Clé invalide, vérifiez à nouveau.',
@@ -503,7 +505,6 @@ const fr = {
     gasFeeIsNotEnough: 'Frais de gas insuffisant',
     contractError: 'Erreur Contrat : ',
     invalidPasswordFromRpc: 'Mot de passe incorrect',
-    required: 'Merci de saisir votre phrase seed.',
     changeNetworkError: 'Erreur de changement réseau',
 
     // hardware guard
