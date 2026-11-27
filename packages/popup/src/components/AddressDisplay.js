@@ -88,7 +88,7 @@ function ContractDisplay({
 }) {
   const displayText = label ?? displayAddress
   return (
-    <div className={classNames('flex gap-1', wrapperClassName)}>
+    <div className={classNames('flex items-start gap-1', wrapperClassName)}>
       {showIcon && (
         <VerificationBadge
           kind="contract"
