@@ -17,7 +17,7 @@ const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
 it('translates a Fluent response into domain lists without storage or an extension context', async () => {
   const listFetcher = createListFetcher(async () =>
     Response.json(
-      {version: 2, whitelist: [], blacklist: ['EXAMPLE.test.']},
+      {version: 1, whitelist: [], blacklist: ['EXAMPLE.test.']},
       {headers: {etag: '"v1"'}},
     ),
   )
@@ -25,6 +25,15 @@ it('translates a Fluent response into domain lists without storage or an extensi
     domainLists: {allow: new Set(), block: new Set(['example.test'])},
     etag: '"v1"',
   })
+})
+
+it('rejects Fluent configs that still declare version 2', async () => {
+  const listFetcher = createListFetcher(async () =>
+    Response.json({version: 2, whitelist: [], blacklist: []}),
+  )
+  await expect(listFetcher.fetchFluentFullList()).rejects.toThrow(
+    'Unsupported phishing list format',
+  )
 })
 
 describe('MetaMask diff wire format', () => {

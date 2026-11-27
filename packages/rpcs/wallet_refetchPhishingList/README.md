@@ -14,7 +14,9 @@
 | --- | --- | --- |
 | [MetaMask baseline](https://phishing-detection.api.cx.metamask.io/v1/stalelist) | First use, then every 30 days | Read `data.allowlist`, `data.blocklist` and `data.lastUpdated`. Send `If-None-Match` on later baseline checks if an ETag was supplied. |
 | MetaMask hotlist | Immediately after a new baseline, then every 5 days | `GET /v2/diffsSince/<cursor>` on the same origin. The cursor starts at the baseline’s server timestamp **in seconds**. Apply newer `eth_phishing_detect_config.allowlist` and `.blocklist` additions/removals, not entries from other lists. Empty deltas update only freshness; never substitute the device clock for the cursor. |
-| [Fluent config](https://github.com/conflux-fans/phishing-detect) | First use, then on demand at least 24 hours after the last successful check | A small, manually maintained `config.json`: `version: 2`, `whitelist`, `blacklist`; empty arrays are valid. Conditional fetch when an ETag is available. No mirror or automated upstream import. |
+| [Fluent config](https://github.com/conflux-fans/phishing-detect) | First use, then on demand at least 24 hours after the last successful check | A small, manually maintained `config.json`: `version: 1`, `whitelist`, `blacklist`; empty arrays are valid. Conditional fetch when an ETag is available. No mirror or automated upstream import. |
+
+Both sources are stored in Fluent’s domain-list format (`version: 1`). An unsupported local format is discarded on restore; the next unlocked refresh fetches a fresh copy. This version does not select a MetaMask API endpoint.
 
 Sources are checked independently. A failed download, invalid data or failed storage write does not replace the active lists. There is one active MetaMask list. A validated full response and its cursor are saved together and can be used even if the following delta fails. An older full list cannot roll back newer local changes. Retry the delta from the saved cursor rather than re-downloading the full list after a restart; there is no staging key. Refreshes are coalesced, with a short failure backoff. Old versions of the Fluent mirror cache are not used as Fluent policy.
 

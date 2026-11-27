@@ -1,6 +1,7 @@
 // Only list hostnames. A URL with a path must not match the entire host.
 const labels = /^[a-z0-9_-]+(?:\.[a-z0-9_-]+)*$/
 const MAX_ENTRIES = 500000
+export const DOMAIN_LIST_VERSION = 1
 
 export function normalizeDomain(value) {
   if (typeof value !== 'string') throw new Error('Invalid phishing list entry')
@@ -35,7 +36,7 @@ function normalizeList(entries) {
 }
 
 export function normalizeDomainLists(domainList) {
-  if (domainList?.version !== 2)
+  if (domainList?.version !== DOMAIN_LIST_VERSION)
     throw new Error('Unsupported phishing list format')
   return {
     allow: normalizeList(domainList.whitelist),
@@ -44,7 +45,7 @@ export function normalizeDomainLists(domainList) {
 }
 
 export const serializeDomainLists = ({allow, block}) => ({
-  version: 2,
+  version: DOMAIN_LIST_VERSION,
   whitelist: [...allow],
   blacklist: [...block],
 })

@@ -2,7 +2,7 @@ import {describe, expect, it} from 'vitest'
 import {normalizeDomainLists, matchOrigin} from './domain.js'
 
 const domainLists = normalizeDomainLists({
-  version: 2,
+  version: 1,
   whitelist: ['accounts.flagged.test', 'both.test', 'localhost'],
   blacklist: [
     'flagged.test',
