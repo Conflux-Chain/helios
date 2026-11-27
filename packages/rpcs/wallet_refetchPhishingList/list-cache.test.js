@@ -1,12 +1,16 @@
 // @vitest-environment node
-import {describe, expect, it, vi} from 'vitest'
-import {
-  PhishingListCache,
-  FULL_INTERVAL,
-  DIFF_INTERVAL,
-  FLUENT_INTERVAL,
-} from './list-cache.js'
-import {createListFetcher, FULL_URL, diffUrl, FLUENT_URL} from './fetch-list.js'
+import {afterEach, describe, expect, it, vi} from 'vitest'
+import {FULL_INTERVAL, DIFF_INTERVAL, FLUENT_INTERVAL} from './list-cache.js'
+import {FULL_URL, diffUrl, FLUENT_URL} from './fetch-list.js'
+
+const storage = vi.hoisted(() => ({get: vi.fn(), set: vi.fn()}))
+vi.mock('webextension-polyfill', () => ({default: {storage: {local: storage}}}))
+afterEach(() => vi.restoreAllMocks())
+
+async function loadWorkerCache() {
+  vi.resetModules()
+  return import('./list-cache.js')
+}
 
 const cursor = 1795567388
 const full = {
@@ -25,42 +29,38 @@ const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
   timestamp,
   isRemoval,
 })
-function setup() {
+async function setup() {
   let time = Date.UTC(2026, 10, 25),
     locked = false
-  const data = {},
-    storage = {
-      get: vi.fn(async () => ({...data})),
-      set: vi.fn(async patch => {
-        Object.assign(data, patch)
-      }),
-    }
+  vi.spyOn(Date, 'now').mockImplementation(() => time)
+  const data = {}
+  storage.get.mockReset().mockImplementation(async () => ({...data}))
+  storage.set.mockReset().mockImplementation(async patch => {
+    Object.assign(data, patch)
+  })
   const fixture = {
     full,
     diffs: [],
     fluent: {whitelist: [], blacklist: []},
     fail: null,
   }
-  const fetchFn = vi.fn(async url => {
-    if (fixture.fail?.(url)) throw new Error('offline')
-    if (url === FULL_URL)
-      return fixture.full === null
-        ? new Response(null, {status: 304})
-        : Response.json({data: fixture.full}, {headers: {etag: '"full"'}})
-    if (url === FLUENT_URL)
-      return fixture.fluent === null
-        ? new Response(null, {status: 304})
-        : Response.json(fixture.fluent, {headers: {etag: '"local"'}})
-    if (url.startsWith(diffUrl(''))) return Response.json({data: fixture.diffs})
-    throw new Error('unexpected URL')
-  })
-  const make = () =>
-    new PhishingListCache({
-      storage,
-      listFetcher: createListFetcher(fetchFn),
-      now: () => time,
+  const fetchFn = vi
+    .spyOn(global, 'fetch')
+    .mockImplementation(async ({url}) => {
+      if (fixture.fail?.(url)) throw new Error('offline')
+      if (url === FULL_URL)
+        return fixture.full === null
+          ? new Response(null, {status: 304})
+          : Response.json({data: fixture.full}, {headers: {etag: '"full"'}})
+      if (url === FLUENT_URL)
+        return fixture.fluent === null
+          ? new Response(null, {status: 304})
+          : Response.json(fixture.fluent, {headers: {etag: '"local"'}})
+      if (url.startsWith(diffUrl('')))
+        return Response.json({data: fixture.diffs})
+      throw new Error('unexpected URL')
     })
-  let service = make()
+  let cache = await loadWorkerCache()
   const isLocked = () => locked
   return {
     storage,
@@ -68,8 +68,8 @@ function setup() {
     fixture,
     data,
     isLocked,
-    restart: () => {
-      service = make()
+    restart: async () => {
+      cache = await loadWorkerCache()
     },
     advance: ms => {
       time += ms
@@ -77,14 +77,15 @@ function setup() {
     lock: v => {
       locked = v
     },
-    refresh: () => service.refreshIfDue(isLocked),
-    check: (origin, signal) => service.checkOrigin(origin, isLocked, signal),
-    urls: () => fetchFn.mock.calls.map(([url]) => url),
+    refresh: () => cache.refreshIfDue(isLocked),
+    check: (origin, signal) =>
+      cache.checkPhishingOrigin(origin, isLocked, signal),
+    urls: () => fetchFn.mock.calls.map(([request]) => request.url),
   }
 }
 describe('MetaMask full list + diffs and independent Fluent configuration', () => {
   it('bootstraps once, catches up from the full list’s server timestamp, and never transmits the origin', async () => {
-    const s = setup()
+    const s = await setup()
     s.fixture.diffs = [event('new.test', cursor + 1)]
     const {verdict, rechecked} = await s.check('https://new.test/private')
     expect(verdict.status).toBe('unknown')
@@ -92,22 +93,18 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     expect(s.urls().sort()).toEqual(
       [FULL_URL, FLUENT_URL, diffUrl(cursor)].sort(),
     )
-    expect(s.fetchFn).toHaveBeenCalledWith(
-      FULL_URL,
-      expect.objectContaining({
-        credentials: 'omit',
-        referrerPolicy: 'no-referrer',
-        redirect: 'error',
-      }),
-    )
-    s.restart()
+    const [request] = s.fetchFn.mock.calls.find(([r]) => r.url === FULL_URL)
+    expect(request.credentials).toBe('omit')
+    expect(request.referrerPolicy).toBe('no-referrer')
+    expect(request.redirect).toBe('error')
+    await s.restart()
     expect((await s.check('https://new.test')).verdict.status).toBe(
       'blocklisted',
     )
     expect(s.urls()).toHaveLength(3)
   })
   it('persists only the two arrays and ignores a version-only Fluent edit', async () => {
-    const s = setup()
+    const s = await setup()
     s.fixture.fluent = {whitelist: [], blacklist: ['BAD.test.']}
     await s.refresh()
     for (const key of ['phishing.metamask', 'phishing.fluent']) {
@@ -116,7 +113,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
         'whitelist',
       ])
     }
-    s.restart()
+    await s.restart()
     s.advance(FLUENT_INTERVAL)
     s.fixture.fluent = {whitelist: [], blacklist: ['bad.test'], version: 9}
     s.storage.set.mockClear()
@@ -134,7 +131,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     })
   })
   it('checks only when used: Fluent after 24 hours, deltas after 5 days, full list after 30 days', async () => {
-    const s = setup()
+    const s = await setup()
     await s.refresh()
     s.fetchFn.mockClear()
     s.advance(24 * 60 * 60 * 1000 - 1)
@@ -158,7 +155,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     expect(s.urls()).toContain(diffUrl(cursor))
     expect(s.urls()).not.toContain(FULL_URL)
     s.fetchFn.mockClear()
-    s.restart()
+    await s.restart()
     s.advance(DIFF_INTERVAL)
     s.fixture.diffs = []
     await s.refresh()
@@ -169,17 +166,15 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     s.fixture.full = null
     await s.refresh()
     expect(s.urls()).toContain(FULL_URL)
-    expect(s.fetchFn).toHaveBeenCalledWith(
-      FULL_URL,
-      expect.objectContaining({headers: {'If-None-Match': '"full"'}}),
-    )
+    const [request] = s.fetchFn.mock.calls.find(([r]) => r.url === FULL_URL)
+    expect(request.headers.get('if-none-match')).toBe('"full"')
     expect(s.urls()).toContain(diffUrl(cursor + 7))
     expect((await s.check('https://new.test')).verdict.status).toBe(
       'blocklisted',
     )
   })
   it('replaces the baseline after 30 days, replaying from the new full list rather than a local clock', async () => {
-    const s = setup()
+    const s = await setup()
     await s.refresh()
     s.advance(FULL_INTERVAL)
     s.fixture.full = {
@@ -196,7 +191,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     )
   })
   it('serves the verified full list when catch-up fails and retries only diffs after restart', async () => {
-    const s = setup()
+    const s = await setup()
     s.fixture.fail = url => url.startsWith(diffUrl(''))
     const first = await s.check('https://old.test')
     expect(first.verdict.status).toBe('unknown')
@@ -211,7 +206,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       cursor,
       diffAt: null,
     })
-    s.restart()
+    await s.restart()
     s.fixture.fail = null
     s.fixture.diffs = [event('old.test', cursor + 1, 'blocklist', true)]
     const afterRestart = await s.check('https://old.test')
@@ -222,7 +217,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(2)
   })
   it('never rolls back newer local diffs when the monthly full list is older and catch-up fails', async () => {
-    const s = setup()
+    const s = await setup()
     s.fixture.diffs = [
       event('new.test', cursor + 10),
       event('old.test', cursor + 10, 'blocklist', true),
@@ -237,14 +232,14 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
       diffAt: null,
     })
     s.lock(true)
-    s.restart()
+    await s.restart()
     expect((await s.check('https://new.test')).verdict.status).toBe(
       'blocklisted',
     )
     expect((await s.check('https://old.test')).verdict.status).toBe('no-match')
   })
   it('does not retry the big list on normal delta errors, or lose Fluent policy on MetaMask failure', async () => {
-    const s = setup()
+    const s = await setup()
     s.fixture.fluent = {
       whitelist: ['old.test'],
       blacklist: ['fluent-only.test'],
@@ -273,14 +268,14 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     )
   })
   it('does not erase valid independent sources if the other config is malformed or storage fails', async () => {
-    const s = setup()
+    const s = await setup()
     await s.refresh()
     s.advance(DIFF_INTERVAL)
     s.fixture.fluent = {blacklist: []}
     s.fixture.diffs = [event('old.test', cursor + 1, 'blocklist', true)]
     s.storage.set.mockRejectedValueOnce(new Error('quota'))
     expect(await s.refresh()).toBe(false)
-    s.restart()
+    await s.restart()
     s.lock(true)
     expect((await s.check('https://old.test')).verdict.status).toBe(
       'blocklisted',
@@ -295,24 +290,22 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
   ])(
     'restores the other source when %s is corrupt, and does not reuse the corrupt entry’s ETag',
     async (key, origin, url) => {
-      const s = setup()
+      const s = await setup()
       s.fixture.fluent.blacklist = ['fluent.test']
       await s.refresh()
       s.data[key] = {blacklist: 'invalid'}
       s.fetchFn.mockClear()
-      s.restart()
+      await s.restart()
       const {verdict, rechecked} = await s.check(origin)
       expect(verdict.status).toBe('blocklisted')
       await rechecked
-      const [[, options]] = s.fetchFn.mock.calls.filter(
-        ([request]) => request === url,
-      )
-      expect(options.headers?.['If-None-Match']).toBeUndefined()
+      const [request] = s.fetchFn.mock.calls.find(([r]) => r.url === url)
+      expect(request.headers.has('If-None-Match')).toBe(false)
       expect(s.urls()).not.toContain(url === FULL_URL ? FLUENT_URL : FULL_URL)
     },
   )
   it('coalesces concurrent checks, immediately serves stale data, and updates only a still-pending request', async () => {
-    const s = setup()
+    const s = await setup()
     await s.refresh()
     const pending = new AbortController(),
       dismissed = new AbortController()
@@ -346,7 +339,11 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     expect(s.urls().filter(u => u === diffUrl(cursor))).toHaveLength(2)
   })
   it('never starts requests while locked, and does not start the follow-up diff after relock', async () => {
-    const s = setup()
+    const s = await setup()
+    // Both downloads can start in parallel. Keep Fluent fresh here to isolate
+    // the MetaMask full-list request and its follow-up diff.
+    s.data['phishing.fluent'] = {whitelist: [], blacklist: []}
+    s.data['phishing.fluent.meta'] = {checkedAt: Date.now()}
     s.lock(true)
     await s.refresh()
     expect(await (await s.check('https://old.test')).rechecked).toBeNull()
@@ -366,48 +363,38 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
   })
 })
 
-it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not retry a failed download', async () => {
-  const network = vi.spyOn(global, 'fetch')
-  let time = Date.UTC(2026, 10, 25)
-  let fluentChecks = 0
-  network.mockImplementation(async request => {
-    expect(request).toBeInstanceOf(Request)
-    expect(request.method).toBe('GET')
-    expect(request.credentials).toBe('omit')
-    expect(request.referrerPolicy).toBe('no-referrer')
-    expect(request.redirect).toBe('error')
-    if (request.url === FULL_URL) return Response.json({data: full})
-    if (request.url === diffUrl(cursor)) return Response.json({data: []})
-    expect(request.url).toBe(FLUENT_URL)
-    fluentChecks++
-    if (fluentChecks === 1)
-      return Response.json(
-        {whitelist: [], blacklist: ['fluent.test']},
-        {headers: {etag: '"v1"'}},
-      )
-    expect(request.headers.get('if-none-match')).toBe('"v1"')
-    if (fluentChecks === 2) return new Response(null, {status: 304})
-    throw new TypeError('offline')
+it('shares one restored list between the two standalone cache functions', async () => {
+  const s = await setup()
+  s.lock(true)
+  s.data['phishing.fluent'] = {whitelist: [], blacklist: ['blocked.test']}
+  await s.refresh()
+  const {verdict, rechecked} = await s.check('https://blocked.test')
+  expect(verdict.status).toBe('blocklisted')
+  expect(await rechecked).toBeNull()
+  expect(storage.get).toHaveBeenCalledTimes(1)
+  expect(s.urls()).toEqual([])
+})
+
+it('uses conditional GETs for Fluent and does not retry a failed download', async () => {
+  const s = await setup()
+  s.fixture.fluent.blacklist = ['fluent.test']
+  await s.refresh()
+  s.advance(FLUENT_INTERVAL)
+  s.fixture.fluent = null
+  expect(await s.refresh()).toBe(false)
+  const [request] = s.fetchFn.mock.lastCall
+  expect(request.method).toBe('GET')
+  expect(request.headers.get('if-none-match')).toBe('"local"')
+  expect(s.data['phishing.fluent.meta']).toEqual({
+    etag: '"local"',
+    checkedAt: Date.now(),
   })
-  try {
-    const {storage, isLocked} = setup()
-    const service = new PhishingListCache({storage, now: () => time})
-    expect(await service.refreshIfDue(isLocked)).toBe(true)
-    time += FLUENT_INTERVAL
-    expect(await service.refreshIfDue(isLocked)).toBe(false)
-    expect(storage.set.mock.lastCall[0]['phishing.fluent.meta']).toEqual({
-      etag: '"v1"',
-      checkedAt: time,
-    })
-    time += FLUENT_INTERVAL
-    expect(await service.refreshIfDue(isLocked)).toBe(false)
-    expect(
-      (await service.checkOrigin('https://fluent.test', isLocked)).verdict
-        .status,
-    ).toBe('blocklisted')
-    expect(fluentChecks).toBe(3)
-    expect(network).toHaveBeenCalledTimes(5)
-  } finally {
-    network.mockRestore()
-  }
+  s.advance(FLUENT_INTERVAL)
+  s.fixture.fail = url => url === FLUENT_URL
+  expect(await s.refresh()).toBe(false)
+  expect((await s.check('https://fluent.test')).verdict.status).toBe(
+    'blocklisted',
+  )
+  expect(s.urls().filter(url => url === FLUENT_URL)).toHaveLength(3)
+  expect(s.urls()).toHaveLength(5)
 })

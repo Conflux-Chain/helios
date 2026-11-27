@@ -24,7 +24,7 @@ The [MetaMask controller](https://github.com/MetaMask/core/blob/652066081c3e2092
 
 ## Background consumer API
 
-Import `checkPhishingOrigin` from `@fluent-wallet/wallet_refetch-phishing-list/client.js`. `await checkPhishingOrigin(origin, getLocked, pendingSignal?)` returns `{verdict, rechecked}` without waiting on remote detection. `getLocked` must be the live wallet lock getter; the origin must come from the extension transport, not DApp input.
+Import `checkPhishingOrigin` from `@fluent-wallet/wallet_refetch-phishing-list/list-cache.js`. `await checkPhishingOrigin(origin, getLocked, pendingSignal?)` returns `{verdict, rechecked}` without waiting on remote detection. `getLocked` must be the live wallet lock getter; the origin must come from the extension transport, not DApp input.
 
 Allowlist exceptions precede blocklist matches across both sources. `blocklisted` is the only warning; `allowlisted` and `no-match` are not safety guarantees. Without both sources an unmatched origin returns `unknown`, but a known match is usable. Match exact hosts and DNS-label subdomains; do not broaden paths, fuzzy rules or CIDs into domain blocks.
 

@@ -35,7 +35,7 @@ import {
 import '@fluent-wallet/test-helpers/setupNetwork.js'
 
 // Keep real unlock + RPC dispatch, but never contact a live feed in this suite.
-vi.mock('@fluent-wallet/wallet_refetch-phishing-list/client.js', () => ({
+vi.mock('@fluent-wallet/wallet_refetch-phishing-list/list-cache.js', () => ({
   refreshIfDue: vi.fn().mockResolvedValue(false),
 }))
 

@@ -1,9 +1,9 @@
 import {expect, it, vi} from 'vitest'
 import {validate} from '@fluent-wallet/spec'
 import {NAME, schemas, permissions, main} from './index.js'
-import {refreshIfDue} from './client.js'
+import {refreshIfDue} from './list-cache.js'
 
-vi.mock('./client.js', () => ({refreshIfDue: vi.fn()}))
+vi.mock('./list-cache.js', () => ({refreshIfDue: vi.fn()}))
 
 it('registers a no-argument internal RPC with only the live lock getter', () => {
   expect(NAME).toBe('wallet_refetchPhishingList')
