@@ -20,6 +20,28 @@ const domainLists = normalizeDomainLists({
 })
 
 describe('MetaMask domain lists', () => {
+  it.each(['\u3002', '\uFF0E', '\uFF61'])(
+    'matches list entries ending in the Unicode root dot %s',
+    dot => {
+      const lists = normalizeDomainLists({
+        whitelist: [`ok.bücher.test${dot}`],
+        blacklist: [`bücher.test${dot}`],
+      })
+      expect(matchOrigin('https://xn--bcher-kva.test', lists).status).toBe(
+        'blocklisted',
+      )
+      expect(matchOrigin(`https://ok.bücher.test${dot}`, lists).status).toBe(
+        'allowlisted',
+      )
+    },
+  )
+  it('does not turn two trailing dots into a valid list entry', () => {
+    const lists = normalizeDomainLists({
+      whitelist: [],
+      blacklist: ['bücher.test\u3002.'],
+    })
+    expect(matchOrigin('https://bücher.test', lists).status).toBe('no-match')
+  })
   it('keeps the same verdict when matching sets are stored as arrays and restored', () => {
     const origin = 'https://sub.bad.test'
     const forMatching = normalizeDomainLists({

@@ -1,11 +1,10 @@
-import browser from 'webextension-polyfill'
 import {
   normalizeDomainLists,
   matchOrigin,
   areDomainListsEqual,
   serializeDomainLists,
 } from './domain.js'
-import {createListFetcher, validCursor, validateSize} from './fetch-list.js'
+import {createListFetcher, validCursor} from './fetch-list.js'
 
 const DAY = 24 * 60 * 60 * 1000
 export const FULL_INTERVAL = 30 * DAY
@@ -15,7 +14,6 @@ export const FLUENT_INTERVAL = DAY
 const RETRY_DELAY = 15 * 60 * 1000
 
 // Both entry points run in the same background worker and share these lists.
-const storage = browser.storage.local
 const listFetcher = createListFetcher()
 const metaMask = cacheEntry('phishing.metamask')
 const fluent = cacheEntry('phishing.fluent')
@@ -111,7 +109,6 @@ async function updateMetaMaskFullList(isLocked) {
   let domainLists = entry.lists
   let cursor = entry.meta.cursor
   if (full && (!entry.lists || full.cursor >= cursor)) {
-    validateSize(full.domainLists, entry.lists)
     domainLists = full.domainLists
     cursor = full.cursor
   }
@@ -131,7 +128,6 @@ async function updateMetaMaskDiffs(isLocked) {
     domainLists: entry.lists,
     cursor: entry.meta.cursor,
   })
-  validateSize(next.domainLists, entry.lists)
   if (next.cursor < entry.meta.cursor)
     throw new Error('Outdated MetaMask response')
   if (isLocked()) return false
@@ -179,11 +175,10 @@ function isDue(time, lastCheck, interval) {
   )
 }
 
-function restoreEntry(entry, stored, validate) {
+function restoreEntry(entry, stored) {
   if (!stored[entry.key]) return
   try {
     const lists = normalizeDomainLists(stored[entry.key])
-    if (validate) validate(lists)
     entry.lists = lists
     entry.meta = stored[entry.metaKey] ?? {}
   } catch {
@@ -207,15 +202,20 @@ function waitForListChange(changes, signal, getVerdict) {
   })
 }
 
+// RPC docs also import this module in Node. Access extension storage only at runtime.
+function getListStorage() {
+  return (typeof browser === 'undefined' ? chrome : browser).storage.local
+}
+
 async function readStoredLists() {
-  const stored = await storage.get([
+  const stored = await getListStorage().get([
     metaMask.key,
     metaMask.metaKey,
     fluent.key,
     fluent.metaKey,
   ])
   if (validCursor(stored[metaMask.metaKey]?.cursor))
-    restoreEntry(metaMask, stored, validateSize)
+    restoreEntry(metaMask, stored)
   restoreEntry(fluent, stored)
 }
 
@@ -225,7 +225,7 @@ async function saveEntry(entry, lists, meta) {
   const changed = !areDomainListsEqual(entry.lists, lists)
   const patch = {[entry.metaKey]: meta}
   if (changed) patch[entry.key] = serializeDomainLists(lists)
-  await storage.set(patch)
+  await getListStorage().set(patch)
   entry.lists = lists
   entry.meta = meta
   return changed

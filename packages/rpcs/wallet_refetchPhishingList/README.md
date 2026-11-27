@@ -14,13 +14,19 @@
 | --- | --- | --- |
 | [MetaMask baseline](https://phishing-detection.api.cx.metamask.io/v1/stalelist) | First use, then every 30 days | Read `data.allowlist`, `data.blocklist` and `data.lastUpdated`. Send `If-None-Match` on later baseline checks if an ETag was supplied. |
 | MetaMask hotlist | Immediately after a new baseline, then every 5 days | `GET /v2/diffsSince/<cursor>` on the same origin. The cursor starts at the baseline’s server timestamp **in seconds**. Apply newer `eth_phishing_detect_config.allowlist` and `.blocklist` additions/removals, not entries from other lists. Empty deltas update only freshness; never substitute the device clock for the cursor. |
-| [Fluent config](https://github.com/conflux-fans/phishing-detect) | First use, then on demand at least 24 hours after the last successful check | A small, manually maintained `config.json`: `whitelist` and `blacklist`; empty arrays are valid. Conditional fetch when an ETag is available. No mirror or automated upstream import. |
+| [Fluent config](https://github.com/conflux-fans/phishing-detect) | First use, then on demand at least 24 hours after the last successful check | Fetched via [jsDelivr](https://cdn.jsdelivr.net/gh/conflux-fans/phishing-detect@main/config.json): `whitelist` and `blacklist`; empty arrays are valid. Conditional fetch when an ETag is available. No mirror or automated upstream import. |
 
 Both sources are stored as `whitelist` and `blacklist` arrays. Both arrays are required. The wallet compares their normalized domains, not a version number, to decide whether to rewrite the stored lists.
 
 Sources are checked independently. A failed download, invalid data or failed storage write does not replace the active lists. There is one active MetaMask list. A validated full response and its cursor are saved together and can be used even if the following delta fails. An older full list cannot roll back newer local changes. Retry the delta from the saved cursor rather than re-downloading the full list after a restart; there is no staging key. Refreshes are coalesced, with a short failure backoff. Old versions of the Fluent mirror cache are not used as Fluent policy.
 
 The [MetaMask controller](https://github.com/MetaMask/core/blob/652066081c3e20921cbe1e00b6e0a6fa02004159/packages/phishing-controller/src/PhishingController.ts#L84-L117) defaults to a 30-day baseline and **5-minute** hotlist; Fluent deliberately uses **5 days**, so a newly reported domain may not be seen in the interim. MetaMask data originates from its upstream providers, including [eth-phishing-detect](https://github.com/MetaMask/eth-phishing-detect) and contributors. Its [repository license notice](https://github.com/MetaMask/eth-phishing-detect/blob/main/LICENSE) credits Copyright (C) 2018 kumavis; no endorsement or rights to the API beyond its applicable terms are implied.
+
+## Storage choice
+
+The extension stores each list separately in `storage.local`, with its cursor/ETag in a metadata key. Both manifests already request `unlimitedStorage`. This is not `window.localStorage` (unavailable in a Manifest V3 service worker). No separate database is needed for these infrequent whole-list writes; a disk/write failure leaves the active list intact.
+
+For comparison, MetaMask [restores the phishing controller from persisted state](https://github.com/MetaMask/metamask-extension/blob/e45da6d7c838e639b73263efa82e29fe4cd8ecbc/app/scripts/messenger-client-init/phishing-controller-init.ts#L18-L26). Its [ExtensionStore uses storage.local](https://github.com/MetaMask/metamask-extension/blob/e45da6d7c838e639b73263efa82e29fe4cd8ecbc/shared/lib/stores/extension-store.ts#L13-L21); its separate [StorageService selects a backend by browser](https://github.com/MetaMask/metamask-extension/blob/e45da6d7c838e639b73263efa82e29fe4cd8ecbc/app/scripts/wallet-init/instance-options/storage-service.ts#L10-L29).
 
 ## Background consumer API
 

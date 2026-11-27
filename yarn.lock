@@ -7790,7 +7790,6 @@ __metadata:
   dependencies:
     "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
     "@fluent-wallet/spec": "npm:1.0.24"
-    webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
 

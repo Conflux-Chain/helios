@@ -1,11 +1,11 @@
 // Only list hostnames. A URL with a path must not match the entire host.
-const labels = /^[a-z0-9_-]+(?:\.[a-z0-9_-]+)*$/
-const MAX_ENTRIES = 500000
+const hostname = /^(?:[a-z0-9_-]+\.)+[a-z0-9_-]+$/u
 
 export function normalizeDomain(value) {
   if (typeof value !== 'string') throw new Error('Invalid phishing list entry')
-  if (!value || value.length > 1024 || /[\s\\/@:?#%*]/u.test(value)) return null
-  let host = value.toLowerCase().replace(/\.$/, '')
+  // URL would silently discard credentials, ports and paths from a list entry.
+  if (/[\s\\/@:?#%*]/u.test(value)) return null
+  let host = value.toLowerCase()
   if (/\P{ASCII}/u.test(host)) {
     try {
       host = new URL(`https://${host}`).hostname
@@ -13,19 +13,13 @@ export function normalizeDomain(value) {
       return null
     }
   }
-  if (
-    !labels.test(host) ||
-    host.length > 253 ||
-    host.split('.').some(label => label.length > 63)
-  )
-    return null
-  if (!host.includes('.') && host !== 'localhost') return null
-  return host
+  // IDNA maps Unicode dots to ASCII first. Strip only one root dot.
+  host = host.replace(/\.$/, '')
+  return host === 'localhost' || hostname.test(host) ? host : null
 }
 
 function normalizeList(entries) {
-  if (!Array.isArray(entries) || entries.length > MAX_ENTRIES)
-    throw new Error('Invalid phishing list size')
+  if (!Array.isArray(entries)) throw new Error('Expected an array of domains')
   const hosts = new Set()
   for (const value of entries) {
     const host = normalizeDomain(value)
@@ -89,12 +83,7 @@ export function matchOrigin(origin, domainLists) {
     if (url.protocol !== 'https:' && url.protocol !== 'http:')
       return {status: 'unknown'}
     host = url.hostname.toLowerCase().replace(/\.$/, '')
-    if (
-      !host ||
-      host.length > 253 ||
-      host.split('.').some(label => !label || label.length > 63)
-    )
-      return {status: 'unknown'}
+    if (host.split('.').includes('')) return {status: 'unknown'}
   } catch {
     return {status: 'unknown'}
   }

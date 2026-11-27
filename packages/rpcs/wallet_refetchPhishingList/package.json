@@ -6,7 +6,6 @@
   "private": true,
   "dependencies": {
     "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc",
-    "@fluent-wallet/spec": "1.0.24",
-    "webextension-polyfill": "0.8.0"
+    "@fluent-wallet/spec": "1.0.24"
   }
 }

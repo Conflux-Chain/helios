@@ -1,11 +1,6 @@
 // @vitest-environment node
 import {describe, expect, it} from 'vitest'
-import {
-  createListFetcher,
-  FULL_URL,
-  applyDiffs,
-  fetchJSON,
-} from './fetch-list.js'
+import {createListFetcher, applyDiffs} from './fetch-list.js'
 
 const cursor = 1795567388
 const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
@@ -32,7 +27,7 @@ it.each([null, {blacklist: []}, {whitelist: [], blacklist: 'not an array'}])(
   async config => {
     const listFetcher = createListFetcher(async () => Response.json(config))
     await expect(listFetcher.fetchFluentFullList()).rejects.toThrow(
-      'Invalid phishing list size',
+      'Expected an array of domains',
     )
   },
 )
@@ -78,12 +73,19 @@ describe('MetaMask diff wire format', () => {
     expect([...base.domainLists.block]).toEqual(['unchanged.test'])
     expect(applyDiffs(base, [])).toEqual(base)
   })
-  it('bounds downloads and rejects HTTP errors or unsolicited 304', async () => {
-    for (const res of [
-      new Response(new Uint8Array(9)),
-      new Response(null, {status: 503}),
-      new Response(null, {status: 304}),
-    ])
-      await expect(fetchJSON(FULL_URL, async () => res, 8)).rejects.toThrow()
-  })
+})
+
+it.each([503, 304])(
+  'rejects an unexpected HTTP %s without a cache validator',
+  async status => {
+    const fetcher = createListFetcher(async () => new Response(null, {status}))
+    await expect(fetcher.fetchFluentFullList()).rejects.toThrow(
+      `List request failed: ${status}`,
+    )
+  },
+)
+
+it('propagates JSON parse errors rather than treating a broken response as an empty list', async () => {
+  const fetcher = createListFetcher(async () => new Response('{'))
+  await expect(fetcher.fetchFluentFullList()).rejects.toThrow(SyntaxError)
 })

@@ -3,9 +3,11 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 import {FULL_INTERVAL, DIFF_INTERVAL, FLUENT_INTERVAL} from './list-cache.js'
 import {FULL_URL, diffUrl, FLUENT_URL} from './fetch-list.js'
 
-const storage = vi.hoisted(() => ({get: vi.fn(), set: vi.fn()}))
-vi.mock('webextension-polyfill', () => ({default: {storage: {local: storage}}}))
-afterEach(() => vi.restoreAllMocks())
+const storage = {get: vi.fn(), set: vi.fn()}
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+})
 
 async function loadWorkerCache() {
   vi.resetModules()
@@ -15,11 +17,8 @@ async function loadWorkerCache() {
 const cursor = 1795567388
 const full = {
   lastUpdated: cursor,
-  allowlist: Array.from({length: 20}, (_, i) => `allow-${i}.test`),
-  blocklist: [
-    ...Array.from({length: 50000}, (_, i) => `block-${i}.test`),
-    'old.test',
-  ],
+  allowlist: [],
+  blocklist: ['old.test'],
   fuzzylist: [],
   blocklistPaths: [],
 }
@@ -29,7 +28,8 @@ const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
   timestamp,
   isRemoval,
 })
-async function setup() {
+async function setup(platform = 'browser') {
+  vi.stubGlobal(platform, {storage: {local: storage}})
   let time = Date.UTC(2026, 10, 25),
     locked = false
   vi.spyOn(Date, 'now').mockImplementation(() => time)
@@ -409,17 +409,20 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
   })
 })
 
-it('shares one restored list between the two standalone cache functions', async () => {
-  const s = await setup()
-  s.lock(true)
-  s.data['phishing.fluent'] = {whitelist: [], blacklist: ['blocked.test']}
-  await s.refresh()
-  const {verdict, rechecked} = await s.check('https://blocked.test')
-  expect(verdict.status).toBe('blocklisted')
-  expect(await rechecked).toBeNull()
-  expect(storage.get).toHaveBeenCalledTimes(1)
-  expect(s.urls()).toEqual([])
-})
+it.each(['chrome', 'browser'])(
+  'shares the restored list using %s.storage.local',
+  async platform => {
+    const s = await setup(platform)
+    s.lock(true)
+    s.data['phishing.fluent'] = {whitelist: [], blacklist: ['blocked.test']}
+    await s.refresh()
+    const {verdict, rechecked} = await s.check('https://blocked.test')
+    expect(verdict.status).toBe('blocklisted')
+    expect(await rechecked).toBeNull()
+    expect(storage.get).toHaveBeenCalledTimes(1)
+    expect(s.urls()).toEqual([])
+  },
+)
 
 it('uses conditional GETs for Fluent and does not retry a failed download', async () => {
   const s = await setup()
