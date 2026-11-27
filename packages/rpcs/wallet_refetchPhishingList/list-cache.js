@@ -232,14 +232,13 @@ async function saveEntry(entry, lists, meta) {
 }
 
 function matchCachedOrigin(origin) {
-  const results = [fluent.lists, metaMask.lists]
-    .filter(Boolean)
-    .map(domainLists => matchOrigin(origin, domainLists))
-  // An explicit exception from either source wins. A known block still matters
-  // if the other source is offline, but we can't claim a complete no-match.
-  const allowed = results.find(result => result.status === 'allowlisted')
-  if (allowed) return allowed
-  const blocked = results.find(result => result.status === 'blocklisted')
-  if (blocked) return blocked
-  return results.length === 2 ? results[0] : {status: 'unknown'}
+  // Fluent policy wins; matchOrigin checks allow before block within each source.
+  if (fluent.lists) {
+    const result = matchOrigin(origin, fluent.lists)
+    if (result.status !== 'no-match') return result
+  }
+  if (!metaMask.lists) return {status: 'unknown'}
+  const result = matchOrigin(origin, metaMask.lists)
+  if (result.status === 'no-match' && !fluent.lists) return {status: 'unknown'}
+  return result
 }

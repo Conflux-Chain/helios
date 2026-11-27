@@ -103,6 +103,32 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     )
     expect(s.urls()).toHaveLength(3)
   })
+  it('stops on a Fluent match and only falls back to MetaMask on a miss', async () => {
+    const s = await setup()
+    s.fixture.fluent = {
+      whitelist: ['allow.test', 'both.test'],
+      blacklist: ['block.test', 'both.test'],
+    }
+    s.fixture.full = {
+      ...full,
+      allowlist: ['block.test', 'mm-allow.test'],
+      blocklist: ['allow.test', 'mm-block.test'],
+    }
+    await s.refresh()
+    const match = vi.spyOn(await import('./domain.js'), 'matchOrigin')
+    for (const [host, status, lookups] of [
+      ['block.test', 'blocklisted', 1], // MetaMask would allow it.
+      ['allow.test', 'allowlisted', 1], // MetaMask would block it.
+      ['both.test', 'allowlisted', 1], // Within Fluent the allowlist wins.
+      ['mm-allow.test', 'allowlisted', 2],
+      ['mm-block.test', 'blocklisted', 2],
+      ['other.test', 'no-match', 2],
+    ]) {
+      match.mockClear()
+      expect((await s.check(`https://${host}`)).verdict.status).toBe(status)
+      expect(match).toHaveBeenCalledTimes(lookups)
+    }
+  })
   it('persists only the two arrays and ignores a version-only Fluent edit', async () => {
     const s = await setup()
     s.fixture.fluent = {whitelist: [], blacklist: ['BAD.test.']}
