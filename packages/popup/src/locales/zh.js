@@ -105,12 +105,14 @@ const zh = {
     // homepage / account management / create account / 3. Import existing account
     seedImport: '导入助记词',
     seedImportPlaceholder: '助记词是一组由空格分隔的词组，输入时请用空格分隔',
+    seedPhraseRequired: '请填写助记词',
     duplicateSeedError: '此助记词在钱包中已存在',
     invalidSeed: '助记词无效，请再次检查',
 
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: '导入私钥',
     pKeyImportPlaceholder: '请在此填写私钥',
+    privateKeyRequired: '请填写私钥',
     duplicatePkError: '此私钥在钱包中已存在',
     invalidPrivateKey: '无效的私钥，请再次检查',
 
@@ -467,7 +469,6 @@ const zh = {
     gasFeeIsNotEnough: '不足以支付燃气费',
     contractError: '合约错误: ',
     invalidPasswordFromRpc: '密码错误',
-    required: '请填写助记词',
     changeNetworkError: '切换网络发生错误',
 
     // hardware guard

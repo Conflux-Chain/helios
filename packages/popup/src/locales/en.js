@@ -107,12 +107,14 @@ const en = {
     seedImport: 'Import Seed Phrase',
     seedImportPlaceholder:
       'The Seed Phrase consists of words separated by spaces. Separate each word entered by a space.',
+    seedPhraseRequired: 'Please type your seed phrase.',
     duplicateSeedError: 'This seed Phrase already in your wallet.',
     invalidSeed: 'Invalid Seed Phrase, check again.',
 
     // homepage / / account management / create account / 4. Import account with private key
     pKeyImport: 'Import Private Key',
     pKeyImportPlaceholder: 'Type your Private Key here.',
+    privateKeyRequired: 'Please type your private key.',
     duplicatePkError: 'This Private Key already in your wallet.',
     invalidPrivateKey: 'Invalid Key, check again.',
 
@@ -484,7 +486,6 @@ const en = {
     gasFeeIsNotEnough: 'Insufficient gas fee',
     contractError: 'Contract error: ',
     invalidPasswordFromRpc: 'Invalid password',
-    required: 'Please type your seed phrase.',
     changeNetworkError: 'Change network error',
 
     // hardware guard
