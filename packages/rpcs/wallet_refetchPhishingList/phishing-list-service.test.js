@@ -88,8 +88,8 @@ function setup() {
     urls: () => fetchFn.mock.calls.map(([url]) => url),
   }
 }
-describe('MetaMask snapshot + diffs and independent Fluent configuration', () => {
-  it('bootstraps once, catches up from the server snapshot timestamp, and never transmits the origin', async () => {
+describe('MetaMask full list + diffs and independent Fluent configuration', () => {
+  it('bootstraps once, catches up from the full list’s server timestamp, and never transmits the origin', async () => {
     const s = setup()
     s.fixture.diffs = [event('new.test', cursor + 1)]
     const {verdict, rechecked} = await s.check('https://new.test/private')
@@ -112,7 +112,7 @@ describe('MetaMask snapshot + diffs and independent Fluent configuration', () =>
     )
     expect(s.urls()).toHaveLength(3)
   })
-  it('checks only when used: Fluent after 24 hours, deltas after 5 days, snapshot after 30 days', async () => {
+  it('checks only when used: Fluent after 24 hours, deltas after 5 days, full list after 30 days', async () => {
     const s = setup()
     await s.refresh()
     s.fetchFn.mockClear()
@@ -157,7 +157,7 @@ describe('MetaMask snapshot + diffs and independent Fluent configuration', () =>
       'blocklisted',
     )
   })
-  it('replaces the baseline after 30 days, replaying from the new snapshot rather than a local clock', async () => {
+  it('replaces the baseline after 30 days, replaying from the new full list rather than a local clock', async () => {
     const s = setup()
     await s.refresh()
     s.advance(FULL_INTERVAL)

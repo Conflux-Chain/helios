@@ -14,13 +14,13 @@ export const FLUENT_INTERVAL = DAY
 // Keep the sources separate: a Fluent config is not a copy of MetaMask's list.
 const METAMASK_RULES = 'phishing.metamask.v2'
 const METAMASK_META = `${METAMASK_RULES}.meta`
-const STAGED_SNAPSHOT = `${METAMASK_RULES}.pending`
+const STAGED_FULL_LIST = `${METAMASK_RULES}.pending`
 const FLUENT_RULES = 'phishing.fluent.v2'
 const FLUENT_META = `${FLUENT_RULES}.meta`
 const CACHE_KEYS = [
   METAMASK_RULES,
   METAMASK_META,
-  STAGED_SNAPSHOT,
+  STAGED_FULL_LIST,
   FLUENT_RULES,
   FLUENT_META,
 ]
@@ -70,7 +70,7 @@ export function createDomainService({
 }) {
   let metaMaskRules
   let metaMaskMeta = {}
-  let stagedSnapshot
+  let stagedFullList
   let fluentRules
   let fluentMeta = {}
   let cacheReady
@@ -86,14 +86,14 @@ export function createDomainService({
       if (metaMaskRules) metaMaskMeta = meta
     }
 
-    const staged = cache[STAGED_SNAPSHOT]
+    const staged = cache[STAGED_FULL_LIST]
     if (
       validCursor(staged?.cursor) &&
       !isDue(now(), staged.fetchedAt, FULL_INTERVAL)
     ) {
       const rules = restoreRules(staged.feed, validateSize)
       if (rules)
-        stagedSnapshot = {
+        stagedFullList = {
           rules,
           cursor: staged.cursor,
           fetchedAt: staged.fetchedAt,
@@ -111,12 +111,12 @@ export function createDomainService({
     return cacheReady
   }
 
-  async function getSnapshotForCatchUp(isLocked) {
+  async function getFullListForCatchUp(isLocked) {
     if (
-      stagedSnapshot &&
-      !isDue(now(), stagedSnapshot.fetchedAt, FULL_INTERVAL)
+      stagedFullList &&
+      !isDue(now(), stagedFullList.fetchedAt, FULL_INTERVAL)
     )
-      return stagedSnapshot
+      return stagedFullList
 
     const response = await sources.fetchMetamaskFullList(
       metaMaskRules && metaMaskMeta.etag,
@@ -125,8 +125,8 @@ export function createDomainService({
     const fetchedAt = now()
     if (response === null) {
       // HTTP 304: our active rules already include previous diffs. Resume from
-      // their cursor instead of replaying everything since the original snapshot.
-      stagedSnapshot = {
+      // their cursor instead of replaying everything since the original full list.
+      stagedFullList = {
         rules: metaMaskRules,
         cursor: metaMaskMeta.cursor,
         fetchedAt,
@@ -137,26 +137,26 @@ export function createDomainService({
       // Save the baseline, but don't serve it yet. If catch-up fails or the worker
       // restarts, retry only the delta and keep serving the last verified rules.
       await storage.set({
-        [STAGED_SNAPSHOT]: {
+        [STAGED_FULL_LIST]: {
           feed: serializeRules(rules),
           cursor,
           fetchedAt,
           etag,
         },
       })
-      stagedSnapshot = {rules, cursor, fetchedAt, etag}
+      stagedFullList = {rules, cursor, fetchedAt, etag}
     }
-    return stagedSnapshot
+    return stagedFullList
   }
 
   async function updateMetaMask(isLocked) {
-    const needsSnapshot =
+    const needsFullList =
       !metaMaskRules || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)
-    if (!needsSnapshot && !isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL))
+    if (!needsFullList && !isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL))
       return false
 
-    const baseline = needsSnapshot
-      ? await getSnapshotForCatchUp(isLocked)
+    const baseline = needsFullList
+      ? await getFullListForCatchUp(isLocked)
       : {
           rules: metaMaskRules,
           cursor: metaMaskMeta.cursor,
@@ -182,18 +182,18 @@ export function createDomainService({
     }
     const patch = {[METAMASK_META]: nextMeta}
     if (changed) patch[METAMASK_RULES] = serializeRules(next.rules)
-    if (needsSnapshot) patch[STAGED_SNAPSHOT] = null
+    if (needsFullList) patch[STAGED_FULL_LIST] = null
     await storage.set(patch)
     metaMaskMeta = nextMeta
     metaMaskRules = next.rules
-    stagedSnapshot = undefined
+    stagedFullList = undefined
     return changed
   }
 
   async function updateFluent(isLocked) {
     if (fluentRules && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
       return false
-    const response = await sources.fetchFluentConfig(
+    const response = await sources.fetchFluentFullList(
       fluentRules && fluentMeta.etag,
     )
     if (isLocked()) return false

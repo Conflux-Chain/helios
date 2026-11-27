@@ -21,7 +21,7 @@ it('translates a Fluent response into local rules without storage or an extensio
       {headers: {etag: '"v1"'}},
     ),
   )
-  expect(await sources.fetchFluentConfig()).toEqual({
+  expect(await sources.fetchFluentFullList()).toEqual({
     rules: {allow: new Set(), block: new Set(['example.test'])},
     etag: '"v1"',
   })

@@ -1,7 +1,7 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
 import {compileFeed, normalizeRule} from './domain-rules.js'
 
-// MetaMask/core phishing-controller: v1 snapshot plus ordered v2 mutations.
+// MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
 const LIST_PREFIX = 'eth_phishing_detect_config.'
 export const FULL_URL = `${METAMASK_API}/v1/stalelist`
@@ -10,13 +10,14 @@ export const diffUrl = cursor => `${METAMASK_API}/v2/diffsSince/${cursor}`
 export const FLUENT_URL =
   'https://raw.githubusercontent.com/conflux-fans/phishing-detect/main/config.json'
 export const validCursor = n => Number.isSafeInteger(n) && n > 0
-function parseSnapshot(data) {
+function parseMetamaskFullList(payload) {
+  const data = payload?.data
   if (
     !validCursor(data?.lastUpdated) ||
     !Number.isSafeInteger(data.version) ||
     data.version < 0
   )
-    throw new Error('Invalid MetaMask snapshot')
+    throw new Error('Invalid MetaMask full list')
   const rules = compileFeed({
     version: 2,
     whitelist: data.allowlist,
@@ -25,6 +26,10 @@ function parseSnapshot(data) {
   validateSize(rules)
   return {rules, cursor: data.lastUpdated}
 }
+function parseFluentFullList(payload) {
+  return {rules: compileFeed(payload)}
+}
+
 export function validateSize(rules, previous) {
   if (
     rules.allow.size < 20 ||
@@ -137,7 +142,7 @@ export function createListSources(
     async fetchMetamaskFullList(etag) {
       const response = await fetchJSON(FULL_URL, fetcher, 64 * MB, etag)
       if (!response) return null
-      return {...parseSnapshot(response.data.data), etag: response.etag}
+      return {...parseMetamaskFullList(response.data), etag: response.etag}
     },
     async fetchMetamaskDiffs(baseline) {
       const response = await fetchJSON(
@@ -147,10 +152,10 @@ export function createListSources(
       )
       return applyDiffs(baseline, response.data.data)
     },
-    async fetchFluentConfig(etag) {
+    async fetchFluentFullList(etag) {
       const response = await fetchJSON(FLUENT_URL, fetcher, MB, etag)
       if (!response) return null
-      return {rules: compileFeed(response.data), etag: response.etag}
+      return {...parseFluentFullList(response.data), etag: response.etag}
     },
   }
 }
