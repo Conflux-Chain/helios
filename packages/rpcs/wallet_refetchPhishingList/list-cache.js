@@ -101,6 +101,7 @@ export function createListCache({
   }
 
   async function updateMetaMaskDiffs(isLocked) {
+    if (isLocked()) return false
     const next = await listFetcher.fetchMetamaskDiffs({
       domainLists: metaMaskLists,
       cursor: metaMaskMeta.cursor,
@@ -117,11 +118,13 @@ export function createListCache({
   }
 
   async function updateMetaMask(isLocked) {
+    if (isLocked()) return false
     let fullChanged = false
     if (!metaMaskLists || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)) {
       const full = await listFetcher.fetchMetamaskFullList(
         metaMaskLists && metaMaskMeta.etag,
       )
+      // The wallet may have locked while the download was in flight.
       if (isLocked()) return false
       // A monthly full list may predate diffs we already applied. In that
       // case (or on 304), keep the newer local list and its cursor.
@@ -150,6 +153,7 @@ export function createListCache({
   }
 
   async function updateFluent(isLocked) {
+    if (isLocked()) return false
     if (fluentLists && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
       return false
     const response = await listFetcher.fetchFluentFullList(
@@ -172,8 +176,7 @@ export function createListCache({
   }
 
   async function tryRefresh(source, update, isLocked) {
-    if (isLocked() || !isDue(now(), lastFailureAt[source], RETRY_DELAY))
-      return false
+    if (!isDue(now(), lastFailureAt[source], RETRY_DELAY)) return false
     try {
       return await update(isLocked)
     } catch {
