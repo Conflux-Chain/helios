@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {normalizeDomainLists, matchOrigin} from './domain-lists.js'
+import {normalizeDomainLists, matchOrigin} from './domain.js'
 
 const domainLists = normalizeDomainLists({
   version: 2,

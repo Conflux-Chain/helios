@@ -1,8 +1,9 @@
 import browser from 'webextension-polyfill'
-import {createDomainService} from './phishing-list-service.js'
+import {createListCache} from './list-cache.js'
 
 // Share one background instance between post-unlock refresh and domain checks.
-export const {refreshIfDue, checkOrigin: checkPhishingOrigin} =
-  createDomainService({
+export const {refreshIfDue, checkOrigin: checkPhishingOrigin} = createListCache(
+  {
     storage: browser.storage.local,
-  })
+  },
+)

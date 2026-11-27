@@ -4,9 +4,9 @@
 
 ## Module boundaries
 
-- [list-sources.js](./list-sources.js) fetches and decodes the MetaMask full list and diffs, and the Fluent full list. It does not read wallet storage or decide when to refresh.
-- [phishing-list-service.js](./phishing-list-service.js) decides when each source is due, keeps the last validated lists, coalesces requests, and rechecks pending origins. It consumes source methods instead of interpreting HTTP response bodies.
-- [domain-lists.js](./domain-lists.js) is pure: it normalizes domain entries, matches origins, and compares or serializes the allowlist and blocklist. These phishing policies are distinct from validating ENS/CNS names or comparing SIWE authorities.
+- [fetch-list.js](./fetch-list.js) fetches and decodes the MetaMask full list and diffs, and the Fluent full list. It does not read wallet storage or decide when to refresh.
+- [list-cache.js](./list-cache.js) decides when each source is due, keeps the last validated lists, coalesces requests, and rechecks pending origins. It consumes source methods instead of interpreting HTTP response bodies.
+- [domain.js](./domain.js) is pure: it normalizes domain entries, matches origins, and compares or serializes the allowlist and blocklist. These phishing policies are distinct from validating ENS/CNS names or comparing SIWE authorities.
 
 ## Two independent sources
 

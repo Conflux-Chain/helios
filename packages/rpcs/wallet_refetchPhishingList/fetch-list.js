@@ -1,5 +1,5 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
-import {normalizeDomainLists, normalizeDomain} from './domain-lists.js'
+import {normalizeDomainLists, normalizeDomain} from './domain.js'
 
 // MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
@@ -131,7 +131,7 @@ export async function fetchJSON(url, fetcher, limit, etag) {
 
 // Translate each source's HTTP format to domain lists; the service owns the
 // cursor, ETag and cache lifetime. A conditional 304 needs no new lists.
-export function createListSources(
+export function createListFetcher(
   fetcher = initFetcher({
     throwHttpErrors: false, // handle 304 explicitly
     retry: {limit: 0}, // the service backs off failed downloads

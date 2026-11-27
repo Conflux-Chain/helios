@@ -3,8 +3,8 @@ import {
   matchOrigin,
   areDomainListsEqual,
   serializeDomainLists,
-} from './domain-lists.js'
-import {createListSources, validCursor, validateSize} from './list-sources.js'
+} from './domain.js'
+import {createListFetcher, validCursor, validateSize} from './fetch-list.js'
 
 const DAY = 24 * 60 * 60 * 1000
 export const FULL_INTERVAL = 30 * DAY
@@ -63,9 +63,9 @@ function waitForListChange(changes, signal, getVerdict) {
   })
 }
 
-export function createDomainService({
+export function createListCache({
   storage,
-  sources = createListSources(),
+  listFetcher = createListFetcher(),
   now = Date.now,
 }) {
   let metaMaskLists
@@ -118,7 +118,7 @@ export function createDomainService({
     )
       return stagedFullList
 
-    const response = await sources.fetchMetamaskFullList(
+    const response = await listFetcher.fetchMetamaskFullList(
       metaMaskLists && metaMaskMeta.etag,
     )
     if (isLocked()) return null
@@ -165,7 +165,7 @@ export function createDomainService({
         }
     if (!baseline || isLocked()) return false
 
-    const next = await sources.fetchMetamaskDiffs(baseline)
+    const next = await listFetcher.fetchMetamaskDiffs(baseline)
     validateSize(next.domainLists, metaMaskLists)
     if (metaMaskLists && next.cursor < metaMaskMeta.cursor)
       throw new Error('Outdated MetaMask response')
@@ -193,7 +193,7 @@ export function createDomainService({
   async function updateFluent(isLocked) {
     if (fluentLists && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
       return false
-    const response = await sources.fetchFluentFullList(
+    const response = await listFetcher.fetchFluentFullList(
       fluentLists && fluentMeta.etag,
     )
     if (isLocked()) return false

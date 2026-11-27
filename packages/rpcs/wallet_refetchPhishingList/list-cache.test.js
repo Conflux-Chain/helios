@@ -1,17 +1,12 @@
 // @vitest-environment node
 import {describe, expect, it, vi} from 'vitest'
 import {
-  createDomainService,
+  createListCache,
   FULL_INTERVAL,
   DIFF_INTERVAL,
   FLUENT_INTERVAL,
-} from './phishing-list-service.js'
-import {
-  createListSources,
-  FULL_URL,
-  diffUrl,
-  FLUENT_URL,
-} from './list-sources.js'
+} from './list-cache.js'
+import {createListFetcher, FULL_URL, diffUrl, FLUENT_URL} from './fetch-list.js'
 
 const cursor = 1795567388
 const full = {
@@ -61,9 +56,9 @@ function setup() {
     throw new Error('unexpected URL')
   })
   const make = () =>
-    createDomainService({
+    createListCache({
       storage,
-      sources: createListSources(fetchFn),
+      listFetcher: createListFetcher(fetchFn),
       now: () => time,
     })
   let service = make()
@@ -307,7 +302,7 @@ it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not
   })
   try {
     const {storage, isLocked} = setup()
-    const service = createDomainService({storage, now: () => time})
+    const service = createListCache({storage, now: () => time})
     expect(await service.refreshIfDue(isLocked)).toBe(true)
     time += FLUENT_INTERVAL
     expect(await service.refreshIfDue(isLocked)).toBe(false)

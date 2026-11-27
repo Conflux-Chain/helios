@@ -1,11 +1,11 @@
 // @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {
-  createListSources,
+  createListFetcher,
   FULL_URL,
   applyDiffs,
   fetchJSON,
-} from './list-sources.js'
+} from './fetch-list.js'
 
 const cursor = 1795567388
 const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
@@ -15,13 +15,13 @@ const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
   isRemoval,
 })
 it('translates a Fluent response into domain lists without storage or an extension context', async () => {
-  const sources = createListSources(async () =>
+  const listFetcher = createListFetcher(async () =>
     Response.json(
       {version: 2, whitelist: [], blacklist: ['EXAMPLE.test.']},
       {headers: {etag: '"v1"'}},
     ),
   )
-  expect(await sources.fetchFluentFullList()).toEqual({
+  expect(await listFetcher.fetchFluentFullList()).toEqual({
     domainLists: {allow: new Set(), block: new Set(['example.test'])},
     etag: '"v1"',
   })
