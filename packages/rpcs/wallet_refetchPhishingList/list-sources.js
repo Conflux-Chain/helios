@@ -1,12 +1,12 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
-import {buildDomainRules, normalizeRule} from './domain-rules.js'
+import {normalizeDomainLists, normalizeDomain} from './domain-lists.js'
 
 // MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
 const LIST_PREFIX = 'eth_phishing_detect_config.'
 export const FULL_URL = `${METAMASK_API}/v1/stalelist`
 export const diffUrl = cursor => `${METAMASK_API}/v2/diffsSince/${cursor}`
-// A separate path prevents old CDN copies of the retired mirror being read as Fluent rules.
+// A separate path prevents old CDN copies of the retired mirror being read as Fluent-maintained domains.
 export const FLUENT_URL =
   'https://raw.githubusercontent.com/conflux-fans/phishing-detect/main/config.json'
 export const validCursor = n => Number.isSafeInteger(n) && n > 0
@@ -18,27 +18,27 @@ function parseMetamaskFullList(payload) {
     data.version < 0
   )
     throw new Error('Invalid MetaMask full list')
-  const rules = buildDomainRules({
+  const domainLists = normalizeDomainLists({
     version: 2,
     whitelist: data.allowlist,
     blacklist: data.blocklist,
   })
-  validateSize(rules)
-  return {rules, cursor: data.lastUpdated}
+  validateSize(domainLists)
+  return {domainLists, cursor: data.lastUpdated}
 }
 function parseFluentFullList(payload) {
-  return {rules: buildDomainRules(payload)}
+  return {domainLists: normalizeDomainLists(payload)}
 }
 
-export function validateSize(rules, previous) {
+export function validateSize(domainLists, previous) {
   if (
-    rules.allow.size < 20 ||
-    rules.block.size < 50000 ||
-    rules.block.size > 500000 ||
-    rules.allow.size > 500000 ||
+    domainLists.allow.size < 20 ||
+    domainLists.block.size < 50000 ||
+    domainLists.block.size > 500000 ||
+    domainLists.allow.size > 500000 ||
     (previous &&
-      (rules.allow.size < previous.allow.size / 2 ||
-        rules.block.size < previous.block.size / 2))
+      (domainLists.allow.size < previous.allow.size / 2 ||
+        domainLists.block.size < previous.block.size / 2))
   )
     throw new Error('Incomplete MetaMask list')
 }
@@ -64,8 +64,8 @@ export function applyDiffs(base, diffs) {
     let key
     if (row.targetList === `${LIST_PREFIX}blocklist`) key = 'block'
     else if (row.targetList === `${LIST_PREFIX}allowlist`) key = 'allow'
-    else continue // Consume the cursor but never turn a path or CID into a host rule.
-    const host = normalizeRule(row.url)
+    else continue // Consume the cursor but never turn a path or CID into a whole-host match.
+    const host = normalizeDomain(row.url)
     if (host)
       events.push({
         key,
@@ -74,19 +74,20 @@ export function applyDiffs(base, diffs) {
         time: row.timestamp,
       })
   }
-  // Keep the active rules untouched until the batch has been saved. A stable
+  // Keep the active lists untouched until the batch has been saved. A stable
   // sort preserves upstream order when two events share a timestamp.
-  let rules = base.rules
+  let domainLists = base.domainLists
   events.sort((a, b) => a.time - b.time)
   for (const {key, host, remove} of events) {
-    const exists = rules[key].has(host)
+    const exists = domainLists[key].has(host)
     if ((remove && !exists) || (!remove && exists)) continue
-    if (rules === base.rules) rules = {...rules}
-    if (rules[key] === base.rules[key]) rules[key] = new Set(rules[key])
-    if (remove) rules[key].delete(host)
-    else rules[key].add(host)
+    if (domainLists === base.domainLists) domainLists = {...domainLists}
+    if (domainLists[key] === base.domainLists[key])
+      domainLists[key] = new Set(domainLists[key])
+    if (remove) domainLists[key].delete(host)
+    else domainLists[key].add(host)
   }
-  return {rules, cursor}
+  return {domainLists, cursor}
 }
 
 // Auth-free, fixed-source requests only. Bound decompressed bytes as well as headers.
@@ -128,8 +129,8 @@ export async function fetchJSON(url, fetcher, limit, etag) {
   }
 }
 
-// Translate each source's HTTP format to domain rules; the service owns the
-// cursor, ETag and cache lifetime. A conditional 304 needs no new rules.
+// Translate each source's HTTP format to domain lists; the service owns the
+// cursor, ETag and cache lifetime. A conditional 304 needs no new lists.
 export function createListSources(
   fetcher = initFetcher({
     throwHttpErrors: false, // handle 304 explicitly

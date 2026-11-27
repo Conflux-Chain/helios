@@ -1,8 +1,8 @@
-// Host-only rules. Never turn a URL/path rule into a rule for its entire host.
+// Only list hostnames. A URL with a path must not match the entire host.
 const labels = /^[a-z0-9_-]+(?:\.[a-z0-9_-]+)*$/
 const MAX_ENTRIES = 500000
 
-export function normalizeRule(value) {
+export function normalizeDomain(value) {
   if (typeof value !== 'string') throw new Error('Invalid phishing list entry')
   if (!value || value.length > 1024 || /[\s\\/@:?#%*]/u.test(value)) return null
   let host = value.toLowerCase().replace(/\.$/, '')
@@ -28,13 +28,13 @@ function normalizeList(entries) {
     throw new Error('Invalid phishing list size')
   const hosts = new Set()
   for (const value of entries) {
-    const host = normalizeRule(value)
+    const host = normalizeDomain(value)
     if (host) hosts.add(host)
   }
   return hosts
 }
 
-export function buildDomainRules(domainList) {
+export function normalizeDomainLists(domainList) {
   if (domainList?.version !== 2)
     throw new Error('Unsupported phishing list format')
   return {
@@ -43,12 +43,12 @@ export function buildDomainRules(domainList) {
   }
 }
 
-export const serializeRules = ({allow, block}) => ({
+export const serializeDomainLists = ({allow, block}) => ({
   version: 2,
   whitelist: [...allow],
   blacklist: [...block],
 })
-function sameHosts(current, next) {
+function haveSameDomains(current, next) {
   if (current === next) return true
   if (current.size !== next.size) return false
   for (const host of current) {
@@ -57,18 +57,18 @@ function sameHosts(current, next) {
   return true
 }
 
-export function sameRules(current, next) {
+export function areDomainListsEqual(current, next) {
   return Boolean(
     current &&
-      sameHosts(current.allow, next.allow) &&
-      sameHosts(current.block, next.block),
+      haveSameDomains(current.allow, next.allow) &&
+      haveSameDomains(current.block, next.block),
   )
 }
 
-// Apply domain rules at DNS-label boundaries, most specific first. IPs and
+// Match whole DNS labels, most specific first. IPs and
 // single-label hosts are exact matches; never fall back to a top-level domain.
-function findRule(host, rules) {
-  if (rules.has(host)) return host
+function findListedDomain(host, listedDomains) {
+  if (listedDomains.has(host)) return host
   if (/^[\d.]+$/.test(host) || host.startsWith('[')) return null
   for (
     let dot = host.indexOf('.');
@@ -77,12 +77,12 @@ function findRule(host, rules) {
   ) {
     const parent = host.slice(dot + 1)
     if (!parent.includes('.')) break
-    if (rules.has(parent)) return parent
+    if (listedDomains.has(parent)) return parent
   }
   return null
 }
 
-export function matchOrigin(origin, rules) {
+export function matchOrigin(origin, domainLists) {
   let host
   try {
     if (typeof origin !== 'string') return {status: 'unknown'}
@@ -99,10 +99,10 @@ export function matchOrigin(origin, rules) {
   } catch {
     return {status: 'unknown'}
   }
-  const allowed = findRule(host, rules.allow)
+  const allowed = findListedDomain(host, domainLists.allow)
   if (allowed)
     return {status: 'allowlisted', hostname: host, matchedDomain: allowed}
-  const blocked = findRule(host, rules.block)
+  const blocked = findListedDomain(host, domainLists.block)
   if (blocked)
     return {status: 'blocklisted', hostname: host, matchedDomain: blocked}
   return {status: 'no-match', hostname: host}

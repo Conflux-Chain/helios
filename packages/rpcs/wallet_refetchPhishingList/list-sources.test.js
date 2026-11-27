@@ -14,7 +14,7 @@ const event = (url, timestamp, kind = 'blocklist', isRemoval = false) => ({
   timestamp,
   isRemoval,
 })
-it('translates a Fluent response into local rules without storage or an extension context', async () => {
+it('translates a Fluent response into domain lists without storage or an extension context', async () => {
   const sources = createListSources(async () =>
     Response.json(
       {version: 2, whitelist: [], blacklist: ['EXAMPLE.test.']},
@@ -22,14 +22,14 @@ it('translates a Fluent response into local rules without storage or an extensio
     ),
   )
   expect(await sources.fetchFluentFullList()).toEqual({
-    rules: {allow: new Set(), block: new Set(['example.test'])},
+    domainLists: {allow: new Set(), block: new Set(['example.test'])},
     etag: '"v1"',
   })
 })
 
 describe('MetaMask diff wire format', () => {
   const base = {
-    rules: {allow: new Set(), block: new Set(['unchanged.test'])},
+    domainLists: {allow: new Set(), block: new Set(['unchanged.test'])},
     cursor,
   }
   it('orders same-feed add/remove mutations, ignores stale/foreign/path records and uses a server cursor', () => {
@@ -41,10 +41,10 @@ describe('MetaMask diff wire format', () => {
       event('shared.test/only', cursor + 6, 'blocklistPaths'),
       {...event('foreign.test', cursor + 99), targetList: 'other.blocklist'},
     ])
-    expect([...next.rules.allow]).toEqual(['ok.test'])
-    expect([...next.rules.block]).toEqual(['unchanged.test'])
+    expect([...next.domainLists.allow]).toEqual(['ok.test'])
+    expect([...next.domainLists.block]).toEqual(['unchanged.test'])
     expect(next.cursor).toBe(cursor + 6)
-    expect(base.rules.allow.size).toBe(0)
+    expect(base.domainLists.allow.size).toBe(0)
     expect(base.cursor).toBe(cursor)
   })
   it('rejects malformed batches without partially changing the input', () => {
@@ -54,7 +54,7 @@ describe('MetaMask diff wire format', () => {
         {...event('x.test', cursor + 2), isRemoval: 'false'},
       ]),
     ).toThrow()
-    expect([...base.rules.block]).toEqual(['unchanged.test'])
+    expect([...base.domainLists.block]).toEqual(['unchanged.test'])
     expect(applyDiffs(base, [])).toEqual(base)
   })
   it('bounds downloads and rejects HTTP errors or unsolicited 304', async () => {

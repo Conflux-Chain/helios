@@ -1,9 +1,9 @@
 import {
-  buildDomainRules,
+  normalizeDomainLists,
   matchOrigin,
-  sameRules,
-  serializeRules,
-} from './domain-rules.js'
+  areDomainListsEqual,
+  serializeDomainLists,
+} from './domain-lists.js'
 import {createListSources, validCursor, validateSize} from './list-sources.js'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -12,16 +12,16 @@ export const DIFF_INTERVAL = 5 * DAY
 export const FLUENT_INTERVAL = DAY
 
 // Keep the sources separate: a Fluent config is not a copy of MetaMask's list.
-const METAMASK_RULES = 'phishing.metamask.v2'
-const METAMASK_META = `${METAMASK_RULES}.meta`
-const STAGED_FULL_LIST = `${METAMASK_RULES}.pending`
-const FLUENT_RULES = 'phishing.fluent.v2'
-const FLUENT_META = `${FLUENT_RULES}.meta`
+const METAMASK_LISTS = 'phishing.metamask.v2'
+const METAMASK_META = `${METAMASK_LISTS}.meta`
+const STAGED_FULL_LIST = `${METAMASK_LISTS}.pending`
+const FLUENT_LISTS = 'phishing.fluent.v2'
+const FLUENT_META = `${FLUENT_LISTS}.meta`
 const CACHE_KEYS = [
-  METAMASK_RULES,
+  METAMASK_LISTS,
   METAMASK_META,
   STAGED_FULL_LIST,
-  FLUENT_RULES,
+  FLUENT_LISTS,
   FLUENT_META,
 ]
 const RETRY_DELAY = 15 * 60 * 1000
@@ -35,12 +35,12 @@ function isDue(time, lastCheck, interval) {
   )
 }
 
-function restoreRules(domainList, validate) {
+function restoreDomainLists(domainList, validate) {
   if (!domainList) return undefined
   try {
-    const rules = buildDomainRules(domainList)
-    if (validate) validate(rules)
-    return rules
+    const domainLists = normalizeDomainLists(domainList)
+    if (validate) validate(domainLists)
+    return domainLists
   } catch {
     // Discard only this cache entry. The other source may still be usable offline.
     return undefined
@@ -49,7 +49,7 @@ function restoreRules(domainList, validate) {
 
 // A pending request outlives a single refresh. Stop listening on either a
 // verified change or dismissal; cancelling one request must not cancel the download.
-function waitForRuleChange(changes, signal, getVerdict) {
+function waitForListChange(changes, signal, getVerdict) {
   return new Promise(resolve => {
     function finish(verdict) {
       changes.removeEventListener('updated', onUpdate)
@@ -68,10 +68,10 @@ export function createDomainService({
   sources = createListSources(),
   now = Date.now,
 }) {
-  let metaMaskRules
+  let metaMaskLists
   let metaMaskMeta = {}
   let stagedFullList
-  let fluentRules
+  let fluentLists
   let fluentMeta = {}
   let cacheReady
   let refreshInFlight
@@ -82,8 +82,8 @@ export function createDomainService({
     const cache = await storage.get(CACHE_KEYS)
     const meta = cache[METAMASK_META]
     if (validCursor(meta?.cursor)) {
-      metaMaskRules = restoreRules(cache[METAMASK_RULES], validateSize)
-      if (metaMaskRules) metaMaskMeta = meta
+      metaMaskLists = restoreDomainLists(cache[METAMASK_LISTS], validateSize)
+      if (metaMaskLists) metaMaskMeta = meta
     }
 
     const staged = cache[STAGED_FULL_LIST]
@@ -91,18 +91,18 @@ export function createDomainService({
       validCursor(staged?.cursor) &&
       !isDue(now(), staged.fetchedAt, FULL_INTERVAL)
     ) {
-      const rules = restoreRules(staged.feed, validateSize)
-      if (rules)
+      const domainLists = restoreDomainLists(staged.feed, validateSize)
+      if (domainLists)
         stagedFullList = {
-          rules,
+          domainLists,
           cursor: staged.cursor,
           fetchedAt: staged.fetchedAt,
           etag: staged.etag,
         }
     }
 
-    fluentRules = restoreRules(cache[FLUENT_RULES])
-    if (fluentRules) fluentMeta = cache[FLUENT_META] ?? {}
+    fluentLists = restoreDomainLists(cache[FLUENT_LISTS])
+    if (fluentLists) fluentMeta = cache[FLUENT_META] ?? {}
   }
 
   function loadCacheOnce() {
@@ -119,46 +119,46 @@ export function createDomainService({
       return stagedFullList
 
     const response = await sources.fetchMetamaskFullList(
-      metaMaskRules && metaMaskMeta.etag,
+      metaMaskLists && metaMaskMeta.etag,
     )
     if (isLocked()) return null
     const fetchedAt = now()
     if (response === null) {
-      // HTTP 304: our active rules already include previous diffs. Resume from
+      // HTTP 304: our active lists already include previous diffs. Resume from
       // their cursor instead of replaying everything since the original full list.
       stagedFullList = {
-        rules: metaMaskRules,
+        domainLists: metaMaskLists,
         cursor: metaMaskMeta.cursor,
         fetchedAt,
         etag: metaMaskMeta.etag,
       }
     } else {
-      const {rules, cursor, etag} = response
+      const {domainLists, cursor, etag} = response
       // Save the baseline, but don't serve it yet. If catch-up fails or the worker
-      // restarts, retry only the delta and keep serving the last verified rules.
+      // restarts, retry only the delta and keep serving the last verified lists.
       await storage.set({
         [STAGED_FULL_LIST]: {
-          feed: serializeRules(rules),
+          feed: serializeDomainLists(domainLists),
           cursor,
           fetchedAt,
           etag,
         },
       })
-      stagedFullList = {rules, cursor, fetchedAt, etag}
+      stagedFullList = {domainLists, cursor, fetchedAt, etag}
     }
     return stagedFullList
   }
 
   async function updateMetaMask(isLocked) {
     const needsFullList =
-      !metaMaskRules || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)
+      !metaMaskLists || isDue(now(), metaMaskMeta.fullAt, FULL_INTERVAL)
     if (!needsFullList && !isDue(now(), metaMaskMeta.diffAt, DIFF_INTERVAL))
       return false
 
     const baseline = needsFullList
       ? await getFullListForCatchUp(isLocked)
       : {
-          rules: metaMaskRules,
+          domainLists: metaMaskLists,
           cursor: metaMaskMeta.cursor,
           fetchedAt: metaMaskMeta.fullAt,
           etag: metaMaskMeta.etag,
@@ -166,14 +166,14 @@ export function createDomainService({
     if (!baseline || isLocked()) return false
 
     const next = await sources.fetchMetamaskDiffs(baseline)
-    validateSize(next.rules, metaMaskRules)
-    if (metaMaskRules && next.cursor < metaMaskMeta.cursor)
+    validateSize(next.domainLists, metaMaskLists)
+    if (metaMaskLists && next.cursor < metaMaskMeta.cursor)
       throw new Error('Outdated MetaMask response')
     if (isLocked()) return false
 
-    // The server cursor belongs to these exact rules. Persist them together
+    // The server cursor belongs to these exact lists. Persist them together
     // before exposing the new verdict. Empty diffs only need a metadata write.
-    const changed = !sameRules(metaMaskRules, next.rules)
+    const changed = !areDomainListsEqual(metaMaskLists, next.domainLists)
     const nextMeta = {
       fullAt: baseline.fetchedAt,
       diffAt: now(),
@@ -181,33 +181,33 @@ export function createDomainService({
       etag: baseline.etag,
     }
     const patch = {[METAMASK_META]: nextMeta}
-    if (changed) patch[METAMASK_RULES] = serializeRules(next.rules)
+    if (changed) patch[METAMASK_LISTS] = serializeDomainLists(next.domainLists)
     if (needsFullList) patch[STAGED_FULL_LIST] = null
     await storage.set(patch)
     metaMaskMeta = nextMeta
-    metaMaskRules = next.rules
+    metaMaskLists = next.domainLists
     stagedFullList = undefined
     return changed
   }
 
   async function updateFluent(isLocked) {
-    if (fluentRules && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
+    if (fluentLists && !isDue(now(), fluentMeta.checkedAt, FLUENT_INTERVAL))
       return false
     const response = await sources.fetchFluentFullList(
-      fluentRules && fluentMeta.etag,
+      fluentLists && fluentMeta.etag,
     )
     if (isLocked()) return false
 
-    const rules = response ? response.rules : fluentRules
-    const changed = !sameRules(fluentRules, rules)
+    const domainLists = response ? response.domainLists : fluentLists
+    const changed = !areDomainListsEqual(fluentLists, domainLists)
     const nextMeta = {
       checkedAt: now(),
       etag: response ? response.etag : fluentMeta.etag,
     }
     const patch = {[FLUENT_META]: nextMeta}
-    if (changed) patch[FLUENT_RULES] = serializeRules(rules)
+    if (changed) patch[FLUENT_LISTS] = serializeDomainLists(domainLists)
     await storage.set(patch)
-    fluentRules = rules
+    fluentLists = domainLists
     fluentMeta = nextMeta
     return changed
   }
@@ -225,8 +225,8 @@ export function createDomainService({
 
   async function refreshSources(isLocked) {
     const [metaMaskChanged, fluentChanged] = await Promise.all([
-      tryRefresh(METAMASK_RULES, updateMetaMask, isLocked),
-      tryRefresh(FLUENT_RULES, updateFluent, isLocked),
+      tryRefresh(METAMASK_LISTS, updateMetaMask, isLocked),
+      tryRefresh(FLUENT_LISTS, updateFluent, isLocked),
     ])
     if (!metaMaskChanged && !fluentChanged) return false
     changes.dispatchEvent(new Event('updated'))
@@ -244,9 +244,9 @@ export function createDomainService({
   }
 
   function localVerdict(origin) {
-    const results = [fluentRules, metaMaskRules]
+    const results = [fluentLists, metaMaskLists]
       .filter(Boolean)
-      .map(rules => matchOrigin(origin, rules))
+      .map(domainLists => matchOrigin(origin, domainLists))
     // An explicit exception from either source wins. A known block still matters
     // if the other source is offline, but we can't claim a complete no-match.
     const allowed = results.find(result => result.status === 'allowlisted')
@@ -269,7 +269,7 @@ export function createDomainService({
 
       const recheck = () => (isLocked() ? null : localVerdict(origin))
       if (pendingSignal) {
-        const rechecked = waitForRuleChange(changes, pendingSignal, recheck)
+        const rechecked = waitForListChange(changes, pendingSignal, recheck)
         void refresh(isLocked)
         return {verdict, rechecked}
       }

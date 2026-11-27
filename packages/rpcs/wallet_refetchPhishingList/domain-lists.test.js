@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest'
-import {buildDomainRules, matchOrigin} from './domain-rules.js'
+import {normalizeDomainLists, matchOrigin} from './domain-lists.js'
 
-const rules = buildDomainRules({
+const domainLists = normalizeDomainLists({
   version: 2,
   whitelist: ['accounts.flagged.test', 'both.test', 'localhost'],
   blacklist: [
@@ -16,7 +16,7 @@ const rules = buildDomainRules({
   fuzzylist: ['brand.test'],
 })
 
-describe('domain-only MetaMask rules', () => {
+describe('MetaMask domain lists', () => {
   it.each([
     ['https://FLAGGED.test.:8443/x?q=1', 'blocklisted', 'flagged.test'],
     ['http://sub.flagged.test', 'blocklisted', 'flagged.test'],
@@ -33,7 +33,10 @@ describe('domain-only MetaMask rules', () => {
   ])(
     'matches %s using host-label boundaries and allowlist precedence',
     (url, status, matchedDomain) => {
-      expect(matchOrigin(url, rules)).toMatchObject({status, matchedDomain})
+      expect(matchOrigin(url, domainLists)).toMatchObject({
+        status,
+        matchedDomain,
+      })
     },
   )
 
@@ -46,8 +49,8 @@ describe('domain-only MetaMask rules', () => {
     'https://another.test',
     'https://brand.test',
     'http://192.0.2.10',
-  ])('does not broaden a rule to %s', url => {
-    expect(matchOrigin(url, rules).status).toBe('no-match')
+  ])('does not widen a listed domain to match %s', url => {
+    expect(matchOrigin(url, domainLists).status).toBe('no-match')
   })
 
   it.each([
@@ -58,6 +61,6 @@ describe('domain-only MetaMask rules', () => {
     'about:blank',
     'data:text/plain,example',
   ])('returns unknown for unsupported input %s', input => {
-    expect(matchOrigin(input, rules)).toEqual({status: 'unknown'})
+    expect(matchOrigin(input, domainLists)).toEqual({status: 'unknown'})
   })
 })
