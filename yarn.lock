@@ -261,6 +261,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ampproject/remapping@npm:^2.2.0":
+  version: 2.3.0
+  resolution: "@ampproject/remapping@npm:2.3.0"
+  dependencies:
+    "@jridgewell/gen-mapping": "npm:^0.3.5"
+    "@jridgewell/trace-mapping": "npm:^0.3.24"
+  checksum: 10/f3451525379c68a73eb0a1e65247fbf28c0cccd126d93af21c75fceff77773d43c0d4a2d51978fb131aff25b5f2cb41a9fe48cc296e61ae65e679c4f6918b0ab
+  languageName: node
+  linkType: hard
+
 "@ant-design/css-animation@npm:^1.7.2":
   version: 1.7.3
   resolution: "@ant-design/css-animation@npm:1.7.3"
@@ -303,7 +313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.29.13, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.19.6, @babel/core@npm:^7.21.3, @babel/core@npm:^7.23.9, @babel/core@npm:^7.25.9, @babel/core@npm:^7.26.0":
+"@babel/core@npm:7.29.13, @babel/core@npm:^7.19.6, @babel/core@npm:^7.25.9, @babel/core@npm:^7.26.0":
   version: 7.29.13
   resolution: "@babel/core@npm:7.29.13"
   dependencies:
@@ -326,6 +336,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.21.3, @babel/core@npm:^7.23.9":
+  version: 7.25.2
+  resolution: "@babel/core@npm:7.25.2"
+  dependencies:
+    "@ampproject/remapping": "npm:^2.2.0"
+    "@babel/code-frame": "npm:^7.24.7"
+    "@babel/generator": "npm:^7.25.0"
+    "@babel/helper-compilation-targets": "npm:^7.25.2"
+    "@babel/helper-module-transforms": "npm:^7.25.2"
+    "@babel/helpers": "npm:^7.25.0"
+    "@babel/parser": "npm:^7.25.0"
+    "@babel/template": "npm:^7.25.0"
+    "@babel/traverse": "npm:^7.25.2"
+    "@babel/types": "npm:^7.25.2"
+    convert-source-map: "npm:^2.0.0"
+    debug: "npm:^4.1.0"
+    gensync: "npm:^1.0.0-beta.2"
+    json5: "npm:^2.2.3"
+    semver: "npm:^6.3.1"
+  checksum: 10/0d6ec10ff430df66f654c089d6f7ef1d9bed0c318ac257ad5f0dfa0caa45666011828ae75f998bcdb279763e892b091b2925d0bc483299e61649d2c7a2245e33
+  languageName: node
+  linkType: hard
+
 "@babel/eslint-parser@npm:7.17.0":
   version: 7.17.0
   resolution: "@babel/eslint-parser@npm:7.17.0"
@@ -340,7 +373,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.25.6, @babel/generator@npm:^7.7.2":
+"@babel/generator@npm:^7.25.0, @babel/generator@npm:^7.25.6, @babel/generator@npm:^7.7.2":
   version: 7.25.6
   resolution: "@babel/generator@npm:7.25.6"
   dependencies:
@@ -608,7 +641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-transforms@npm:^7.24.7, @babel/helper-module-transforms@npm:^7.24.8":
+"@babel/helper-module-transforms@npm:^7.24.7, @babel/helper-module-transforms@npm:^7.24.8, @babel/helper-module-transforms@npm:^7.25.2":
   version: 7.25.2
   resolution: "@babel/helper-module-transforms@npm:7.25.2"
   dependencies:
@@ -837,6 +870,16 @@ __metadata:
     "@babel/traverse": "npm:^7.29.14"
     "@babel/types": "npm:^7.29.14"
   checksum: 10/075fe52f17debe51c9d2cf77741545b0ce5206e9d6944be4e344b3de4a7269520130e04382f34a766855bda86363f04a48fb5baf5ecef194e7254678f5149271
+  languageName: node
+  linkType: hard
+
+"@babel/helpers@npm:^7.25.0":
+  version: 7.25.6
+  resolution: "@babel/helpers@npm:7.25.6"
+  dependencies:
+    "@babel/template": "npm:^7.25.0"
+    "@babel/types": "npm:^7.25.6"
+  checksum: 10/43abc8d017b754619aa189d05e2bdb54aaf44f03ec0439e89b3e7c180d538adb01ce9014a1689f632a7e8b17655c72bfac0a92268476eec708b41d3ba0a65296
   languageName: node
   linkType: hard
 
@@ -5691,6 +5734,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx-transaction-schema@workspace:packages/cfx-transaction-schema":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx-transaction-schema@workspace:packages/cfx-transaction-schema"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
@@ -6108,6 +6157,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
   dependencies:
+    "@fluent-wallet/cfx-transaction-schema": "workspace:packages/cfx-transaction-schema"
     "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/signature": "workspace:packages/signature"
   languageName: unknown
@@ -6399,6 +6449,16 @@ __metadata:
   dependencies:
     "@ethersproject/bignumber": "npm:5.6.2"
     "@fluent-wallet/consts": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/debug_trace-call@workspace:packages/rpcs/debug_traceCall":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/debug_trace-call@workspace:packages/rpcs/debug_traceCall"
+  dependencies:
+    "@fluent-wallet/cfx-transaction-schema": "workspace:packages/cfx-transaction-schema"
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/spec": "npm:1.0.24"
   languageName: unknown
   linkType: soft
 
@@ -7328,6 +7388,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_enrich-txs@workspace:packages/rpcs/wallet_enrichTxs"
   dependencies:
+    "@fluent-wallet/spec": "npm:1.0.24"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_estimate-asset-changes@workspace:*, @fluent-wallet/wallet_estimate-asset-changes@workspace:packages/rpcs/wallet_estimateAssetChanges":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_estimate-asset-changes@workspace:packages/rpcs/wallet_estimateAssetChanges"
+  dependencies:
+    "@ethersproject/abi": "npm:5.6.3"
+    "@ethersproject/bignumber": "npm:5.6.2"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/debug_trace-call": "workspace:packages/rpcs/debug_traceCall"
     "@fluent-wallet/spec": "npm:1.0.24"
   languageName: unknown
   linkType: soft
@@ -15260,6 +15333,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cssesc@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "cssesc@npm:3.0.0"
+  bin:
+    cssesc: bin/cssesc
+  checksum: 10/0e161912c1306861d8f46e1883be1cbc8b1b2879f0f509287c0db71796e4ddfb97ac96bdfca38f77f452e2c10554e1bb5678c99b07a5cf947a12778f73e47e12
+  languageName: node
+  linkType: hard
+
 "cssnano-preset-advanced@npm:^6.1.2":
   version: 6.1.2
   resolution: "cssnano-preset-advanced@npm:6.1.2"
@@ -15869,9 +15951,9 @@ __metadata:
   linkType: hard
 
 "diff@npm:^5.0.0":
-  version: 5.2.2
-  resolution: "diff@npm:5.2.2"
-  checksum: 10/8a885b38113d96138d87f6cb474ee959b7e9ab33c0c4cb1b07dcf019ec544945a2309d53d721532af020de4b3a58fb89f1026f64f42f9421aa9c3ae48a36998b
+  version: 5.2.0
+  resolution: "diff@npm:5.2.0"
+  checksum: 10/01b7b440f83a997350a988e9d2f558366c0f90f15be19f4aa7f1bb3109a4e153dfc3b9fbf78e14ea725717017407eeaa2271e3896374a0181e8f52445740846d
   languageName: node
   linkType: hard
 
@@ -16195,7 +16277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.6.1, elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.5, elliptic@npm:^6.5.7":
+"elliptic@npm:6.6.1, elliptic@npm:^6.5.7":
   version: 6.6.1
   resolution: "elliptic@npm:6.6.1"
   dependencies:
@@ -16207,6 +16289,21 @@ __metadata:
     minimalistic-assert: "npm:^1.0.1"
     minimalistic-crypto-utils: "npm:^1.0.1"
   checksum: 10/dc678c9febd89a219c4008ba3a9abb82237be853d9fd171cd602c8fb5ec39927e65c6b5e7a1b2a4ea82ee8e0ded72275e7932bb2da04a5790c2638b818e4e1c5
+  languageName: node
+  linkType: hard
+
+"elliptic@npm:^6.5.2, elliptic@npm:^6.5.3, elliptic@npm:^6.5.5":
+  version: 6.5.7
+  resolution: "elliptic@npm:6.5.7"
+  dependencies:
+    bn.js: "npm:^4.11.9"
+    brorand: "npm:^1.1.0"
+    hash.js: "npm:^1.0.0"
+    hmac-drbg: "npm:^1.0.1"
+    inherits: "npm:^2.0.4"
+    minimalistic-assert: "npm:^1.0.1"
+    minimalistic-crypto-utils: "npm:^1.0.1"
+  checksum: 10/fbad1fad0a5cc07df83f80cc1f7a784247ef59075194d3e340eaeb2f4dd594825ee24c7e9b0cf279c9f1982efe610503bb3139737926428c4821d4fca1bcf348
   languageName: node
   linkType: hard
 
@@ -18855,6 +18952,7 @@ __metadata:
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/db": "npm:1.0.94"
+    "@fluent-wallet/debug_trace-call": "workspace:packages/rpcs/debug_traceCall"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
@@ -18907,6 +19005,7 @@ __metadata:
     "@fluent-wallet/wallet_enrich-conflux-tx": "workspace:*"
     "@fluent-wallet/wallet_enrich-ethereum-tx": "workspace:*"
     "@fluent-wallet/wallet_enrich-txs": "workspace:*"
+    "@fluent-wallet/wallet_estimate-asset-changes": "workspace:*"
     "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
     "@fluent-wallet/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
     "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
@@ -25778,7 +25877,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-selector-parser@npm:^6.0.11, postcss-selector-parser@npm:^6.0.16, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.9, postcss-selector-parser@npm:^6.1.1":
+"postcss-selector-parser@npm:^6.0.11, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.9, postcss-selector-parser@npm:^6.1.1":
+  version: 6.1.2
+  resolution: "postcss-selector-parser@npm:6.1.2"
+  dependencies:
+    cssesc: "npm:^3.0.0"
+    util-deprecate: "npm:^1.0.2"
+  checksum: 10/190034c94d809c115cd2f32ee6aade84e933450a43ec3899c3e78e7d7b33efd3a2a975bb45d7700b6c5b196c06a7d9acf3f1ba6f1d87032d9675a29d8bca1dd3
+  languageName: node
+  linkType: hard
+
+"postcss-selector-parser@npm:^6.0.16":
   version: 6.1.6
   resolution: "postcss-selector-parser@npm:6.1.6"
   dependencies:
@@ -28121,10 +28230,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.10.0, shell-quote@npm:^1.7.3":
+"shell-quote@npm:^1.10.0":
   version: 1.12.0
   resolution: "shell-quote@npm:1.12.0"
   checksum: 10/18b3e382272804e79fd3187c18877cfd4e736b5afb576bf1ab66a561b0a0e26eada4b7c8eb45473d1f17268ffcf12d0aaa90b9235132123eb673df5d0a5df943
+  languageName: node
+  linkType: hard
+
+"shell-quote@npm:^1.7.3":
+  version: 1.8.1
+  resolution: "shell-quote@npm:1.8.1"
+  checksum: 10/af19ab5a1ec30cb4b2f91fd6df49a7442d5c4825a2e269b3712eded10eedd7f9efeaab96d57829880733fc55bcdd8e9b1d8589b4befb06667c731d08145e274d
   languageName: node
   linkType: hard
 
