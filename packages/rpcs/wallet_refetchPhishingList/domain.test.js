@@ -6,7 +6,6 @@ import {
 } from './domain.js'
 
 const domainLists = normalizeDomainLists({
-  version: 1,
   whitelist: ['accounts.flagged.test', 'both.test', 'localhost'],
   blacklist: [
     'flagged.test',
@@ -24,13 +23,11 @@ describe('MetaMask domain lists', () => {
   it('keeps the same verdict when matching sets are stored as arrays and restored', () => {
     const origin = 'https://sub.bad.test'
     const forMatching = normalizeDomainLists({
-      version: 1,
       whitelist: [],
       blacklist: ['BAD.test.', 'bad.test'],
     })
     const forStorage = serializeDomainLists(forMatching)
     expect(forStorage).toEqual({
-      version: 1,
       whitelist: [],
       blacklist: ['bad.test'],
     })

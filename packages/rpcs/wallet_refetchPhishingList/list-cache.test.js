@@ -10,7 +10,6 @@ import {createListFetcher, FULL_URL, diffUrl, FLUENT_URL} from './fetch-list.js'
 
 const cursor = 1795567388
 const full = {
-  version: 1,
   lastUpdated: cursor,
   allowlist: Array.from({length: 20}, (_, i) => `allow-${i}.test`),
   blocklist: [
@@ -39,7 +38,7 @@ function setup() {
   const fixture = {
     full,
     diffs: [],
-    fluent: {version: 1, whitelist: [], blacklist: []},
+    fluent: {whitelist: [], blacklist: []},
     fail: null,
   }
   const fetchFn = vi.fn(async url => {
@@ -107,23 +106,32 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     )
     expect(s.urls()).toHaveLength(3)
   })
-  it('rebuilds both lists in version 1 instead of reusing version 2 development caches', async () => {
+  it('persists only the two arrays and ignores a version-only Fluent edit', async () => {
     const s = setup()
+    s.fixture.fluent = {whitelist: [], blacklist: ['BAD.test.']}
     await s.refresh()
-    const keys = ['phishing.metamask', 'phishing.fluent']
-    for (const key of keys) {
-      expect(s.data[key].version).toBe(1)
-      s.data[key] = {...s.data[key], version: 2}
+    for (const key of ['phishing.metamask', 'phishing.fluent']) {
+      expect(Object.keys(s.data[key]).sort()).toEqual([
+        'blacklist',
+        'whitelist',
+      ])
     }
-    s.fetchFn.mockClear()
     s.restart()
-    const {verdict, rechecked} = await s.check('https://old.test')
-    expect(verdict.status).toBe('unknown')
-    expect((await rechecked).status).toBe('blocklisted')
-    expect(s.urls().sort()).toEqual(
-      [FULL_URL, FLUENT_URL, diffUrl(cursor)].sort(),
-    )
-    for (const key of keys) expect(s.data[key].version).toBe(1)
+    s.advance(FLUENT_INTERVAL)
+    s.fixture.fluent = {whitelist: [], blacklist: ['bad.test'], version: 9}
+    s.storage.set.mockClear()
+    expect(await s.refresh()).toBe(false)
+    expect(s.storage.set).toHaveBeenCalledTimes(1)
+    expect(Object.keys(s.storage.set.mock.calls[0][0])).toEqual([
+      'phishing.fluent.meta',
+    ])
+    s.advance(FLUENT_INTERVAL)
+    s.fixture.fluent = {whitelist: [], blacklist: ['new.test']}
+    expect(await s.refresh()).toBe(true)
+    expect(s.data['phishing.fluent']).toEqual({
+      whitelist: [],
+      blacklist: ['new.test'],
+    })
   })
   it('checks only when used: Fluent after 24 hours, deltas after 5 days, full list after 30 days', async () => {
     const s = setup()
@@ -238,7 +246,6 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
   it('does not retry the big list on normal delta errors, or lose Fluent policy on MetaMask failure', async () => {
     const s = setup()
     s.fixture.fluent = {
-      version: 1,
       whitelist: ['old.test'],
       blacklist: ['fluent-only.test'],
     }
@@ -269,7 +276,7 @@ describe('MetaMask full list + diffs and independent Fluent configuration', () =
     const s = setup()
     await s.refresh()
     s.advance(DIFF_INTERVAL)
-    s.fixture.fluent = {version: 1, blacklist: []}
+    s.fixture.fluent = {blacklist: []}
     s.fixture.diffs = [event('old.test', cursor + 1, 'blocklist', true)]
     s.storage.set.mockRejectedValueOnce(new Error('quota'))
     expect(await s.refresh()).toBe(false)
@@ -353,7 +360,7 @@ it('uses the shared HTTP client for GETs, accepts a conditional 304 and does not
     fluentChecks++
     if (fluentChecks === 1)
       return Response.json(
-        {version: 1, whitelist: [], blacklist: ['fluent.test']},
+        {whitelist: [], blacklist: ['fluent.test']},
         {headers: {etag: '"v1"'}},
       )
     expect(request.headers.get('if-none-match')).toBe('"v1"')

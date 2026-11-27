@@ -1,9 +1,5 @@
 import {initFetcher} from '@fluent-wallet/fetch-rpc'
-import {
-  DOMAIN_LIST_VERSION,
-  normalizeDomainLists,
-  normalizeDomain,
-} from './domain.js'
+import {normalizeDomainLists, normalizeDomain} from './domain.js'
 
 // MetaMask/core phishing-controller: v1 full list plus ordered v2 mutations.
 const METAMASK_API = 'https://phishing-detection.api.cx.metamask.io'
@@ -16,14 +12,9 @@ export const FLUENT_URL =
 export const validCursor = n => Number.isSafeInteger(n) && n > 0
 function parseMetamaskFullList(payload) {
   const data = payload?.data
-  if (
-    !validCursor(data?.lastUpdated) ||
-    !Number.isSafeInteger(data.version) ||
-    data.version < 0
-  )
+  if (!validCursor(data?.lastUpdated))
     throw new Error('Invalid MetaMask full list')
   const domainLists = normalizeDomainLists({
-    version: DOMAIN_LIST_VERSION,
     whitelist: data.allowlist,
     blacklist: data.blocklist,
   })
