@@ -763,6 +763,45 @@ function ConfirmTransaction() {
       />
     )
   }
+  let header
+  if (isSendToken) {
+    header = {
+      kind: 'transfer',
+      token: displayToken,
+      sendAmount: sendDisplayValue,
+      fromAddress: currentTx?.from,
+      toAddress: displayToAddress,
+      nickname: displayAccount?.nickname,
+    }
+  } else if (isInternalEip7702Tx) {
+    header = {
+      kind: 'delegation',
+      authority: currentTx?.from,
+      authorityNickname: displayAccount?.nickname,
+      delegateAddress: eip7702Display.delegateAddress,
+      title: t(eip7702Display.titleKey),
+      delegateAddressLabel: t(eip7702Display.toAddressLabelKey),
+    }
+  } else if (isApproveToken) {
+    header = {
+      kind: 'approval',
+      token: displayToken,
+      spenderAddress: displayToAddress,
+      allowance: displayAllowance,
+      canEditAllowance,
+      onEditAllowance: () => setView('allowance'),
+    }
+  } else {
+    header = {
+      kind: 'generic',
+      tx:
+        confirmDisabled || isSponsoredSubmission
+          ? undefined
+          : sendTransactionParams,
+      sessionId,
+    }
+  }
+
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -780,42 +819,7 @@ function ConfirmTransaction() {
       </header>
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6 overflow-y-auto">
         <div className="flex flex-col px-3 overflow-y-auto">
-          <TransactionHeader
-            // shared
-            fromAddress={currentTx?.from}
-            nickname={displayAccount?.nickname}
-            token={displayToken}
-            // token approve
-            isApproveToken={isApproveToken}
-            spenderAddress={displayToAddress}
-            allowance={displayAllowance}
-            canEditAllowance={canEditAllowance}
-            onEditAllowance={() => setView('allowance')}
-            // token transfer
-            isSendToken={isSendToken}
-            sendAmount={sendDisplayValue}
-            toAddress={displayToAddress}
-            // internal 7702
-            isInternalEip7702Tx={isInternalEip7702Tx}
-            delegateAddress={eip7702Display.delegateAddress}
-            title={
-              eip7702Display.titleKey ? t(eip7702Display.titleKey) : undefined
-            }
-            delegateAddressLabel={
-              eip7702Display.toAddressLabelKey
-                ? t(eip7702Display.toAddressLabelKey)
-                : undefined
-            }
-            // unknown transaction
-            sessionId={sessionId}
-            tx={
-              !confirmDisabled &&
-              !sponsoredUserOperation.loading &&
-              !isSponsoredSubmission
-                ? sendTransactionParams
-                : undefined
-            }
-          />
+          <TransactionHeader {...header} />
           <InfoList
             isDapp={isDapp}
             isSign={isSign}

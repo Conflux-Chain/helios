@@ -63,7 +63,7 @@ export const cache = {
 }
 export const permissions = {
   locked: true,
-  external: ['popup', 'inpage'],
+  external: [],
 }
 
 export const main = async ({f, params, network}) => {
